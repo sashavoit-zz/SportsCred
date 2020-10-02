@@ -1,9 +1,9 @@
-#Objective
+# Objective
 
 Build a social media web-application focused on sports and sports-related discussions. The application allows users to gain community credibility of their analytical skills based on sports trivia, picks/predictions, and debate. Through the use of the app users can increase their status from being a sports newbie to an expert sports analyst, it allows them to socialize and discuss upcoming sports-related events, games, etc. 
 
 
-#Key users
+# Key users
 1. Sports Analyst / Hardcore Sports Fans
 
 This group of users is the most passionate about sports. They attend games in person or watch all of them live. Most of their social media posts are about sports and their YouTube recommendations are filled with highlights, debates and analyses. They religiously keep up with all updates related to the sport. They regularly comment on online sports forums and they may even bet money on the outcome of games. They have been keeping up with sports for a long time and have a thorough knowledge of its history. They might have even been a part of competitive teams. Sports is their main passion.
@@ -17,7 +17,7 @@ This group is moderately passionate about sports. They watch some of the games a
 This group is not very passionate about sports. One might ask why they would even bother to then use the SportsCred application, but they might want to interact with their friends on it or their passion for sports is just beginning. This group only watches games live when they are with their friends or if a big championship is on the line. They rarely comment or post about sports online and even more rarely watch debates and analyses. Sports are neither their passion nor their hobby.
 
 
-#Key use cases
+# Key use cases
 *Register/Login/Logout
   *User can register an account with email and login
   *Users can logout
@@ -40,7 +40,7 @@ This group is not very passionate about sports. One might ask why they would eve
   *Users can like or dislike others' analysis about the topic.
 
 
-#Key Usage Scenarios
+# Key Usage Scenarios
 
 Carlos, 32 y.o. (professional sports analyst):
 1. Carlos heard about SportsCred from his colleague, he understands that he can share his thoughts and analysis on the app. He decides to register an account and have a try. Carlos’s boss wants him to write an analysis of the Raptor's last game. After finishing the analysis report, he posted a part of his report to the Open Court, the post discussed the ineffective way the Raptors played last game. Beyond expectation, he got tons of likes and some users had commented under the post.  Carlos replied to some interesting comments and started to discuss with them about the opinions in the post.
@@ -53,7 +53,7 @@ Brijesh, 27 y.o. (light sports fan)
 1.Brijesh visited his father yesterday and they talked a lot about recent basketball matches. They have very different predictions about the next few matches. Brijesh put his prediction on SportCred. He bet the Raptors would win the series against the Celtics. After some time, Brijesh is notified that his prediction about the Raptors was incorrect resulting in a decrease in his ACS score.
 1.Brijesh’s ACS is under 100 since he seldom opens this app. Now he wants to increase his score and Trivia in the best way. He selects the Daily Solo Trivia option since he always loses in head to head trivia. Brijesh answers all the questions correctly within the time limit which results in an increase in his ACS.
 
-#Key principles
+# Key principles
 *User experience is the highest priority
   *Develop a user-friendly and intuitive UI
   *Eliminate any possible bugs for the end-users
