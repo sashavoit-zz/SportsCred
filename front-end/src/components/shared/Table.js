@@ -1,7 +1,7 @@
 import React from 'react'
 
-function Account() {
+function Table() {
     return <></>
 }
 
-export default Account
+export default Table
