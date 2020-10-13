@@ -18,15 +18,18 @@ Since we release a new version of our product at the end of every sprint, our re
   
 ### Sprint 1 (Oct 6 - Oct 20)
 - Sign up/log in/log out
-  - This is a required functionality, users must be able to create accounts, log in and log out. Every other functionality, such as being able to post comments, play trivia or start debates, requires that the user first have an account. So we've decided to complete that feature in our current sprint. 
+  This is a required functionality, users must be able to create accounts, log in and log out. Every other functionality, such as being able to post comments, play trivia or start debates, requires that the user first have an account. So we've decided to complete that feature in our current sprint. 
+  <br/>
   > Related Stories
   > - As a regular user, I want to create an account with an email to use the app 
   > - As a regular user, I want to login with email and password, so that I can use the app. 
   > - As a regular user, I want to logout of the app, so that I can prevent other computer users from having access to my account.
 - Post/browse on OpenCourt
-  - We decided to put OpenCourt in our first sprint because it isn't dependent on any other feature except the sign up/log in. It's also relatively simple to implement.
-  - As a regular user, I want to post on the open court to express my opinion on a sports event.
-  - As a regular user, I want to view and scroll past posts to gain perspective on other people’s opinions.
+  We decided to put OpenCourt in our first sprint because it isn't dependent on any other feature except the sign up/log in. It's also relatively simple to implement.
+  <br/>
+  > Related Stories
+  > - As a regular user, I want to post on the open court to express my opinion on a sports event.
+  > - As a regular user, I want to view and scroll past posts to gain perspective on other people’s opinions.
 - View profile
   - SportsCred has a key social media aspect, that allows its users to connect. So at the very least, users should be able to their profile and the profiles of others, to see each other's activity history and ACS score. This is another foundational feature, which is why we've put it in the first sprint.
   - As a regular user, I want to be able to update my profile so other users can know more about me. 
