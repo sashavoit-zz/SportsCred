@@ -63,7 +63,7 @@ Since we release a new version of our product at the end of every sprint, our re
   > #### Related Stories
   > - As a regular user, I want to debate with other users who have similar ACS with me to check who’s opinion is right and change their ACS score accordingly.
 
-### sprint 3
+### Sprint 3 (Nov 3 - Nov 17)
 - Friends
   
   This isn't a required story, however, we think it's necessary to maintain some sort of friends list for every user so that they can easily and regularly interact with specific users. We've put in the 3rd sprint because it isn't required and it depends on the user being able to view other accounts first.
@@ -78,7 +78,7 @@ Since we release a new version of our product at the end of every sprint, our re
   > - As a regular user, I want to be able to like/dislike comments in debate threads to show support/opposition for a particular argument.
   > - As a regular user, I want to be able to search for debates to quickly find the topics I’m interested in.
 
-### sprint 4
+### Sprint 4 (Nov 17 - Dec 1)
 - Account recovery
   
   This is a nice to have feature, it might also be difficult to implement because we have to set up an email service and a verification service. So for those two reasons we have left it to the last sprint.
