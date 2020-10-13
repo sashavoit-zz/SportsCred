@@ -7,10 +7,12 @@ Initally, we had set our release goal for the first sprint to be relatively less
 
 ## Release goals
 Major release goals
-- a
-- b
-- c
-- d
+- Account creation/access
+- Create and interact with posts on OpenCourt
+- Create and interact with posts on Debates
+- Play trivia
+- Have picks and perdictions
+- View/Interact with other user's accounts
 
 Since we release a new verison of our product every sprint, our release plan will be dictated by our plan for the coming sprints.
   
@@ -40,7 +42,7 @@ Since we release a new verison of our product every sprint, our release plan wil
   - As a regular user, I want to be able to repost from other social media platforms to show my agreement with the author of the original post. 
   - As a regular user, I want to be able to repost my posts from SPORSCRED to other social media platforms to share my sporting opinions with my friends.
 - picks n perdictions
-  - This is another key feature of SportsCred. We've left this to the second sprint because it is compilcated to implement
+  - This is another key feature of SportsCred. We've left this to the second sprint because it is compilcated to implement, we have to store user's perdictions and after the nessecary amount of time has passed, we have to provide them an update on the correctness of their choice.
   - As a regular user, I want to be able to make preseason predictions on the upcoming NBA season to test my knowledge and analytical skills. 
   - As a regular user, I want to be able to make daily picks on the outcome of the game to test my knowledge and analytical skills.
 - open debates
@@ -48,29 +50,31 @@ Since we release a new verison of our product every sprint, our release plan wil
 
 ### sprint 3
 - Friends
+  - This isn't a required story, however, we think its absolutely nesscary to maintain some sort of friends list for every user so that they can easily and regularly interact with specific users. We've put in the 3rd sprint because it isn't required and it depends on user being able to view other accounts first.
   - As a regular user, I want to send a friend request to other users to keep in touch and keep track of their ACS performance. 
   - As a regular user, I want to access my friends list within my profile section to track their ACS score.
 - interact with debates
+  - In sprint 2, we will implement the feature that lets users create debates. And in the 3rd sprint we will implement features that let other users interact with debates.
   - As a regular user, I want to be able to like/dislike debate threads to show support/opposition for debate topics or indicate a poorly chosen topic.
   - As a regular user, I want to be able to like/dislike comments in debate threads to show support/opposition for a particular argument.
   - As a regular user, I want to be able to search for debates to quickly find the topics I’m interested in.
 
 ### sprint 4
 - account recovery
+  - This is a nice to have feature, it might also be diffucult to implement because we have to set up an email service and a verification service. So for those two reasons we have left it to the last sprint.
   - As a regular user, I want to be able to recover my password via email to not lose my account in case I forget the password. 
 - play trivia with other players
+  - This is a complicated feature as we have to set up live interaction between users, and create a system for trading ACS points. Because of its complexity we left it to the last sprint.
   - As a regular user, I want to play trivia games with other users to compare our knowledge and analytical skills. 
 - implement leaderboards
+  - This is a nice to have feature, so we've left it to the last sprint.
   - As a user, I want to be able view leaderboards based on ACS score to see where I rank among all users. 
+  
+  
+## Remarks on our release plan
+Three key parameters we used to judge each feature and which sprint it should belong to are complexity, priority and dependecy. Features that are dependent upon other features usually occur is a subsequent sprint. Features that are complex to implement also occur is the later sprints, this keeps our to keep busy as we progressively learn. Fianlly, features, that have a high priority usually occur in the initail sprints (there are exceptions for example if a feature is complicated and dependent on other features it will be implemented in a later sprint even if its priority is high)
 
-  • Potential sprint goals
-• Completion date
-
-  -scope of project
-
-  -release goal for current sprint
-    -Talk about user stories
-    -related epics
+Also, the later sprints have fewer features, however, those features are significantly more difficult to implement and we've won't a reading week every sprint.
 
 ## Participants
 All team members attended both meetings. At the end of the second meeting we were all in agreement of this release plan.
