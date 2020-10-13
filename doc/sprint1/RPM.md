@@ -67,8 +67,7 @@ Since we release a new version of our product at the end of every sprint, our re
 - Friends
   
   This isn't a required story, however, we think it's necessary to maintain some sort of friends list for every user so that they can easily and regularly interact with specific users. We've put in the 3rd sprint because it isn't required and it depends on the user being able to view other accounts first.
-    > #### Related Stories
- 
+  > #### Related Stories
   > - As a regular user, I want to send a friend request to other users to keep in touch and keep track of their ACS performance. 
   > - As a regular user, I want to access my friends' list within my profile section to track their ACS score.
 - Interact with debates
