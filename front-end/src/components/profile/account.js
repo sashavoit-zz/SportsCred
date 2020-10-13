@@ -1,7 +1,7 @@
 import React from 'react'
 
 function Account() {
-    return <></>
+    return <>Hi</>
 }
 
 export default Account
