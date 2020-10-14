@@ -13,7 +13,7 @@ const userStyles = theme =>({
     },
 });
 
-export class Posts extends React.Component{
+export class Post extends React.Component{
     /* All info in the state should be collected form db */
     // state={
     //     content:"Posting content",
@@ -63,4 +63,4 @@ export class Posts extends React.Component{
     }
 
 }
-export default withStyles(userStyles)(Posts);
+export default withStyles(userStyles)(Post);

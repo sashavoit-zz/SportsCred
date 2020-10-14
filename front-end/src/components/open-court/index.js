@@ -1,5 +1,5 @@
 import React from "react";
-import Posts from "./posts";
+import Post from "./post";
 import {uid} from "react-uid";
 
 export class openCourt extends React.Component{
@@ -17,7 +17,7 @@ export class openCourt extends React.Component{
         return(
             <div>
                 {this.state.posts.map(post =>
-                    <Posts
+                    <Post
                         key={uid(post)}
                         postInfo = {post}
                     />
