@@ -2,12 +2,14 @@ import React from "react";
 import { Redirect, Route } from "react-router-dom";
 
 import Dashboard from "../dashboard/Dashboard";
+import Trivia from "../trivia/Trivia";
 
 // TODO: make better
 function RestrictedRoute(props) {
   const { component: Component, routeProps } = props;
   return (
-    <Route
+    <>
+      <Route
       {...routeProps}
       render={(props) =>
         localStorage.getItem("auth") ? (
@@ -23,6 +25,8 @@ function RestrictedRoute(props) {
         )
       }
     />
+    </>
+    
   );
 }
 

@@ -8,12 +8,16 @@ import {
 import "./App.css";
 import SignUp from '../sign-up/SignUp'
 import Account from '../profile/Account'
+import Trivia from '../trivia/Trivia'
 import PrivateRoute from '../routes/RestrictedRoute'
+import SideBar from "../SideBar/SideBar"
+
 
 // TODO: make better routing
 function App() {
   return (
     <div className="App-header">
+      <SideBar page = "Dashboard"></SideBar>
       <Router>
         <Switch>
           {/* public routes */}
@@ -21,6 +25,8 @@ function App() {
           {/* private routes */}
           <PrivateRoute exact path="/" component={Account}/>
           {/* Add new paths heres */}
+          <Route exact path="/trivia" component={Trivia}/>
+          {}
         </Switch>
       </Router>
     </div>

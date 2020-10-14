@@ -9,9 +9,11 @@ import {
   Toolbar,
   Typography,
   makeStyles,
+  Box
 } from "@material-ui/core";
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const drawerWidth = 200;
 
@@ -48,12 +50,22 @@ function SideBar(props) {
   const {page} = props;
   const classes = useStyles();
 
+  let history = useHistory();
+
+  let sideBarHandler = (text) => {
+    console.log(text);
+    if (text == "Trivia") {
+      localStorage.setItem("triviaAuth", "letmepass");
+      history.push("/trivia");
+    }
+  }
+
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem button key={text}>
+        {["Inbox", "Starred", "Send email", "Drafts", "Trivia"].map((text, index) => (
+          <ListItem button key={text} onClick={() => sideBarHandler(text)}>
             <ListItemIcon>
               {index % 2 === 0 ? <InboxIcon color="secondary" /> : <MailIcon color="secondary" />}
             </ListItemIcon>
@@ -87,7 +99,7 @@ function SideBar(props) {
         </Drawer>
       </nav>
       <main className={classes.content}>
-         {component}
+        {component}
       </main>
     </div>
   );
