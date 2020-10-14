@@ -59,6 +59,12 @@ const useStyles = makeStyles((theme) => ({
     },
     labelBox: {
         fontSize: 20 + 'px'
+    },
+    leftBorder: {
+        borderLeft: 'thick solid black'
+    },
+    rightBorder: {
+        borderRight: 'thin dashed black'
     }
 }));
 
@@ -93,7 +99,7 @@ function Trivia(props) {
                     </Grid>
                     <Grid item xs={12}>
                         <Grid container spacing={3}>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} className={classes.rightBorder}>
                                 <Typography variant="h6" gutterBottom>
                                     Question ACS: <br></br> 6 points
                                 </Typography>
