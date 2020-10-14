@@ -8,6 +8,7 @@ import {
 import "./App.css";
 import SignUp from '../sign-up/SignUp'
 import Account from '../profile/Account'
+import Profile from '../profile/Profile'
 import PrivateRoute from '../routes/RestrictedRoute'
 
 // TODO: make better routing
@@ -18,6 +19,7 @@ function App() {
         <Switch>
           {/* public routes */}
           <Route exact path="/signup" component={SignUp}/>
+          <Route exact path="/profile" component={Profile}/>
           {/* private routes */}
           <PrivateRoute exact path="/" component={Account}/>
           {/* Add new paths heres */}
