@@ -7,6 +7,7 @@ import {
 
 import "./App.css";
 import SignUp from '../sign-up/SignUp'
+import openCourt from '../open-court/index'
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={SignUp}/>
           {/* Add new paths heres */}
+          <Route exact path="/openCourt" component={openCourt}/>
         </Switch>
       </Router>
     </div>
