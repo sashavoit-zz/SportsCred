@@ -8,14 +8,19 @@ import {
 import "./App.css";
 import SignUp from '../sign-up/SignUp'
 import openCourt from '../open-court/index'
+import Account from '../profile/Account'
+import PrivateRoute from '../routes/RestrictedRoute'
 
-
+// TODO: make better routing
 function App() {
   return (
     <div className="App-header">
       <Router>
         <Switch>
-          <Route exact path="/" component={SignUp}/>
+          {/* public routes */}
+          <Route exact path="/signup" component={SignUp}/>
+          {/* private routes */}
+          <PrivateRoute exact path="/" component={Account}/>
           {/* Add new paths heres */}
           <Route exact path="/openCourt" component={openCourt}/>
         </Switch>
