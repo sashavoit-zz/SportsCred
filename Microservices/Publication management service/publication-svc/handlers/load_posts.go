@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	//"encoding/json"
 	"net/http"
 	"publication-svc/general"
 )
@@ -19,7 +18,7 @@ func LoadPosts(w http.ResponseWriter, r *http.Request) {
 		"https://google.com", 200, 666)
 
 
-	posts := []*general.Post {
+	posts := [number_of_posts]*general.Post {
 		post1,
 		post2,
 	}
