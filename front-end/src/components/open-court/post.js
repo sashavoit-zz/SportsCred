@@ -2,8 +2,9 @@ import React from 'react';
 import {CardActions,Card, CardHeader,CardContent, Typography, IconButton,Avatar} from '@material-ui/core';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
-import ReplyIcon from '@material-ui/icons/Reply';
+import ShareIcon from '@material-ui/icons/Share';
 import { withStyles } from "@material-ui/core/styles";
+import CommentIcon from '@material-ui/icons/Comment';
 
 const userStyles = theme =>({
     root:{
@@ -54,7 +55,11 @@ export class Post extends React.Component{
                         </IconButton>
                         <IconButton>
                             {/**TODO: onlick to reply the post */}
-                            <ReplyIcon/>
+                            <CommentIcon/>
+                        </IconButton>
+                        <IconButton>
+                            {/**TODO: onlick to reply the post */}
+                            <ShareIcon/>
                         </IconButton>
                     </CardActions>
                 </Card>
