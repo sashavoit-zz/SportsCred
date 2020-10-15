@@ -17,7 +17,7 @@ import SideBar from "../SideBar/SideBar"
 function App() {
   return (
     <div className="App-header">
-      <SideBar page = "Dashboard"></SideBar>
+      <SideBar page = "Trivia"></SideBar>
       <Router>
         <Switch>
           {/* public routes */}
