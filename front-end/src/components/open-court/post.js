@@ -31,26 +31,26 @@ export class Post extends React.Component{
             <div>
                 <Card className={classes.root}>
                     <CardHeader
-                        avatar={
-                            <Avatar src ={postInfo.authorProfile}/>
-                        } 
-                        title={postInfo.author}
-                        subheader = {postInfo.postTime
-                    }>
+                        //avatar={
+                        //    <Avatar src ={postInfo.AuthorProfile}/>
+                        //}
+                        title={postInfo.Author}
+                        subheader = {postInfo.PostTime}
+                    >
                     </CardHeader> 
                     <CardContent>
                         <Typography variant ="body1" color="textSecondary">
-                            {postInfo.content}
+                            {postInfo.Content}
                         </Typography>
                     </CardContent>
                     <CardActions disableSpacing>
                         <IconButton>
                             <ThumbUpAltIcon/>
-                            <Typography color="textSecondary">{postInfo.likes}</Typography>
+                            <Typography color="textSecondary">{postInfo.Likes}</Typography>
                         </IconButton>
                         <IconButton>
                             <ThumbDownAltIcon/>
-                            <Typography color="textSecondary">{postInfo.dislikes}</Typography>
+                            <Typography color="textSecondary">{postInfo.Dislikes}</Typography>
                         </IconButton>
                         <IconButton>
                             {/**TODO: onlick to reply the post */}

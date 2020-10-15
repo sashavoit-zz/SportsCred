@@ -13,12 +13,12 @@ func LoadPosts(w http.ResponseWriter, r *http.Request) {
 	const number_of_posts int = 2
 
 	post1 := general.NewPost("mockcontent1", "mockauthor1",
-		"https://google.com", 100, 590)
+		"https://google.com", 100, 590, "10/15/2020")
 	post2 := general.NewPost("mockcontent2", "mockauthor2",
-		"https://google.com", 200, 666)
+		"https://google.com", 200, 666, "10/16/2020")
 
 
-	posts := [number_of_posts]*general.Post {
+	posts := []*general.Post {
 		post1,
 		post2,
 	}

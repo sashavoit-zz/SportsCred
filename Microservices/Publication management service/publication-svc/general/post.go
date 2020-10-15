@@ -6,9 +6,11 @@ type Post struct {
 	AuthorProfile string
 	Likes int
 	Dislikes int
+	PostTime string
 }
 
-func NewPost(content string, author string, authorProfile string, likes int, dislikes int) *Post {
+func NewPost(content string, author string, authorProfile string,
+	likes int, dislikes int, postTime string) *Post {
 
 	p:= Post{
 		Content: content,
@@ -16,6 +18,7 @@ func NewPost(content string, author string, authorProfile string, likes int, dis
 		AuthorProfile: authorProfile,
 		Likes: likes,
 		Dislikes: dislikes,
+		PostTime: postTime,
 	}
 
 	return &p
