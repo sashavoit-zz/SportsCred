@@ -52,20 +52,12 @@ function SideBar(props) {
 
   let history = useHistory();
 
-  let sideBarHandler = (text) => {
-    console.log(text);
-    if (text == "Trivia") {
-      localStorage.setItem("triviaAuth", "letmepass");
-      history.push("/trivia");
-    }
-  }
-
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <List>
         {["Inbox", "Starred", "Send email", "Drafts", "Trivia"].map((text, index) => (
-          <ListItem button key={text} onClick={() => sideBarHandler(text)}>
+          <ListItem button key={text}>
             <ListItemIcon>
               {index % 2 === 0 ? <InboxIcon color="secondary" /> : <MailIcon color="secondary" />}
             </ListItemIcon>
