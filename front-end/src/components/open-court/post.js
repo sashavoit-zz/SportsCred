@@ -8,9 +8,9 @@ import CommentIcon from '@material-ui/icons/Comment';
 
 const userStyles = theme =>({
     root:{
-        maxWidth:1000,
-        minWidth:800,
+        width: "60vw",
         marginBottom:10,
+        marginTop: 10
     },
 });
 
