@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import SideBar from "../SideBar/SideBar";
 import { Button, Typography, Box, makeStyles, StylesProvider, Container, Grid, Paper, TextareaAutosize, CircularProgress } from "@material-ui/core";
 
@@ -49,7 +49,9 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.text.secondary,
         backgroundColor: '#0099ff',
         color: 'white',
-        fontSize: 50 + 'px'
+        fontSize: 50 + 'px',
+        justifyContent: 'center',
+        width: '100%'
     },
     bottomBox: {
         marginTop: 60 + 'px',
@@ -85,44 +87,181 @@ const useStyles = makeStyles((theme) => ({
         transform: 'scale(2.5)',
         marginTop: '2%'
     },
-    buttonStyle: {
-
+    nextButton: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        marginTop: "2%",
+        display: "none"
+    },
+    optionBox: {
+        width: '100%',
+        textAlign: 'center',
+        justifyContent: 'center'
+    },
+    lastGrid: {
+        display: 'none'
     }
 }));
+
+
 
 function Trivia(props) {
   const { children: component } = props;
   const classes = useStyles();
   const [progress, setProgress] = React.useState(0);
+  const [totalAcs, setTotalAcs] = React.useState(0);
 
-  const [question, setQuestion] = React.useState(1);
-  const [option1, setOption1] = React.useState(2);
-  const [option2, setOption2] = React.useState(3);
-  const [option3, setOption3] = React.useState(4);
-  const [option4, setOption4] = React.useState(5);
+  var question;
+  var answer;
 
-  const [totalAcs, setTotalAcs] = React.useState(6);
-  const [questionAcs, setQuestionAcs] = React.useState(7);
+  var answerChosen;
+  var nextQuestion;
 
   let beginTrivia = () => {
     document.getElementById('entry-modal').style.display = "none";
     document.getElementById('main-modal').style.display = "block";
+
+    setProgress((prevProgress) => (prevProgress = 0));
+    answer = "no";
+    nextQuestion = 1;
+
+    // get new question and show on site (consumer REST api)
+    getQuestion();
+  }
+
+  //Shuffle array algorithm from the internet: https://github.com/coolaj86/knuth-shuffle
+  function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+  
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
+  }
+
+  async function getQuestion() {
+
+      var responseBody = [1,2,3,4];
+      responseBody = shuffle(responseBody);
+
+      const response = await fetch("http://localhost:3001/getQuestion/maya/hashasdasd", {mode: 'cors'})
+      .then(response => {
+          if (response.ok) {
+              response.json().then(json => {
+                question = json["question"];
+                document.getElementById("questionLabel").innerHTML = question;
+                
+                document.getElementById('option' + responseBody[0].toString() + 'Label').innerHTML = json["option1"];
+                document.getElementById('option' + responseBody[1].toString() + 'Label').innerHTML = json["option2"];
+                document.getElementById('option' + responseBody[2].toString() + 'Label').innerHTML = json["option3"];
+                document.getElementById('option' + responseBody[3].toString() + 'Label').innerHTML = json["answer"];
+                
+                document.getElementById('lastGrid').innerHTML = json["answer"];
+              })
+          }
+      });
+  }
+
+  async function removeQuestion(question) {
+
+    const response = await fetch("http://localhost:3001/deleteQuestionRelationship/hashasdasd", {
+        mode: 'cors',
+        method: 'POST',
+        body: JSON.stringify({
+            "user": "maya",
+            "question": question
+        })
+    });
+
+  }
+
+  function changeAnswer(pickedAnswer) {
+
+    console.log(document.getElementById('lastGrid').innerHTML);
+    if (document.getElementById('lastGrid').innerHTML != "nothing") {
+        var question1 = document.getElementById("questionLabel").innerHTML;
+        var correct = document.getElementById('lastGrid').innerHTML;
+        var userAnswer;
+
+        if (pickedAnswer != "wrong") {
+            userAnswer = document.getElementById(pickedAnswer + "Label").innerHTML;
+        }
+        else{
+            userAnswer = "wrong";
+        }
+
+            if (userAnswer == correct) {
+                document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "+6 points";
+             setTotalAcs((prevTotal) => (prevTotal = prevTotal + 6));
+            }
+            else {
+                document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "-6 points";
+                setTotalAcs((prevTotal) => (prevTotal = prevTotal - 6));
+            }
+
+            if (pickedAnswer != "wrong") {
+                document.getElementById(pickedAnswer + "Label").style.backgroundColor = "#ff0000";
+            }
+
+             if (document.getElementById('option1Label').innerHTML == correct) {
+                document.getElementById('option1Label').style.backgroundColor = "#009933";
+            }
+            else if (document.getElementById('option2Label').innerHTML == correct) {
+                document.getElementById('option2Label').style.backgroundColor = "#009933";
+            }
+            else if (document.getElementById('option3Label').innerHTML == correct) {
+                document.getElementById('option3Label').style.backgroundColor = "#009933";
+            }
+            else if (document.getElementById('option4Label').innerHTML == correct) {
+                document.getElementById('option4Label').style.backgroundColor = "#009933";
+            }
+
+            document.getElementById('nextButton').style.display = "block";
+            setProgress((prevProgress) => (prevProgress = 0));
+
+            document.getElementById('timerLabel2').style.display = "none";
+            document.getElementById('lastGrid').innerHTML = "nothing";
+
+            removeQuestion(document.getElementById("questionLabel").innerHTML);
+    }
+  }
+
+  function nextQuestion() {
+    getQuestion();
+
+    document.getElementById("option1Label").style.backgroundColor = "#0099ff";
+    document.getElementById("option2Label").style.backgroundColor = "#0099ff";
+    document.getElementById("option3Label").style.backgroundColor = "#0099ff";
+    document.getElementById("option4Label").style.backgroundColor = "#0099ff";
+
+    document.getElementById('questionAcsLabel').innerHTML = "Question ACS:";
+
+    document.getElementById('nextButton').style.display = "none";
+
+    document.getElementById('timerLabel2').style.display = "block";
+
     setProgress((prevProgress) => (prevProgress = 0));
   }
 
-  let getQuestion = () => {
-
-  }
-
-  let deleteQuestion = () => {
-
-  }
-
-  let verifyAnswer = (optionNum) => {
-      
-  }
-
   React.useEffect(() => {
+
+    document.getElementById('option1Label').addEventListener("click", function() {changeAnswer("option1")});
+    document.getElementById('option2Label').addEventListener("click", function() {changeAnswer("option2")});
+    document.getElementById('option3Label').addEventListener("click", function() {changeAnswer("option3")});
+    document.getElementById('option4Label').addEventListener("click", function() {changeAnswer("option4")});
+
+    document.getElementById('nextButton').addEventListener('click', function() {nextQuestion()});
+
     const timer = setInterval(() => {
       setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 5));
     }, 800);
@@ -135,7 +274,7 @@ function Trivia(props) {
   return (
     <>
         <Container id="entry-modal" className={classes.introPage}>
-            <Typography variant="h3" gutterBottom>
+            <Typography variant="h4" gutterBottom>
                 Would you like to test your skills?
             </Typography>
             <Button variant="contained" color="primary" onClick={beginTrivia}>
@@ -151,23 +290,23 @@ function Trivia(props) {
                             <hr></hr>
                         </Grid>
                         <Grid item xs={8}>
-                            <Typography variant="h4" gutterBottom>
-                                {question}
+                            <Typography id="questionLabel" variant="h5" id="questionLabel" gutterBottom>
+                                
                             </Typography>
                         </Grid>
                         <Grid item xs={4} className={classes.timerBox}>
-                            <CircularProgress variant="static" value={progress} />
+                            <CircularProgress id="timerLabel1" variant="static" value={progress} />
                             <Box
                                 top={0}
                                 left={1}
-                                bottom={5}
+                                bottom={11}
                                 right={0}
                                 position="absolute"
                                 display="flex"
                                 alignItems="center"
                                 justifyContent="center"
                             >
-                                <Typography variant="caption" component="div" color="textSecondary">{20- (progress/5)}</Typography>
+                                <Typography id="timerLabel2" variant="caption" component="div" color="textSecondary">{20- (progress/5)}</Typography>
                             </Box>
                         </Grid>
                     </Grid>
@@ -181,13 +320,13 @@ function Trivia(props) {
                         <Grid item xs={12}>
                             <Grid container spacing={3}>
                                 <Grid item xs={6} className={classes.rightBorder}>
-                                    <Typography variant="h6" gutterBottom>
-                                        Question ACS: <br></br> {questionAcs} points
+                                    <Typography id="questionAcsLabel" variant="h6" id="questionAcsLabel" gutterBottom>
+                                        Question ACS: <br></br> 
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Typography variant="h6" gutterBottom>
-                                        Total trivia ACS: <br></br> {totalAcs} points
+                                    <Typography id="totalAcsLabel" variant="h6" id="totalAcsLabel" gutterBottom>
+                                        Total ACS: <br></br> {totalAcs} points
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -202,20 +341,30 @@ function Trivia(props) {
                 </Grid>
                 <Grid item xs>
                     <Grid container spacing={3}>
-                        <Grid item xs={6}>
-                            <Paper className={classes.paper2}>{option1}</Paper>
+                        <Grid item xs={6} className={classes.optionBox}>
+                            <Button variant="contained" color="secondary" size="small" id="option1Label" className={classes.paper2}></Button>
                         </Grid>
-                        <Grid item xs={6}>
-                            <Paper className={classes.paper2}>{option2}</Paper>
+                        <Grid item xs={6} className={classes.optionBox}>
+                            <Button variant="contained" color="secondary" size="small" id="option2Label" className={classes.paper2}></Button>
                         </Grid>
-                        <Grid item xs={6}>
-                            <Paper className={classes.paper2}>{option3}</Paper>
+                        <Grid item xs={6} className={classes.optionBox}>
+                            <Button variant="contained" color="secondary" size="small" id="option3Label" className={classes.paper2}></Button>
                         </Grid>
-                        <Grid item xs={6}>
-                            <Paper className={classes.paper2}>{option4}</Paper>
+                        <Grid item xs={6} className={classes.optionBox}>
+                            <Button variant="contained" color="secondary" size="small" id="option4Label" className={classes.paper2}></Button>
                         </Grid>
                     </Grid>
                 </Grid>
+            </Grid>
+            <Grid container spacing={3}>
+                <Grid id="nextButton" item xs={12} className={classes.nextButton}>
+                    <Button variant="contained" color="primary" size="large">
+                        Next question
+                    </Button>
+                </Grid>
+            </Grid>
+            <Grid id="lastGrid" container spacing={3} className={classes.lastGrid}>
+
             </Grid>
         </Container>
     </>

@@ -134,7 +134,7 @@ func main() {
 		})
 	})
 
-	app.GET("/getQuestion/:hash", func(c *gin.Context) {
+	app.GET("/getQuestion/:username/:hash", func(c *gin.Context) {
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
@@ -143,10 +143,10 @@ func main() {
 		var relationship QuestionRelationship
 		json.Unmarshal(jsonData, &relationship)
 
-		question := relationship.Question
+		user := c.Param("username")
 
 		// get question from db
-		result, err := getQuestion(driver, question)
+		result, err := getQuestion(driver, user)
 		if err != nil {
 			// 500 failed add user
 			c.String(500, "Internal Error")
@@ -313,7 +313,7 @@ func addQuestionRelationship(driver neo4j.Driver, question string, user string) 
 	return fmt.Sprintf("%v", result), nil
 }
 
-func getQuestion(driver neo4j.Driver, question string) ([6]string, error) {
+func getQuestion(driver neo4j.Driver, user string) ([6]string, error) {
 	var responseBody [6]string
 
 	session, err := driver.Session(neo4j.AccessModeWrite)
@@ -323,14 +323,14 @@ func getQuestion(driver neo4j.Driver, question string) ([6]string, error) {
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH (n:Question {question:$question})\n"+"RETURN n.question, n.option1, n.option2, n.option3, n.answer", // or MERGE
-			map[string]interface{}{"question": question})
+			"MATCH (n:Question)-[r:NOT_ANSWERED]-(t:User {name:$user})\n"+"RETURN n.question, n.option1, n.option2, n.option3, n.answer\n"+"LIMIT 1", // or MERGE
+			map[string]interface{}{"user": user})
 		if err != nil {
 			return nil, err
 		}
 		if result.Next() {
 
-			responseBody[0] = question
+			responseBody[0] = result.Record().GetByIndex(0).(string)
 			responseBody[1] = result.Record().GetByIndex(1).(string)
 			responseBody[2] = result.Record().GetByIndex(2).(string)
 			responseBody[3] = result.Record().GetByIndex(3).(string)
