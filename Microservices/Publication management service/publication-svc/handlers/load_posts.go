@@ -9,19 +9,14 @@ import (
 func LoadPosts(w http.ResponseWriter, r *http.Request) {
 
 	//This will fetch posts from the database once it's ready
-
-	const number_of_posts int = 2
-
-	post1 := general.NewPost("mockcontent1", "mockauthor1",
-		"https://google.com", 100, 590, "10/15/2020")
-	post2 := general.NewPost("mockcontent2", "mockauthor2",
-		"https://google.com", 200, 666, "10/16/2020")
-
-
-	posts := []*general.Post {
-		post1,
-		post2,
+	resp, err := http.Get("http://localhost:3001/allPosts")
+	if err!=nil{
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
+
+	var posts []general.Post
+	json.NewDecoder(resp.Body).Decode(&posts)
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(posts)

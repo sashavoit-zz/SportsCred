@@ -15,15 +15,6 @@ const userStyles = theme =>({
 });
 
 export class Post extends React.Component{
-    /* All info in the state should be collected form db */
-    // state={
-    //     content:"Posting content",
-    //     author:"author",
-    //     authorProfile: require("../../lib/profile/profilePic.png"),
-    //      likes:,
-    //      dislikes:
-    // };
-
     render(){
         const {postInfo} = this.props;
         // const classes = userStyles();
@@ -35,23 +26,23 @@ export class Post extends React.Component{
                         //avatar={
                         //    <Avatar src ={postInfo.AuthorProfile}/>
                         //}
-                        title={postInfo.Author}
-                        subheader = {postInfo.PostTime}
+                        title={postInfo.userId}
+                        subheader = {postInfo.time}
                     >
                     </CardHeader> 
                     <CardContent>
                         <Typography variant ="body1" color="textSecondary">
-                            {postInfo.Content}
+                            {postInfo.content}
                         </Typography>
                     </CardContent>
                     <CardActions disableSpacing>
                         <IconButton>
                             <ThumbUpAltIcon/>
-                            <Typography color="textSecondary">{postInfo.Likes}</Typography>
+                            <Typography color="textSecondary">{postInfo.likes}</Typography>
                         </IconButton>
                         <IconButton>
                             <ThumbDownAltIcon/>
-                            <Typography color="textSecondary">{postInfo.Dislikes}</Typography>
+                            <Typography color="textSecondary">{postInfo.dislikes}</Typography>
                         </IconButton>
                         <IconButton>
                             {/**TODO: onlick to reply the post */}

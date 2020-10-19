@@ -1,24 +1,24 @@
 package general
 
 type Post struct {
-	Content string
-	Author string
-	AuthorProfile string
-	Likes int
-	Dislikes int
-	PostTime string
+	Content string `json:"content"`
+	UserId string `json:"userId"`
+	PostId string `json:"postId"`
+	Likes string `json:"likes"`
+	Dislikes string `json:"dislikes"`
+	Time string `json:"time"`
 }
 
-func NewPost(content string, author string, authorProfile string,
-	likes int, dislikes int, postTime string) *Post {
+func NewPost(content string, userId string, postId string,
+	likes string, dislikes string, time string) *Post {
 
 	p:= Post{
 		Content: content,
-		Author: author,
-		AuthorProfile: authorProfile,
+		UserId: userId,
+		PostId: postId,
 		Likes: likes,
 		Dislikes: dislikes,
-		PostTime: postTime,
+		Time: time,
 	}
 
 	return &p
