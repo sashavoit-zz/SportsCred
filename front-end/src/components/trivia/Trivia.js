@@ -6,12 +6,28 @@ import { Button, Typography, Box, makeStyles, StylesProvider, Container, Grid, P
 const drawerWidth = 200;
 const drawerHeight = 64;
 
+class AnswerObject {
+    constructor () {
+        this.correctResponse = "";
+    }
+    setCorrectReponse (newResponse) {
+        this.correctResponse = newResponse;
+    }
+    getCorrectResponse () {
+        return this.correctResponse;
+    }
+}
+
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
         position: 'absolute',
         marginLeft: drawerWidth,
-        display: 'none'
+        marginTop: drawerHeight,
+        display: 'none',
+        width: '75%',
+        height: '80%',
+        overflowY: 'hidden'
     },
     introPage: {
         flexGrow: 1,
@@ -57,7 +73,8 @@ const useStyles = makeStyles((theme) => ({
         marginTop: 60 + 'px',
         borderStyle: 'solid',
         backgroundColor: 'white',
-        borderRadius: 5 + 'px'
+        borderRadius: 5 + 'px',
+        marginBottom: '30px'
     },
     answerBox: {
         color: 'black',
@@ -71,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
         borderStyle: 'solid',
         color: 'black',
         backgroundColor: 'white',
-        borderRadius: 5 + 'px'
+        borderRadius: 0 + 'px'
     },
     labelBox: {
         fontSize: 20 + 'px'
@@ -96,7 +113,8 @@ const useStyles = makeStyles((theme) => ({
     optionBox: {
         width: '100%',
         textAlign: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        position: 'relative'
     },
     lastGrid: {
         display: 'none'
@@ -117,6 +135,8 @@ function Trivia(props) {
   var answerChosen;
   var nextQuestion;
 
+  let pleaseWork = new AnswerObject();
+
   let beginTrivia = () => {
     document.getElementById('entry-modal').style.display = "none";
     document.getElementById('main-modal').style.display = "block";
@@ -127,6 +147,11 @@ function Trivia(props) {
 
     // get new question and show on site (consumer REST api)
     getQuestion();
+
+    pleaseWork.setCorrectReponse("hello?");
+    console.log(pleaseWork.getCorrectResponse());
+
+    document.getElementById('currentTime').innerHTML = "0";
   }
 
   //Shuffle array algorithm from the internet: https://github.com/coolaj86/knuth-shuffle
@@ -187,7 +212,6 @@ function Trivia(props) {
 
   function changeAnswer(pickedAnswer) {
 
-    console.log(document.getElementById('lastGrid').innerHTML);
     if (document.getElementById('lastGrid').innerHTML != "nothing") {
         var question1 = document.getElementById("questionLabel").innerHTML;
         var correct = document.getElementById('lastGrid').innerHTML;
@@ -202,7 +226,7 @@ function Trivia(props) {
 
             if (userAnswer == correct) {
                 document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "+6 points";
-             setTotalAcs((prevTotal) => (prevTotal = prevTotal + 6));
+                setTotalAcs((prevTotal) => (prevTotal = prevTotal + 6));
             }
             else {
                 document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "-6 points";
@@ -230,9 +254,12 @@ function Trivia(props) {
             setProgress((prevProgress) => (prevProgress = 0));
 
             document.getElementById('timerLabel2').style.display = "none";
+
             document.getElementById('lastGrid').innerHTML = "nothing";
 
             removeQuestion(document.getElementById("questionLabel").innerHTML);
+
+            document.getElementById('currentTime').innerHTML = "wait";
     }
   }
 
@@ -251,6 +278,8 @@ function Trivia(props) {
     document.getElementById('timerLabel2').style.display = "block";
 
     setProgress((prevProgress) => (prevProgress = 0));
+
+    document.getElementById('currentTime').innerHTML = "0";
   }
 
   React.useEffect(() => {
@@ -264,6 +293,22 @@ function Trivia(props) {
 
     const timer = setInterval(() => {
       setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 5));
+
+        if (document.getElementById('currentTime').innerHTML != "wait") {
+            var currentTime = parseInt(document.getElementById('currentTime').innerHTML);
+
+            if (currentTime >= 100) {
+                changeAnswer("wrong");
+            }
+            else {
+                currentTime = currentTime + 5;
+                document.getElementById('currentTime').innerHTML = currentTime.toString();
+            }
+        }
+        else {
+            setProgress((prevProgress) => (prevProgress = 0));
+        }
+
     }, 800);
 
     return () => {
@@ -295,11 +340,22 @@ function Trivia(props) {
                             </Typography>
                         </Grid>
                         <Grid item xs={4} className={classes.timerBox}>
-                            <CircularProgress id="timerLabel1" variant="static" value={progress} />
                             <Box
-                                top={0}
+                                top="0%"
                                 left={1}
-                                bottom={11}
+                                bottom="10%"
+                                right={0}
+                                position="absolute"
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                            >
+                                <CircularProgress id="timerLabel1" variant="static" value={progress}/>
+                            </Box>
+                            <Box
+                                top="0%"
+                                left={1}
+                                bottom="8%"
                                 right={0}
                                 position="absolute"
                                 display="flex"
@@ -364,6 +420,9 @@ function Trivia(props) {
                 </Grid>
             </Grid>
             <Grid id="lastGrid" container spacing={3} className={classes.lastGrid}>
+
+            </Grid>
+            <Grid id="currentTime" container spacing={3} className={classes.lastGrid}>
 
             </Grid>
         </Container>
