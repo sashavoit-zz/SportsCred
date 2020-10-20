@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography';
 
 import TextField from '@material-ui/core/TextField';
 import FaceIcon from '@material-ui/icons/Face';
-import { blue } from '@material-ui/core/colors';
 
 
 const styles = theme => ({
@@ -23,7 +22,7 @@ const styles = theme => ({
     bottom: 20,
     right: 20,
     color: "white",
-    backgroundColor:"#262626"
+    backgroundColor:"#00000060"
     //width: "300px",
   },
   content: {
@@ -88,9 +87,13 @@ const styles = theme => ({
     width: "50%",
     marginTop: "20px",
   },
-  Button: {
-    color:"#595959",
-    backgroundColor: "white",
+  submitButton: {
+    color:"white",
+    backgroundColor: "#0066cc",
+  },
+  cancleButton: {
+    color: "white",
+    backgroundColor: "#333333",
   }
 });
 
@@ -168,7 +171,7 @@ class ProfilePage extends Component {
           Personal Information (Email & Phone Number): <br />
           This wont be a part of your public profile.
                   </div>
-        <Button className={classes.Button} type="submit">Submit</Button> <Button className={classes.Button} onClick={this.handleBackProfile} >Cancle</Button>
+        <Button className={classes.submitButton} type="submit">Submit</Button> <Button className={classes.cancleButton} onClick={this.handleBackProfile} >Cancle</Button>
       </form>
     ) : (
         <Tabs>
