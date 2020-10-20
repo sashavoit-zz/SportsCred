@@ -1,6 +1,22 @@
 import React from "react";
 import {withStyles} from "@material-ui/core/styles";
 import {TextField, Button, Avatar, Container, Grid, Typography} from '@material-ui/core'
+function addPost(content, author, authorProfile, postTime) {
+    const response = fetch("http://localhost:3001/addPost/hashasdasd", {
+        mode: 'cors',
+        method: 'POST',
+        body: JSON.stringify({
+            "content":content,
+            "author": author,
+            "authorProfile":authorProfile,
+            "likes":0,
+            "dislikes":0,
+            "postTime":postTime
+        })
+    });
+      }
+
+
 const styles = theme =>({
     root: {
         '& .MuiTextField-root': {
@@ -34,9 +50,9 @@ const styles = theme =>({
 
 
 export class UploadPost extends React.Component{
-    /* TODO:the posts in the state should fetch from the db, here are some dummy data */
     state = {
-        uploadInput:""
+        uploadInput:"",
+        errorText:""
     };
 
     render(){
@@ -50,23 +66,28 @@ export class UploadPost extends React.Component{
             })
         }
         const handleSubmit = (component) =>{
-            /**TODO: need to check if the user inputed or not. */
-            const posts = component.state.posts;
-            const today = new Date();
-            const date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
-            console.log(date);
-            const newPost = {
-                content:this.state.uploadInput,
-                postTime:date,
-                author:component.state.currentUser.userName,
-                authorProfile:component.state.currentUser.profilePic,
-                likes:0,
-                dislikes:0
+            if(this.state.uploadInput.length === 0){
+                /*handling if user uploading post with empty content, will occur error message*/
+                handleInputEmpty();
             }
-            posts.push(newPost);
-            component.setState({
-                posts:posts
+            else{
+                const posts = component.state.posts;
+                const today = new Date();
+                const date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+                addPost(this.state.uploadInput,component.state.currentUser.userName, component.state.currentUser.profilePic,date)
+                reset()
+            }
+        }
+        const reset = () =>{
+            this.setState({
+                uploadInput:"",
+                errorText:""
             })
+        }
+        const handleInputEmpty = ()=>{
+           this.setState({
+               errorText:"Could not upload post with empty content"
+           })
         }
         return(
             <Container className = {classes.container}>
@@ -80,16 +101,18 @@ export class UploadPost extends React.Component{
                         </Grid>
                         <Grid item xs>
                             <TextField 
+                            error ={this.state.errorText.length === 0 ? false : true }
                             id = "standard-multiline-static"
                             multiline
                             name = "uploadInput"
-                            // value={value}
+                            value={this.state.uploadInput}
                             onChange={e => handleInput(this,e.target)}
                             variant="outlined"
                             placeholder="What's in your mind?"
                             InputProps={
                                 {className: classes.input}
                             }
+                            helperText={this.state.errorText}
                             />
                         </Grid>
                     
@@ -98,7 +121,7 @@ export class UploadPost extends React.Component{
                     className ={classes.button}
                     variant="contained" 
                     color="primary"
-                    onClick={e=>handleSubmit()}
+                    onClick={e=>handleSubmit(component)}
                     >
                         Submit
                     </Button>
