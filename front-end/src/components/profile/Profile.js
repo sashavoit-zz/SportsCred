@@ -77,14 +77,20 @@ const styles = theme => ({
     fontSize: "16px"
   },
   note: {
-    color: "#0d0d0d",
+    color: "white",
     fontSize: "13px",
     // width:"50%",
     // textAlign: "center",
   },
   inputField: {
+    //color: "white",
+    backgroundColor: "white",
     width: "50%",
     marginTop: "20px",
+  },
+  Button: {
+    color:"#595959",
+    backgroundColor: "white",
   }
 });
 
@@ -149,20 +155,20 @@ class ProfilePage extends Component {
 
     const profileContent = this.state.edit ? (
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
-        <TextField className={classes.inputField} id="name" label="Ben" variant="outlined" onChange={this.handleInputChange} disabled /><br />
+        <TextField className={classes.inputField} id="name" label="Ben" variant="filled" onChange={this.handleInputChange} disabled /><br />
         <div className={classes.note}>
           Help people discover your account by using the name you re <br />
           known by: either your full name, nickname, or business name
         </div>
-        <TextField className={classes.inputField} id="about" label="About" variant="outlined" onChange={this.handleInputChange} /><br />
+        <TextField className={classes.inputField} id="about" label="About" variant="filled" onChange={this.handleInputChange} /><br />
 
-        <TextField className={classes.inputField} id="email" label="Email" variant="outlined" onChange={this.handleInputChange} /><br />
-        <TextField className={classes.inputField} id="phone" label="Phone Number" variant="outlined" onChange={this.handleInputChange} /><br />
+        <TextField className={classes.inputField} id="email" label="Email" variant="filled" onChange={this.handleInputChange} /><br />
+        <TextField className={classes.inputField} id="phone" label="Phone Number" variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Personal Information (Email & Phone Number): <br />
           This wont be a part of your public profile.
                   </div>
-        <Button type="submit">Submit</Button> <Button onClick={this.handleBackProfile} >Cancle</Button>
+        <Button className={classes.Button} type="submit">Submit</Button> <Button className={classes.Button} onClick={this.handleBackProfile} >Cancle</Button>
       </form>
     ) : (
         <Tabs>
