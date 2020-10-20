@@ -29,7 +29,8 @@ func main(){
 	app.Use(gin.Recovery())
 
 	apis.SetUpOpenCourt(app, driver)
+	apis.SetUpTrivia(app, driver)
 
-	app.Run(":3000")
+	app.Run(":3001")
 
 }
