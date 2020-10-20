@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
@@ -30,6 +33,42 @@ func generateJWT(username string, password string) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+func checkAuthToken(endpoint func(*gin.Context, string)) func(c *gin.Context) {
+	// get token from header
+	return func(c *gin.Context) {
+
+		authTokens := c.Request.Header["Token"]
+
+		if len(authTokens) > 0 {
+			// check if token in header is valid
+			token, err := jwt.Parse(authTokens[0],
+				func(token *jwt.Token) (interface{}, error) {
+					if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+						return nil, fmt.Errorf("JWT Token aint right")
+					}
+					return secertSigningKey, nil
+				})
+
+			// invalid token
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, gin.H{"status": "unauthorized 1"}) // token is wrong/old
+				return
+			}
+
+			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+				endpoint(c, claims["username"].(string)) // calling endpoint w username
+			} else {
+				c.JSON(http.StatusUnauthorized, gin.H{"status": "unauthorized 3"}) // token is wrong/old
+				return
+			}
+
+		} else {
+			c.JSON(http.StatusUnauthorized, gin.H{"status": "put some auth creds next time"})
+			return
+		}
+	}
 }
 
 // TODO: move to DB
@@ -94,6 +133,9 @@ func authorizeUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
+func getUser(c *gin.Context, username string) {
+	c.JSON(http.StatusOK, gin.H{"username": username})
+}
 
 func main() {
 	// neo4j driver setup
