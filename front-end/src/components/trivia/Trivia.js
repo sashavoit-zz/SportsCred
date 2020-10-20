@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
     bottomBox: {
         marginTop: 60 + 'px',
         borderStyle: 'solid',
-        backgroundColor: 'white',
+        backgroundColor: '#808080',
         borderRadius: 5 + 'px',
         marginBottom: '30px'
     },
@@ -87,8 +87,11 @@ const useStyles = makeStyles((theme) => ({
         borderColor: 'white',
         borderStyle: 'solid',
         color: 'black',
-        backgroundColor: 'white',
-        borderRadius: 0 + 'px'
+        backgroundColor: '#808080',
+        borderRadius: 5 + 'px'
+    },
+    topHalf: {
+        marginTop: '15px'
     },
     labelBox: {
         fontSize: 20 + 'px'
@@ -153,7 +156,7 @@ function Trivia(props) {
 
     document.getElementById('currentTime').innerHTML = "0";
 
-    addQuestion("What course is this?", "CSCC37", "CSCB07", "CSCC69", "CSCC01");
+    //addQuestion("What course is this?", "CSCC37", "CSCB07", "CSCC69", "CSCC01");
   }
 
   //Shuffle array algorithm from the internet: https://github.com/coolaj86/knuth-shuffle
@@ -345,7 +348,7 @@ function Trivia(props) {
             </Button>
         </Container>
         <Container id="main-modal" className={classes.root}>
-            <Grid container spacing={5}>
+            <Grid container spacing={5} className={classes.topHalf}>
                 <Grid item xs={8} className={classes.questionBox}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} className={classes.labelBox}>
