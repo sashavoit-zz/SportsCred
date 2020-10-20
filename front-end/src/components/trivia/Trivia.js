@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'none',
         width: '75%',
         height: '80%',
-        overflowY: 'hidden'
+        overflowY: 'scroll'
     },
     introPage: {
         flexGrow: 1,
@@ -152,6 +152,8 @@ function Trivia(props) {
     console.log(pleaseWork.getCorrectResponse());
 
     document.getElementById('currentTime').innerHTML = "0";
+
+    addQuestion("What course is this?", "CSCC37", "CSCB07", "CSCC69", "CSCC01");
   }
 
   //Shuffle array algorithm from the internet: https://github.com/coolaj86/knuth-shuffle
@@ -172,6 +174,22 @@ function Trivia(props) {
     }
   
     return array;
+  }
+
+  async function addQuestion(question, option1, option2, option3, answer) {
+
+    const response = await fetch("http://localhost:3001/addQuestion/hashasdasd", {
+        mode: 'cors',
+        method: 'POST',
+        body: JSON.stringify({
+            "question": question,
+            "option1": option1,
+            "option2": option2,
+            "option3": option3,
+            "answer": answer
+        })
+    });
+
   }
 
   async function getQuestion() {
