@@ -65,8 +65,7 @@ function SignUp() {
   var emails = /^$|^.*@.*\..*$/;
 
   return (
-      <>
-        <Box height="85%" width="75%" bgcolor="#000000" paddingTop="30px" textAlign='center'
+        <Box bgcolor="#000000" paddingTop="30px" textAlign='center' alignContent='center'
         paddingBottom="30px" paddingLeft="85px" paddingRight="85px" color="gray" fontSize="30px">
           <Grid container direction="row" justify="space-around" alignItems="center" spacing={3} >
             <Grid item xs>
@@ -212,17 +211,16 @@ function SignUp() {
                     control={
                       <Checkbox
                         name="didSubscribe"
-                        color="primary"
+                        color="red"
                       />
                     }
                     label="I would like to receive the latest Sportcred news by email"
           />
           <br></br>
-          <Button style={{minWidth: 300}} variant="contained" color="primary" onClick={signInHandler}>
+          <Button style={{minWidth: 300}} variant="contained" color="red" onClick={signInHandler}>
               Sign Up
           </Button>
         </Box>
-      </>
   );
 }
 
