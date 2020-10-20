@@ -32,6 +32,34 @@ func generateJWT(username string, password string) (string, error) {
 	return tokenString, nil
 }
 
+// TODO: move to DB
+func checkUserCreds(username string, password string) (bool, error) {
+	// session set up
+	session, err := neo4jDriver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return false, err
+	}
+	defer session.Close()
+
+	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run(
+			"MATCH (n:User { username:$username, password:$password }) return n",
+			map[string]interface{}{"username": username, "password": password})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+		return nil, result.Err()
+	})
+
+	// TODO: super dirty - clean up - bascially for empty results in validation, its "<nil>" orther are like mem addresses or someshit
+	return len(fmt.Sprintf("%v", validation)) > 5, nil
+}
+
 func authorizeUser(c *gin.Context) {
 
 	type Login struct {
@@ -65,6 +93,7 @@ func authorizeUser(c *gin.Context) {
 	// everything worked!
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
+
 
 func main() {
 	// neo4j driver setup
