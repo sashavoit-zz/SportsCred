@@ -9,6 +9,63 @@ import (
 
 var neo4jDriver neo4j.Driver // used in all db related funcs
 
+var secertSigningKey = []byte("sercetkey")
+
+func generateJWT(username string, password string) (string, error) {
+	// make new token
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	// populate data fields in token
+	claims := token.Claims.(jwt.MapClaims)
+	claims["authorized"] = true
+	claims["username"] = username
+	claims["password"] = password
+	claims["exp"] = time.Now().Add(time.Minute + 300).Unix()
+
+	// encrypt that shit
+	tokenString, err := token.SignedString(secertSigningKey)
+	if err != nil {
+		fmt.Errorf("Error: %s", err.Error())
+		return "", err
+	}
+
+	return tokenString, nil
+}
+
+func authorizeUser(c *gin.Context) {
+
+	type Login struct {
+		UserName string
+		Password string
+	}
+	var json Login
+
+	// check json and populate it if its iight
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// verify user in DB
+	if result, err := checkUserCreds(json.UserName, json.Password); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()}) // db error
+		return
+	} else if !result {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "auth creds aint right"}) // user or pass dont match
+		return
+	}
+
+	// make jwt
+	token, err := generateJWT(json.UserName, json.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()}) // server error
+		return
+	}
+
+	// everything worked!
+	c.JSON(http.StatusOK, gin.H{"token": token})
+}
+
 func main() {
 	// neo4j driver setup
 	const URI = "bolt://localhost:7687"
