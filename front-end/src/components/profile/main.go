@@ -118,7 +118,8 @@ func main() {
 	})
 
 	type Profile struct{
-		Name string
+		FirstName string
+		LastName string
 		Email string
 		Phone string
 		About string
@@ -132,16 +133,20 @@ func main() {
 		var profile Profile
 		json.Unmarshal(jsonData, &profile)
 		log.Println("2222---")
-		log.Println(profile.Name)
+		log.Println(profile.FirstName)
+		log.Println(profile.LastName)
 		log.Println(profile.Email)
+		log.Println(profile.Phone)
+		log.Println(profile.About)
 		//err = client.Set("id", jsonData, 0).Err()
-		name := profile.Name
+		firstName := profile.FirstName
+		lastName := profile.LastName
 		email := profile.Email
 		phone := profile.Phone
 		about := profile.About
 
 		//add the user to the database
-		result, err := updateProfile(driver, name, email, phone, about)
+		result, err := updateProfile(driver, firstName, lastName, email, phone, about)
 		if err != nil {
 			// 500 failed add user
 			c.String(500, "Internal Error")
@@ -204,7 +209,7 @@ func checkPassword(driver neo4j.Driver, name string, password string)(string, er
 }
 
 
-func updateProfile(driver neo4j.Driver, name string, email string, phone string, about string)(string, error){
+func updateProfile(driver neo4j.Driver, firstName string, lastName string, email string, phone string, about string)(string, error){
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
 		return "", err
@@ -212,8 +217,8 @@ func updateProfile(driver neo4j.Driver, name string, email string, phone string,
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH (u:User {email:$email}) SET u += {name:$name, about:$about, phone:$phone}",
-			map[string]interface{}{"name": name, "email": email, "about": about, "phone": phone})
+			"MATCH (u:User {email:$email}) SET u += {firstName:$firstName, lastName:$lastName, about:$about, phone:$phone}",
+			map[string]interface{}{"firstName": firstName, "lastName": lastName, "email": email, "about": about, "phone": phone})
 		if err != nil {
 			return nil, err
 		}

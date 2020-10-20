@@ -87,6 +87,14 @@ const styles = theme => ({
     width: "50%",
     marginTop: "20px",
   },
+  inputFieldShort: {
+    //color: "white",
+    backgroundColor: "white",
+    width: "24%",
+    marginRight: "1%",
+    marginLeft: "1%",
+    marginTop: "20px",
+  },
   submitButton: {
     color:"white",
     backgroundColor: "#0066cc",
@@ -100,8 +108,9 @@ const styles = theme => ({
 function post_profile(input) {
   const url = 'http://localhost:3001/profile';
   const data = {
-    name: input.name,
     email: input.email,
+    lastName: input.lastName,
+    firstName: input.firstName,
     about: input.about,
     phone: input.phone,
   }
@@ -159,7 +168,8 @@ class ProfilePage extends Component {
     const profileContent = this.state.edit ? (
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
         <TextField className={classes.inputField} id="email" label="ben@sportcred.com" variant="filled" onChange={this.handleInputChange} disabled /><br />
-        <TextField className={classes.inputField} id="name" label="Name" variant="filled" onChange={this.handleInputChange} /><br />
+        <TextField className={classes.inputFieldShort} id="lastName" label="Lsat Name" variant="filled" onChange={this.handleInputChange} />
+        <TextField className={classes.inputFieldShort} id="fistName" label="First Name" variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Help people discover your account by using the name you re <br />
           known by: either your full name, nickname, or business name
