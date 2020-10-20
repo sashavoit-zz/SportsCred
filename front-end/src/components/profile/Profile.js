@@ -147,7 +147,7 @@ class ProfilePage extends Component {
     event.preventDefault()
     this.setState({
       //console.log(event.target.value)
-      ["name"]: "Ben",
+      ["email"]: "ben@sportcred.com",
       [event.target.id]: event.target.value
     })
   }
@@ -158,19 +158,18 @@ class ProfilePage extends Component {
 
     const profileContent = this.state.edit ? (
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
-        <TextField className={classes.inputField} id="name" label="Ben" variant="filled" onChange={this.handleInputChange} disabled /><br />
+        <TextField className={classes.inputField} id="email" label="ben@sportcred.com" variant="filled" onChange={this.handleInputChange} disabled /><br />
+        <TextField className={classes.inputField} id="name" label="Name" variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Help people discover your account by using the name you re <br />
           known by: either your full name, nickname, or business name
         </div>
         <TextField className={classes.inputField} id="about" label="About" variant="filled" onChange={this.handleInputChange} /><br />
-
-        <TextField className={classes.inputField} id="email" label="Email" variant="filled" onChange={this.handleInputChange} /><br />
         <TextField className={classes.inputField} id="phone" label="Phone Number" variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Personal Information (Email & Phone Number): <br />
           This wont be a part of your public profile.
-                  </div>
+        </div>
         <Button className={classes.submitButton} type="submit">Submit</Button> <Button className={classes.cancleButton} onClick={this.handleBackProfile} >Cancle</Button>
       </form>
     ) : (
