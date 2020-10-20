@@ -6,14 +6,12 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 import TextField from '@material-ui/core/TextField';
 import FaceIcon from '@material-ui/icons/Face';
-import { blue } from '@material-ui/core/colors';
 
 
 const styles = theme => ({
@@ -113,7 +111,7 @@ function post_profile(input) {
 }
 
 
-class SimpleCard extends Component {
+class ProfilePage extends Component {
   state = {
     edit: false
   }
@@ -208,8 +206,8 @@ class SimpleCard extends Component {
   }
 }
 
-SimpleCard.propTypes = {
+ProfilePage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SimpleCard);
+export default withStyles(styles)(ProfilePage);
