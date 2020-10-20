@@ -1,11 +1,11 @@
 package apis
 
 import (
-	//"db-svc/queries"
+	"db-svc/queries"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
-/*
+
 func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver){
 
 	app.GET("/allPosts", func(c *gin.Context){
@@ -22,4 +22,3 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver){
 	})
 
 }
-*/
