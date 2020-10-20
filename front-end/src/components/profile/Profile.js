@@ -1,14 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
 import SideBar from "../SideBar/SideBar";
-<<<<<<< Updated upstream
-=======
 import Tabs from "./ProfileTabs";
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
->>>>>>> Stashed changes
 
-import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -19,7 +15,8 @@ import TextField from '@material-ui/core/TextField';
 import FaceIcon from '@material-ui/icons/Face';
 import { blue } from '@material-ui/core/colors';
 
-const useStyles = makeStyles({
+
+const styles = theme => ({
   root: {
     position: "fixed",
     top: 90,
@@ -40,8 +37,8 @@ const useStyles = makeStyles({
     borderRight: "solid grey",
     textAlign: "center",
   },
-  option:{
-    marginBottom:"30px"
+  option: {
+    marginBottom: "30px"
   },
 
   profile: {
@@ -55,7 +52,7 @@ const useStyles = makeStyles({
     float: "left",
     width: "30%",
     textAlign: "center",
-    
+
     //height:"100%",
     //display: "inline-block",
   },
@@ -71,46 +68,25 @@ const useStyles = makeStyles({
     //display: "inline-block",
     textAlign: "center",
   },
-  userIcon:{
-    fontSize:"100px",
+  userIcon: {
+    fontSize: "100px",
   },
-  blueText:{
-    color:"#0099ff",
-    fontSize:"16px"
+  blueText: {
+    color: "#0099ff",
+    fontSize: "16px"
   },
-  note:{
-    color:"#0d0d0d",
-    fontSize:"13px",
+  note: {
+    color: "#0d0d0d",
+    fontSize: "13px",
     // width:"50%",
     // textAlign: "center",
   },
-  inputField:{
-    width:"50%",
-    marginTop:"20px",
+  inputField: {
+    width: "50%",
+    marginTop: "20px",
   }
 });
 
-<<<<<<< Updated upstream
-
-
-function SimpleCard() {
-  const classes = useStyles();
-  //const bull = <span className={classes.bullet}>•</span>;
-
-  return (
-    <SideBar page = "Profile">
-      <Card className={classes.root}>
-        <CardContent className={classes.content}>
-          <div className={classes.menu}>
-            <Typography className={classes.option} variant="h5" component="h2">
-              Edit Profile
-            </Typography>
-            <Typography className={classes.option} variant="h5" component="h2">
-              Change Password
-            </Typography>
-          </div>
-          <div className={classes.profile}>
-=======
 function post_profile(input) {
   const url = 'http://localhost:3001/profile';
   const data = {
@@ -137,19 +113,19 @@ function post_profile(input) {
 }
 
 
-class SimpleCard extends Component{
-  state={
-    edit:false
+class SimpleCard extends Component {
+  state = {
+    edit: false
   }
 
-  handleBackProfile = (event)=> {
+  handleBackProfile = (event) => {
     event.preventDefault()
     this.setState({
       edit: false
     })
   }
 
-  handleSubmit = (event)=> {
+  handleSubmit = (event) => {
     event.preventDefault()
     const data = this.state
     console.log("form submit:", data)
@@ -166,15 +142,15 @@ class SimpleCard extends Component{
     })
   }
 
-  
-  render(){
-    const {classes} = this.props;
+
+  render() {
+    const { classes } = this.props;
 
     const profileContent = this.state.edit ? (
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
         <TextField className={classes.inputField} id="name" label="Ben" variant="outlined" onChange={this.handleInputChange} disabled /><br />
         <div className={classes.note}>
-          Help people discover your account by using the name you re <br/>
+          Help people discover your account by using the name you re <br />
           known by: either your full name, nickname, or business name
         </div>
         <TextField className={classes.inputField} id="about" label="About" variant="outlined" onChange={this.handleInputChange} /><br />
@@ -188,27 +164,26 @@ class SimpleCard extends Component{
         <Button type="submit">Submit</Button> <Button onClick={this.handleBackProfile} >Cancle</Button>
       </form>
     ) : (
-      <Tabs>
-      </Tabs>
-    )
-    
+        <Tabs>
+        </Tabs>
+      )
+
     return (
-      <SideBar page = "Profile">
+      <SideBar page="Profile">
         <Card className={classes.root}>
           <CardContent className={classes.content}>
             <div className={classes.menu}>
-              <Typography onClick={()=>this.setState({edit: true})} className={classes.option} variant="h5" component="h2">
+              <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2">
                 Edit Profile
               </Typography>
               <Typography className={classes.option} variant="h5" component="h2">
                 Change Password
               </Typography>
             </div>
->>>>>>> Stashed changes
             <div className={classes.profile}>
               <div className={classes.profile}>
                 <div className={classes.leftProfile}>
-                  <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon}/>
+                  <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
                   <Typography onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
                     Ben
                   </Typography>
@@ -224,33 +199,6 @@ class SimpleCard extends Component{
               </div>
             </div>
             <div className={classes.bottomProfile}>
-<<<<<<< Updated upstream
-              <TextField className={classes.inputField} id="outlined-basic" label="Name" variant="outlined"/><br/>
-              <div className={classes.note}>
-                Help people discover your account by using the name you're known by: either your full name, nickname, or business name
-              </div>
-              <TextField className={classes.inputField} id="outlined-basic" label="About" variant="outlined"/><br/>
-              
-              <TextField className={classes.inputField} id="outlined-basic" label="Email" variant="outlined"/><br/>
-              <TextField className={classes.inputField} id="outlined-basic" label="Phone Number" variant="outlined"/><br/>
-               <div className={classes.note}>
-                Personal Information (Email & Phone Number):
-                This wont be a part of your public profile.
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </SideBar>
-  );
-}
-
-// function Render(){
-//   SimpleCard();
-// }
-
-export default SimpleCard;
-=======
               {profileContent}
             </div>
           </CardContent>
@@ -265,4 +213,3 @@ SimpleCard.propTypes = {
 };
 
 export default withStyles(styles)(SimpleCard);
->>>>>>> Stashed changes
