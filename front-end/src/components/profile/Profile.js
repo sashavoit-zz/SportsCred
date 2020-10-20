@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 
 import TextField from '@material-ui/core/TextField';
 import FaceIcon from '@material-ui/icons/Face';
+import { blue } from '@material-ui/core/colors';
 
 
 const styles = theme => ({
@@ -21,6 +22,8 @@ const styles = theme => ({
     left: 220,
     bottom: 20,
     right: 20,
+    color: "white",
+    backgroundColor:"#262626"
     //width: "300px",
   },
   content: {
