@@ -1,5 +1,12 @@
 import React from 'react';
 import SideBar from "../SideBar/SideBar";
+<<<<<<< Updated upstream
+=======
+import Tabs from "./ProfileTabs";
+
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+>>>>>>> Stashed changes
 
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -10,6 +17,7 @@ import Typography from '@material-ui/core/Typography';
 
 import TextField from '@material-ui/core/TextField';
 import FaceIcon from '@material-ui/icons/Face';
+import { blue } from '@material-ui/core/colors';
 
 const useStyles = makeStyles({
   root: {
@@ -82,6 +90,7 @@ const useStyles = makeStyles({
   }
 });
 
+<<<<<<< Updated upstream
 
 
 function SimpleCard() {
@@ -101,23 +110,121 @@ function SimpleCard() {
             </Typography>
           </div>
           <div className={classes.profile}>
+=======
+function post_profile(input) {
+  const url = 'http://localhost:3001/profile';
+  const data = {
+    name: input.name,
+    email: input.email,
+    about: input.about,
+    phone: input.phone,
+  }
+  const profile_request = new Request(url, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    }
+  });
+  fetch(profile_request)
+    .then(res => {
+      //
+    })
+    .catch((error) => {
+      console.log(error)
+    });
+}
+
+
+class SimpleCard extends Component{
+  state={
+    edit:false
+  }
+
+  handleBackProfile = (event)=> {
+    event.preventDefault()
+    this.setState({
+      edit: false
+    })
+  }
+
+  handleSubmit = (event)=> {
+    event.preventDefault()
+    const data = this.state
+    console.log("form submit:", data)
+    post_profile(data);
+    this.handleBackProfile(event);
+  }
+
+  handleInputChange = (event) => {
+    event.preventDefault()
+    this.setState({
+      //console.log(event.target.value)
+      ["name"]: "Ben",
+      [event.target.id]: event.target.value
+    })
+  }
+
+  
+  render(){
+    const {classes} = this.props;
+
+    const profileContent = this.state.edit ? (
+      <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
+        <TextField className={classes.inputField} id="name" label="Ben" variant="outlined" onChange={this.handleInputChange} disabled /><br />
+        <div className={classes.note}>
+          Help people discover your account by using the name you re <br/>
+          known by: either your full name, nickname, or business name
+        </div>
+        <TextField className={classes.inputField} id="about" label="About" variant="outlined" onChange={this.handleInputChange} /><br />
+
+        <TextField className={classes.inputField} id="email" label="Email" variant="outlined" onChange={this.handleInputChange} /><br />
+        <TextField className={classes.inputField} id="phone" label="Phone Number" variant="outlined" onChange={this.handleInputChange} /><br />
+        <div className={classes.note}>
+          Personal Information (Email & Phone Number): <br />
+          This wont be a part of your public profile.
+                  </div>
+        <Button type="submit">Submit</Button> <Button onClick={this.handleBackProfile} >Cancle</Button>
+      </form>
+    ) : (
+      <Tabs>
+      </Tabs>
+    )
+    
+    return (
+      <SideBar page = "Profile">
+        <Card className={classes.root}>
+          <CardContent className={classes.content}>
+            <div className={classes.menu}>
+              <Typography onClick={()=>this.setState({edit: true})} className={classes.option} variant="h5" component="h2">
+                Edit Profile
+              </Typography>
+              <Typography className={classes.option} variant="h5" component="h2">
+                Change Password
+              </Typography>
+            </div>
+>>>>>>> Stashed changes
             <div className={classes.profile}>
-              <div className={classes.leftProfile}>
-                <FaceIcon className={classes.userIcon}/>
-                <Typography className={classes.option} variant="h5" component="h2">
-                  Edsdofile
-                </Typography>
-              </div>
-              <div className={classes.rightProfile}>
-                <Typography variant="h5" component="h2">
-                  Me
-                </Typography>
-                <div className={classes.blueText}>
-                  Update Profile Picture
+              <div className={classes.profile}>
+                <div className={classes.leftProfile}>
+                  <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon}/>
+                  <Typography onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
+                    Ben
+                  </Typography>
+                </div>
+                <div className={classes.rightProfile}>
+                  <Typography variant="h5" component="h2">
+                    ACS Score: 59
+                  </Typography>
+                  <div className={classes.blueText}>
+                    Update Profile Picture
+                  </div>
                 </div>
               </div>
             </div>
             <div className={classes.bottomProfile}>
+<<<<<<< Updated upstream
               <TextField className={classes.inputField} id="outlined-basic" label="Name" variant="outlined"/><br/>
               <div className={classes.note}>
                 Help people discover your account by using the name you're known by: either your full name, nickname, or business name
@@ -143,3 +250,19 @@ function SimpleCard() {
 // }
 
 export default SimpleCard;
+=======
+              {profileContent}
+            </div>
+          </CardContent>
+        </Card>
+      </SideBar>
+    );
+  }
+}
+
+SimpleCard.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(SimpleCard);
+>>>>>>> Stashed changes
