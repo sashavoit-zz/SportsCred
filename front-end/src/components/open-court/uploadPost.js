@@ -74,7 +74,7 @@ export class UploadPost extends React.Component{
                 const posts = component.state.posts;
                 const today = new Date();
                 const date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
-                addPost(this.state.uploadInput,component.state.currentUser.userName, component.state.currentUser.profilePic,date)
+                addPost(this.state.uploadInput,component.state.currentUser.email, component.state.currentUser.profilePic,date)
                 reset()
             }
         }
