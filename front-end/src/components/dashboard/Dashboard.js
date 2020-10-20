@@ -5,11 +5,11 @@ import SideBar from "../SideBar/SideBar";
 
 
 function Dashboard(props) {
-  const { children: component } = props;
+  const { children } = props;
   
 
   return (
-    <SideBar page = "Dashboard"></SideBar>
+  <SideBar page = "Dashboard">{children}</SideBar>
   );
 }
 

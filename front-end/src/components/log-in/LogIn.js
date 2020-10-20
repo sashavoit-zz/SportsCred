@@ -1,25 +1,146 @@
-import React from "react";
-import lebrown from "../../assets/images/lebrown.jpg";
+import React, { useState } from "react";
+import { useHistory } from 'react-router-dom' 
 import {
   makeStyles,
-  Card,
-  CardActions,
-  CardContent,
   Button,
   Typography,
   Grid,
-  TextField,
   FormControl,
+  TextField,
+  IconButton,
+  InputAdornment,
 } from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import Input from "@material-ui/core/Input";
-import FilledInput from "@material-ui/core/FilledInput";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
+
+import lebrown from "../../assets/images/lebrown.jpg";
+import { getAuthToken } from "../../service/ApiCalls";
+
+function LogIn(props) {
+  const classes = useStyles();
+  const [formFields, setFormFields] = useState({ username: "", password: "" });
+  const [authError, setAuthError] = useState(false);
+  const history = useHistory()
+
+  const handleLogin = async () => {
+    try {
+      await getAuthToken(formFields.username, formFields.password);
+      history.replace('/')
+    } catch (err) {
+      console.log(err)
+      setAuthError(true);
+    }
+  };
+
+  const handleChange = (event, field) => {
+    // TODO: update to use label instead of field
+    let newVal = event.target.value;
+    // console.log({ [field]: newVal });
+    setFormFields((oldFields) => ({ ...oldFields, [field]: newVal }));
+  };
+
+  const handleKeyDown = async (event) => {
+    if (event.key === "Enter") {
+      await handleLogin();
+    }
+  };
+
+  return (
+    <section style={sectionStyle}>
+      <Grid
+        container
+        alignItems="center"
+        justify="center"
+        style={{ minHeight: "100vh" }}
+      >
+        <Grid item xs={6} />
+        <Grid item xs={3}>
+          <form className={classes.form}>
+            <Grid item>
+              <Typography variant="h2" style={{ marginBottom: "2vh" }}>
+                Welcome Back!
+              </Typography>
+            </Grid>
+            <Grid item>
+              <FormControl variant="outlined">
+                <TextField
+                  error={authError}
+                  type={"text"}
+                  label="Username"
+                  value={formFields.username}
+                  onClick={() => setAuthError(false)}
+                  onChange={(event) => handleChange(event, "username")}
+                  variant="outlined"
+                  InputProps={
+                    authError
+                      ? {
+                          className: classes.inputError,
+                        }
+                      : null
+                  }
+                />
+              </FormControl>
+            </Grid>
+            <Grid item style={{ marginBottom: 0 }}>
+              <FormControl variant="outlined">
+                <TextField
+                  error={authError}
+                  type={"password"}
+                  label="Password"
+                  endadornment={
+                    <InputAdornment position="end">
+                      <IconButton edge="end">{<VisibilityOff />}</IconButton>
+                    </InputAdornment>
+                  }
+                  value={formFields.password}
+                  onClick={() => setAuthError(false)}
+                  onChange={(event) => handleChange(event, "password")}
+                  onKeyDown={handleKeyDown}
+                  variant="outlined"
+                  InputProps={
+                    authError
+                      ? {
+                          className: classes.inputError,
+                        }
+                      : null
+                  }
+                />
+                <Grid item style={{ margin: 0, marginTop: "10px" }}>
+                  <Button
+                    size="small"
+                    className={classes.margin}
+                    style={{ textTransform: "none" }}
+                  >
+                    Forgot Something?
+                  </Button>
+                </Grid>
+              </FormControl>
+            </Grid>
+            <Grid justify="space-between" container>
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  //onClick={handleSignUp} //TODO
+                >
+                  <span style={{ fontWeight: "600" }}>Sign Up</span>
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  className={classes.button}
+                  variant="contained"
+                  onClick={handleLogin}
+                >
+                  <span style={{ fontWeight: "600" }}>Log in</span>
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+          <Grid item xs={3} />
+        </Grid>
+      </Grid>
+    </section>
+  );
+}
 
 var sectionStyle = {
   width: "100%",
@@ -29,71 +150,28 @@ var sectionStyle = {
   backgroundRepeat: "no-repeat",
 };
 
-const useStyles = makeStyles((theme) => ({
-  card: {
-    minWidth: "60%",
-    // backgroundColor: "inherit",
-    background:
-      "-webkit-gradient(linear, left top, left bottom, color-stop(0%,#404041), color-stop(33%,#272727), color-stop(66%,#0a0e0a), color-stop(100%,#0a0809))",
-  },
+var useStyles = makeStyles((theme) => ({
   form: {
     padding: theme.spacing(2),
     "& label.Mui-focused": {
-      color: "#f1de92",
+      color: "#c2adba",
     },
     "& .MuiGrid-item": {
       margin: theme.spacing(2),
     },
     "& .MuiOutlinedInput-root": {
-      maxWidth: "25ch",
+      minWidth: "31ch",
       "&.Mui-focused fieldset": {
-        borderColor: "#f1de92",
+        borderColor: "#c2adba",
       },
     },
   },
+  button: {
+    "&:hover": {
+      backgroundColor: "#fff",
+    },
+  },
+  inputError: { color: "red" },
 }));
-
-function LogIn(props) {
-  const classes = useStyles();
-  return (
-    <section style={sectionStyle}>
-      <Grid
-        container
-        alignItems="center"
-        justify="center"
-        style={{ minHeight: "100vh" }}
-        xs={6}
-      >
-        <Card className={classes.card}>
-          <CardContent>
-            <Typography variant="h3"></Typography>
-          </CardContent>
-          <form className={classes.form}>
-            <Grid item>
-              <FormControl variant="outlined">
-                <InputLabel>Username</InputLabel>
-                <OutlinedInput type={"text"} labelWidth={75} />
-              </FormControl>
-            </Grid>
-            <Grid item>
-              <FormControl variant="outlined">
-                <InputLabel>Password</InputLabel>
-                <OutlinedInput
-                  type={"password"}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton edge="end">{<VisibilityOff />}</IconButton>
-                    </InputAdornment>
-                  }
-                  labelWidth={70}
-                />
-              </FormControl>
-            </Grid>
-          </form>
-        </Card>
-      </Grid>
-    </section>
-  );
-}
 
 export default LogIn;

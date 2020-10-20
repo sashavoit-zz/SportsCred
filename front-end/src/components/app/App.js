@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { CssBaseline, createMuiTheme } from "@material-ui/core";
@@ -8,8 +8,7 @@ import SignUp from "../sign-up/SignUp";
 import LogIn from "../log-in/LogIn";
 import Account from "../profile/Account";
 import Profile from "../profile/Profile";
-import PrivateRoute from "../routes/RestrictedRoute";
-
+import PrivateRoute from "../routes/PrivateRoute";
 
 const theme = createMuiTheme({
   palette: {
