@@ -160,7 +160,7 @@ func addPost(driver neo4j.Driver, content string, author string, authorProfile s
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (n:Post {content:$content, author:$author, authorProfile:$authorProfile, likes:$likes, dislikes:$dislikes, postTime:$postTime})\n"+"WITH n \n"+"MATCH(u:User{name:$author})\n"+"WITH n,u\n"+"MERGE (u)-[r:CREATED]->", // or MERGE
+			"CREATE (n:Post {content:$content, author:$author, authorProfile:$authorProfile, likes:$likes, dislikes:$dislikes, postTime:$postTime})\n"+"WITH n \n"+"MATCH(u:User{name:$author})\n"+"WITH n,u\n"+"MERGE (u)-[r:CREATED]->(n)", // or MERGE
 			map[string]interface{}{"content": content, "author": author, "authorProfile": authorProfile, "likes": likes, "dislikes": dislikes, "postTime": postTime})
 		if err != nil {
 			return nil, err
