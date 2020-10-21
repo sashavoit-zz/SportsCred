@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SideBar from "../SideBar/SideBar";
 import Tabs from "./ProfileTabs";
 import PassDialog from "./ChangePassword";
+import OptionButton from "./OptionButton";
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -34,9 +35,9 @@ const styles = theme => ({
   menu: {
     float: "left",
     //display: "inline-block",
-    paddingTop: "40px",
+    //paddingTop: "40px",
     width: "30%",
-    borderRight: "solid grey",
+    borderRight: "solid white",
     textAlign: "center",
   },
   option: {
@@ -196,6 +197,9 @@ class ProfilePage extends Component {
         <Card className={classes.root}>
           <CardContent className={classes.content}>
             <div className={classes.menu}>
+
+              {/* <OptionButton></OptionButton> */}
+              
               <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2">
                 Edit Profile
               </Typography>
