@@ -1,7 +1,10 @@
-import React from 'react'
+//import React from "react";
 
+// TODO: make better
 function Account() {
-    return <>Hi</>
+  return (
+    "Hello"
+  );
 }
 
-export default Account
+export default Account;
