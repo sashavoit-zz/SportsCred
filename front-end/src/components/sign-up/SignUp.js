@@ -1,16 +1,36 @@
 import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
-import { Button, TextField, Box, Grid, InputLabel, Select, MenuItem, FormControl, FormControlLabel, Checkbox, Input, Chip } from "@material-ui/core";
+import { Button, TextField, Box, Grid, InputLabel, Select, MenuItem, FormControl, FormControlLabel, Checkbox, Input, Chip, Collapse, IconButton } from "@material-ui/core";
+import Alert from '@material-ui/lab/Alert';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { doesEmailExist, createUserAccount } from "../../service/ApiCalls";
+import CloseIcon from '@material-ui/icons/Close';
 
 // TODO: make better
 function SignUp() {
   let history = useHistory();
-
+/*
   let signInHandler = () => {
     localStorage.setItem("auth", "letempass");
     history.push("/");
+  };
+*/
+  var result
+
+  const signInHandler = async () => {
+    try {
+      //history.replace('/')
+      result = await doesEmailExist(email);
+      if(!result) {
+        createUserAccount(firstName, lastName, phoneNumber, email, password, document.getElementById("date-picker-dialog").value)
+        setOpen(false);
+      } else {
+        setOpen(true);
+      }
+    } catch (err) {
+      console.log(err)
+    }
   };
 
   const [selectedDate, setSelectedDate] = React.useState(null);
@@ -43,6 +63,12 @@ function SignUp() {
     setemail(event.target.value);
   };
 
+  const [password, setpassword] = useState("");
+
+  const handlepassword = (event) => {
+    setpassword(event.target.value);
+  };
+
   const names = [
     'Basketball',
     'Soccer',
@@ -63,6 +89,8 @@ function SignUp() {
   var letters = /^[A-Za-z]*$/;
   var numbers = /^[+\d]?(?:[\d-.\s()]*)$/;
   var emails = /^$|^.*@.*\..*$/;
+
+  const [open, setOpen] = React.useState(false);
 
   return (
         <Box bgcolor="#000000" paddingTop="30px" textAlign='center' alignContent='center'
@@ -101,12 +129,18 @@ function SignUp() {
                   <TextField style={{minWidth: 300}} id="email" label="Email" variant="outlined" 
                     value={email}
                     onChange={handleemailChange}
+                    //doesEmailExist(email)
+                    //error={!doesEmailExist(email)}
+                    //helperText={!doesEmailExist(email) ? 'Invalid email address!' : ' ' }
                     error={!email.match(emails)}
                     helperText={!email.match(emails) ? 'Invalid email address!' : ' ' }                                                         
                   />
                 </Grid>
                 <Grid item xs>
-                  <TextField style={{minWidth: 300}} id="password" label="Password" variant="outlined" input type="password" />
+                  <TextField style={{minWidth: 300}} id="password" label="Password" variant="outlined" input type="password"
+                    value={password}
+                    onChange={handlepassword}
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -220,6 +254,27 @@ function SignUp() {
           <Button style={{minWidth: 300}} variant="contained" color="red" onClick={signInHandler}>
               Sign Up
           </Button>
+          <br></br>
+          <br></br>
+          <Collapse in={open}>
+            <Alert
+              variant="outlined" severity="error"
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setOpen(false);
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              Email already exists
+            </Alert>
+          </Collapse>
         </Box>
   );
 }

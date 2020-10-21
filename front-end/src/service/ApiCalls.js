@@ -24,6 +24,51 @@ const getAuthToken = async (username, password) => {
   }
 };
 
+const doesEmailExist = async (email) => {
+  // send email to server
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+    }),
+  };
+
+  let res = await fetch("/checkEmailExists", requestOptions);
+
+  if (res.status == 200) {
+    return false;
+  } else if (res.status == 406) {
+    return true;
+  } else {
+    throw "err";
+  }
+};
+
+const createUserAccount = async (firstName, lastName, phone, email, password, birthday) => {
+  // send email to server
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      firstName,
+      lastName,
+      phone,
+      email,
+      password,
+      birthday,
+    }),
+  };
+
+  let res = await fetch("/createUserAccount", requestOptions);
+
+  if (res.status == 200) {
+    return true;
+  } else {
+    throw "err";
+  }
+};
+
 const getUser = async () => {
   // send username + pass to server
   const requestOptions = {
@@ -44,4 +89,4 @@ const getUser = async () => {
   }
 };
 
-export { getAuthToken, getUser };
+export { getAuthToken, getUser, doesEmailExist, createUserAccount };
