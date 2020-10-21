@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import SideBar from "../SideBar/SideBar";
 import Tabs from "./ProfileTabs";
+import PassDialog from "./ChangePassword";
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -9,10 +10,11 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-
 import TextField from '@material-ui/core/TextField';
-import FaceIcon from '@material-ui/icons/Face';
 
+import FaceIcon from '@material-ui/icons/Face';
+const USERNAME = "Ben"
+const ACSSCORE = "560"
 
 const styles = theme => ({
   root: {
@@ -96,10 +98,12 @@ const styles = theme => ({
     marginTop: "20px",
   },
   submitButton: {
+    marginTop:"20px",
     color:"white",
     backgroundColor: "#0066cc",
   },
   cancleButton: {
+    marginTop: "20px",
     color: "white",
     backgroundColor: "#333333",
   }
@@ -195,21 +199,24 @@ class ProfilePage extends Component {
               <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2">
                 Edit Profile
               </Typography>
+              
+              
               <Typography className={classes.option} variant="h5" component="h2">
-                Change Password
+                <PassDialog></PassDialog>
               </Typography>
+             
             </div>
             <div className={classes.profile}>
               <div className={classes.profile}>
                 <div className={classes.leftProfile}>
                   <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
                   <Typography onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
-                    Ben
+                    {USERNAME}
                   </Typography>
                 </div>
                 <div className={classes.rightProfile}>
                   <Typography variant="h5" component="h2">
-                    ACS Score: 59
+                    ACS Score: {ACSSCORE}
                   </Typography>
                   <div className={classes.blueText}>
                     Update Profile Picture

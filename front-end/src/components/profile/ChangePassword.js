@@ -6,6 +6,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@material-ui/core/Typography';
+
 
 export default function FormDialog() {
   const [open, setOpen] = React.useState(false);
@@ -20,22 +22,37 @@ export default function FormDialog() {
 
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Open form dialog
-      </Button>
+      <Typography onClick={handleClickOpen} variant="h5">
+        Change Password
+      </Typography>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+        <DialogTitle id="form-dialog-title">Change Password</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send updates
-            occasionally.
+            Are you sure you want to change the password? by doing this you will be logout.
           </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
+            id="currPassword"
+            label="Current Password"
+            type="password"
+            fullWidth
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="newPassword"
+            label="New Passowrd"
+            type="password"
+            fullWidth
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="reNewPassword"
+            label="Repeat New Passowrd"
+            type="password"
             fullWidth
           />
         </DialogContent>
@@ -44,7 +61,7 @@ export default function FormDialog() {
             Cancel
           </Button>
           <Button onClick={handleClose} color="primary">
-            Subscribe
+            Conform
           </Button>
         </DialogActions>
       </Dialog>
