@@ -2,10 +2,10 @@ package main
 
 import (
 	"db-svc/apis"
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
-	"log"
-	"github.com/gin-contrib/cors"
 )
 
 //Assuming db is running on port 7687
@@ -14,9 +14,7 @@ const DBNAME = "neo4j"
 const DBPASS = "1234"
 const ENCRYPTED = false
 
-
-
-func main(){
+func main() {
 	driver, err := neo4j.NewDriver(DBURI, neo4j.BasicAuth(DBNAME, DBPASS, ""), func(c *neo4j.Config) {
 		c.Encrypted = ENCRYPTED
 	})
