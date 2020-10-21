@@ -7,6 +7,7 @@ import {
 
 import "./App.css";
 import SignUp from '../sign-up/SignUp'
+import openCourt from '../open-court/index'
 import Account from '../profile/Account'
 import Trivia from '../trivia/Trivia'
 import Profile from '../profile/Profile'
@@ -28,7 +29,7 @@ function App() {
           <PrivateRoute exact path="/" component={Account}/>
           {/* Add new paths heres */}
           <Route exact path="/trivia" component={Trivia}/>
-          {}
+          <Route exact path="/openCourt" component={openCourt}/>
         </Switch>
       </Router>
     </div>
