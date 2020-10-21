@@ -35,7 +35,7 @@ const styles = theme => ({
   menu: {
     float: "left",
     //display: "inline-block",
-    //paddingTop: "40px",
+    paddingTop: "20px",
     width: "30%",
     borderRight: "solid white",
     textAlign: "center",
