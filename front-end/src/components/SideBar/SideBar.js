@@ -55,7 +55,7 @@ function SideBar(props) {
         {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
           <ListItem button key={text}>
             <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon color="secondary" /> : <MailIcon color="secondary" />}
+              {index % 2 === 0 ? <InboxIcon color="primary" /> : <MailIcon color="primary" />}
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
@@ -66,7 +66,7 @@ function SideBar(props) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed" color="secondary" className={classes.appBar}>
+      <AppBar position="fixed" color="primary" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" noWrap>
             {page}
