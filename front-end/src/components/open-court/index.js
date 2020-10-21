@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import UploadPost from "./uploadPost"
 import Feed from "./feed"
+import SideBar from "../SideBar/SideBar";
 
 export class openCourt extends React.Component{
     
@@ -21,6 +22,7 @@ export class openCourt extends React.Component{
     render(){
         return(
             <div>
+            <SideBar page="Open Court"/>
             <UploadPost component = {this}/>
             <Feed />
             </div>
