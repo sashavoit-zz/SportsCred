@@ -36,9 +36,9 @@ const doesEmailExist = async (email) => {
 
   let res = await fetch("/checkEmailExists", requestOptions);
 
-  if (res.status == 200) {
+  if (res.status === 200) {
     return false;
-  } else if (res.status == 406) {
+  } else if (res.status === 406) {
     return true;
   } else {
     throw "err";
@@ -62,7 +62,7 @@ const createUserAccount = async (firstName, lastName, phone, email, password, bi
 
   let res = await fetch("/createUserAccount", requestOptions);
 
-  if (res.status == 200) {
+  if (res.status === 200) {
     return true;
   } else {
     throw "err";
@@ -81,7 +81,7 @@ const getUser = async () => {
 
   let res = await fetch("/get-user", requestOptions);
 
-  if (res.status != 200) {
+  if (res.status !== 200) {
     throw "err";
   } else {
     let body = await res.json();

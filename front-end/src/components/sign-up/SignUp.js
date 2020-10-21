@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useHistory } from "react-router-dom";
 import { Button, TextField, Box, Grid, InputLabel, Select, MenuItem, FormControl, FormControlLabel, Checkbox, Input, Chip, Collapse, IconButton } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -9,7 +8,6 @@ import CloseIcon from '@material-ui/icons/Close';
 
 // TODO: make better
 function SignUp() {
-  let history = useHistory();
 /*
   let signInHandler = () => {
     localStorage.setItem("auth", "letempass");
@@ -22,11 +20,22 @@ function SignUp() {
     try {
       //history.replace('/')
       result = await doesEmailExist(email);
-      if(!result) {
-        createUserAccount(firstName, lastName, phoneNumber, email, password, document.getElementById("date-picker-dialog").value)
-        setOpen(false);
-      } else {
+      if(result) {
         setOpen(true);
+      } else {
+        setOpen(false);
+      }
+      var cond1 = (!firstName.match(letters) || firstName === "" || !lastName.match(letters) || lastName === "" || !email.match(emails) || email === "" || password === "");
+      if(cond1) {
+        setOpen1(true)
+      } else {
+        setOpen1(false)
+      }
+      
+      if (!result && !cond1) {
+        createUserAccount(firstName, lastName, phoneNumber, email, password, document.getElementById("date-picker-dialog").value)
+        setOpen1(false)
+        setOpen(false);
       }
     } catch (err) {
       console.log(err)
@@ -91,6 +100,7 @@ function SignUp() {
   var emails = /^$|^.*@.*\..*$/;
 
   const [open, setOpen] = React.useState(false);
+  const [open1, setOpen1] = React.useState(false);
 
   return (
         <Box bgcolor="#000000" paddingTop="30px" textAlign='center' alignContent='center'
@@ -273,6 +283,25 @@ function SignUp() {
               }
             >
               Email already exists
+            </Alert>
+          </Collapse>
+          <Collapse in={open1}>
+            <Alert
+              variant="outlined" severity="error"
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setOpen1(false);
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              Please fill all the required fields
             </Alert>
           </Collapse>
         </Box>
