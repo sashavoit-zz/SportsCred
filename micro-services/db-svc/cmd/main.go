@@ -4,6 +4,7 @@ import (
 	"db-svc/apis"
 	"log"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
@@ -25,10 +26,11 @@ func main() {
 	defer driver.Close() // close connection when main function return
 
 	//GIN router documentation here: https://github.com/gin-gonic/gin
-	app := gin.New()
+	app := gin.Default()
+	app.Use(cors.Default())
 	app.Use(gin.Logger())
 	app.Use(gin.Recovery())
-
+	apis.SetUpProfile(app, driver)
 	apis.SetUpOpenCourt(app, driver)
 	apis.SetUpTrivia(app, driver)
 	apis.SetUpAuth(app, driver)
