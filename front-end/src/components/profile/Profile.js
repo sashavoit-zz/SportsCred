@@ -138,7 +138,7 @@ function post_profile(input) {
 }
 
 
-class ProfilePage extends Component {
+class Profile extends Component {
   state = {
     edit: false
   }
@@ -239,8 +239,8 @@ class ProfilePage extends Component {
   }
 }
 
-ProfilePage.propTypes = {
+Profile.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ProfilePage);
+export default withStyles(styles)(Profile);
