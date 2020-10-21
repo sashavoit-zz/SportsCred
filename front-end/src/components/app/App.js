@@ -33,9 +33,10 @@ function App() {
           <Route exact path="/profile" component={Profile} />
           {/* private routes */}
           <PrivateRoute exact path="/" component={Account} />
+          <PrivateRoute exact path="/openCourt" component={openCourt}/>
           {/* Add new paths heres */}
           <Route exact path="/trivia" component={Trivia}/>
-          <Route exact path="/openCourt" component={openCourt}/>
+          
         </Switch>
       </Router>
     </ThemeProvider>
