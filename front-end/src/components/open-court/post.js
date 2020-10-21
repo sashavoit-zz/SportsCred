@@ -26,7 +26,7 @@ export class Post extends React.Component{
                         //avatar={
                         //    <Avatar src ={postInfo.AuthorProfile}/>
                         //}
-                        title={postInfo.userId}
+                        title={postInfo.firstName + postInfo.secondName}
                         subheader = {postInfo.time}
                     >
                     </CardHeader> 
