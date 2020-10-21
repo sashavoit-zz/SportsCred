@@ -1,6 +1,7 @@
 package main
 
 import (
+	"db-svc/apis"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"log"
@@ -27,6 +28,9 @@ func main(){
 	app.Use(gin.Logger())
 	app.Use(gin.Recovery())
 
-	//apis.SetUpOpenCourt(app, driver)
+	apis.SetUpOpenCourt(app, driver)
+	apis.SetUpTrivia(app, driver)
+
+	app.Run(":3001")
 
 }
