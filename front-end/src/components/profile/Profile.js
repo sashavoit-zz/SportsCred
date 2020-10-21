@@ -16,7 +16,7 @@ import TextField from '@material-ui/core/TextField';
 import FaceIcon from '@material-ui/icons/Face';
 const USERNAME = "Ben"
 const ACSSCORE = "560"
-
+const log = console.log
 const styles = theme => ({
   root: {
     position: "fixed",
@@ -111,6 +111,7 @@ const styles = theme => ({
 });
 
 function post_profile(input) {
+
   const url = 'http://localhost:3001/profile';
   const data = {
     email: input.email,
@@ -174,7 +175,7 @@ class ProfilePage extends Component {
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
         <TextField className={classes.inputField} id="email" label="ben@sportcred.com" variant="filled" onChange={this.handleInputChange} disabled /><br />
         <TextField className={classes.inputFieldShort} id="lastName" label="Lsat Name" variant="filled" onChange={this.handleInputChange} />
-        <TextField className={classes.inputFieldShort} id="fistName" label="First Name" variant="filled" onChange={this.handleInputChange} /><br />
+        <TextField className={classes.inputFieldShort} id="firstName" label="First Name" variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Help people discover your account by using the name you re <br />
           known by: either your full name, nickname, or business name

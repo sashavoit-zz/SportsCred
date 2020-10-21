@@ -13,6 +13,22 @@ const DBNAME = "neo4j"
 const DBPASS = "1234"
 const ENCRYPTED = false
 
+// need edit this become more safer
+func CORSMiddleware() gin.HandlerFunc { 
+	return func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Credentials", "true")
+		c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+		c.Header("Access-Control-Allow-Methods", "POST,HEAD,PATCH, OPTIONS, GET, PUT")
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204) // 2xx code is fine
+			return
+		}
+		c.Next()
+	}
+}
+
+
 func main(){
 	driver, err := neo4j.NewDriver(DBURI, neo4j.BasicAuth(DBNAME, DBPASS, ""), func(c *neo4j.Config) {
 		c.Encrypted = ENCRYPTED
@@ -25,6 +41,7 @@ func main(){
 
 	//GIN router documentation here: https://github.com/gin-gonic/gin
 	app := gin.New()
+	app.Use(CORSMiddleware())
 	app.Use(gin.Logger())
 	app.Use(gin.Recovery())
 	apis.SetUpProfile(app, driver)
