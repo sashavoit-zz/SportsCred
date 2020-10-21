@@ -27,7 +27,7 @@ func main(){
 	app := gin.New()
 	app.Use(gin.Logger())
 	app.Use(gin.Recovery())
-
+	apis.SetUpProfile(app, driver)
 	apis.SetUpOpenCourt(app, driver)
 	apis.SetUpTrivia(app, driver)
 
