@@ -19,5 +19,5 @@ func registerRoutes() http.Handler{
 
 func main(){
 	router := registerRoutes()
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8082", router))
 }

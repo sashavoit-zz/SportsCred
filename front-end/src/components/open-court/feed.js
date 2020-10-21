@@ -2,7 +2,7 @@ import React from "react";
 import Post from "./post";
 import {uid} from "react-uid";
 
-const ENDPOINT = 'http://localhost:8080/openCourt'
+const ENDPOINT = 'http://localhost:8081/openCourt'
 const LOADPOSTS = '/loadPosts'
 
 export class feed extends React.Component{
