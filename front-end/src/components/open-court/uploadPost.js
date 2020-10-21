@@ -7,8 +7,8 @@ function addPost(content, author, authorProfile, postTime) {
         method: 'POST',
         body: JSON.stringify({
             "content":content,
-            "author": author,
-            "authorProfile":authorProfile,
+            "email": author,
+            "userProfile":authorProfile,
             "likes":0,
             "dislikes":0,
             "postTime":postTime
