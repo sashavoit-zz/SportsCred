@@ -5,6 +5,7 @@ import { CssBaseline, createMuiTheme } from "@material-ui/core";
 
 import "./App.css";
 import SignUp from "../sign-up/SignUp";
+import openCourt from '../open-court/index'
 import LogIn from "../log-in/LogIn";
 import Account from "../profile/Account";
 import Profile from "../profile/Profile";
@@ -30,6 +31,7 @@ function App() {
           {/* private routes */}
           <PrivateRoute exact path="/" component={Account} />
           {/* Add new paths heres */}
+          <Route exact path="/openCourt" component={openCourt}/>
         </Switch>
       </Router>
     </ThemeProvider>
