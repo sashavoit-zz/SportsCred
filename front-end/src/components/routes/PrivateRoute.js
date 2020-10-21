@@ -8,7 +8,7 @@ import { getUser } from "../../service/ApiCalls";
 function PrivateRoute(props) {
   const { component: Component, routeProps } = props;
   const history = useHistory();
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState({ email: '' });
 
   useState(async () => {
     let jwt = localStorage.getItem("Token");
@@ -16,11 +16,12 @@ function PrivateRoute(props) {
       history.push("/login");
     }
     try {
-      let username = await getUser();
-      console.log(username);
-      setUser(username);
+      let email = await getUser();
+      console.log(email);
+      setUser({ email });
     } catch (e) {
       console.log(e);
+      localStorage.removeItem("Token")
       history.push("/login");
     }
   }, []);

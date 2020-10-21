@@ -65,7 +65,7 @@ function LogIn(props) {
                 <TextField
                   error={authError}
                   type={"text"}
-                  label="Username"
+                  label="Email"
                   value={formFields.username}
                   onClick={() => setAuthError(false)}
                   onChange={(event) => handleChange(event, "username")}
