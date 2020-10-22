@@ -36,7 +36,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver){
 	})
 
 	//add a new post
-	app.POST("/addPost/:hash", func(c *gin.Context) {
+	app.POST("/addPost/:hash", CheckAuthToken(func(c *gin.Context, _ string) {
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
 			//handling error
@@ -62,6 +62,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver){
 		c.JSON(200, gin.H{
 			"Note": "Post added successfully",
 		})
-	})
+	}))
+
 
 }
