@@ -64,8 +64,6 @@ export class UploadPost extends React.Component{
         }
     }
     componentDidMount(){
-        console.log("in the componentDidMount");
-        console.log("the email is "+this.props.user.email);
         const requestOptions = {
             method: "GET",
             headers: {
