@@ -58,10 +58,29 @@ export class UploadPost extends React.Component{
         super(props)
         this.state = {
             uploadInput:"",
-            errorText:""
+            errorText:"",
+            firstName:"",
+            lastName:""
         }
     }
-
+    componentDidMount(){
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Token": localStorage.getItem("Token"),
+            },
+        };
+        fetch("/getUserName/"+this.props.user.email,requestOptions)
+            .then(response => response.json())
+            .then((data) => {
+                this.setState({
+                        firstName:data.firstName,
+                        lastName:data.lastName
+                })
+            })
+            .catch(err => console.log(err))
+    }
     render(){
         const {user} = this.props;
         const {classes} = this.props;
@@ -104,7 +123,7 @@ export class UploadPost extends React.Component{
                         <Grid item >
                             {/* <Avatar className={classes.avatar} alt="user profile"/> */}
                             <FaceIcon className={classes.avatar} fontSize='large'/>
-                            <Typography>{user.email}</Typography>                        
+                            <Typography>{this.state.firstName+" "+this.state.lastName}</Typography>                        
                         </Grid>
                         <Grid item xs>
                             <TextField 
