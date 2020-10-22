@@ -20,12 +20,6 @@ const ACSSCORE = "560"
 const log = console.log
 const styles = theme => ({
   root: {
-    position: "fixed",
-    top: 90,
-    left: 220,
-    bottom: 20,
-    right: 20,
-    color: "white",
     backgroundColor: "#00000060"
     //width: "300px",
   },
@@ -87,13 +81,13 @@ const styles = theme => ({
   },
   inputField: {
     //color: "white",
-    backgroundColor: "white",
+    //backgroundColor: "white",
     width: "50%",
     marginTop: "20px",
   },
   inputFieldShort: {
     //color: "white",
-    backgroundColor: "white",
+    //backgroundColor: "white",
     width: "24%",
     marginRight: "1%",
     marginLeft: "1%",
@@ -178,8 +172,7 @@ class Profile extends Component {
 
     const profileContent = this.state.edit ? (
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
-        <TextField className={classes.inputField} id="email" label={this.props.user.email} variant="filled" onChange={this.handleInputChange} disabled /><br />
-        <TextField className={classes.inputFieldShort} id="lastName" label="Lsat Name" variant="filled" onChange={this.handleInputChange} />
+        <TextField className={classes.inputFieldShort} id="lastName" label="Last Name" variant="filled" onChange={this.handleInputChange} />
         <TextField className={classes.inputFieldShort} id="firstName" label="First Name" variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Help people discover your account by using the name you re <br />
@@ -191,7 +184,7 @@ class Profile extends Component {
           Personal Information (Email & Phone Number): <br />
           This wont be a part of your public profile.
         </div>
-        <Button className={classes.submitButton} type="submit">Submit</Button> <Button className={classes.cancleButton} onClick={this.handleBackProfile} >Cancle</Button>
+        <Button className={classes.submitButton} type="submit">Submit</Button> <Button className={classes.cancleButton} onClick={this.handleBackProfile} >Cancel</Button>
       </form>
     ) : (
         <Tabs>
@@ -206,12 +199,12 @@ class Profile extends Component {
 
               {/* <OptionButton></OptionButton> */}
 
-              <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2">
+              <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
                 Edit Profile
               </Typography>
 
 
-              <Typography className={classes.option} variant="h5" component="h2">
+              <Typography className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
                 <PassDialog></PassDialog>
               </Typography>
 
@@ -221,7 +214,7 @@ class Profile extends Component {
                 <div className={classes.leftProfile}>
                   <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
                   <Typography onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
-                    {USERNAME}
+                    {this.props.user.email}
                   </Typography>
                 </div>
                 <div className={classes.rightProfile}>
