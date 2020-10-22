@@ -36,7 +36,7 @@ func GetUserByEmail(driver neo4j.Driver, email string)(interface{}, error){
 
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error){
 		result, err := transaction.Run(
-			"MATCH (u:User {email:'ben@ben.ben'}) RETURN u.firstName, u.lastName",
+			"MATCH (u:User {email: $email}) RETURN u.firstName, u.lastName",
 			map[string]interface{}{"email":email})
 		if err != nil {
 			return nil, err
@@ -46,7 +46,6 @@ func GetUserByEmail(driver neo4j.Driver, email string)(interface{}, error){
 			
 			firstName:= record.GetByIndex(0).(string)
 			lastName:= record.GetByIndex(1).(string)
-			log.Println(firstName);
 			return lastName + " " +firstName, nil
 		}
 		return nil, result.Err()
