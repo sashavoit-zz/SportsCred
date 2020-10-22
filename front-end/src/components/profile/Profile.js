@@ -16,6 +16,7 @@ import TextField from '@material-ui/core/TextField';
 import FaceIcon from '@material-ui/icons/Face';
 const USERNAME = "Ben"
 const ACSSCORE = "560"
+
 const log = console.log
 const styles = theme => ({
   root: {
@@ -25,7 +26,7 @@ const styles = theme => ({
     bottom: 20,
     right: 20,
     color: "white",
-    backgroundColor:"#00000060"
+    backgroundColor: "#00000060"
     //width: "300px",
   },
   content: {
@@ -99,8 +100,8 @@ const styles = theme => ({
     marginTop: "20px",
   },
   submitButton: {
-    marginTop:"20px",
-    color:"white",
+    marginTop: "20px",
+    color: "white",
     backgroundColor: "#0066cc",
   },
   cancleButton: {
@@ -111,8 +112,8 @@ const styles = theme => ({
 });
 
 function post_profile(input) {
-
-  const url = 'http://localhost:3001/profile';
+  log(input)
+  const url = '/profile'; //http://localhost:3001
   const data = {
     email: input.email,
     lastName: input.lastName,
@@ -125,7 +126,8 @@ function post_profile(input) {
     body: JSON.stringify(data),
     headers: {
       'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
     }
   });
   fetch(profile_request)
@@ -139,8 +141,11 @@ function post_profile(input) {
 
 
 class Profile extends Component {
-  state = {
-    edit: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      edit: false
+    }
   }
 
   handleBackProfile = (event) => {
@@ -152,7 +157,7 @@ class Profile extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault()
-    const data = this.state
+    const data = { ...this.state, ...this.props.user }
     console.log("form submit:", data)
     post_profile(data);
     this.handleBackProfile(event);
@@ -162,7 +167,7 @@ class Profile extends Component {
     event.preventDefault()
     this.setState({
       //console.log(event.target.value)
-      ["email"]: "ben@sportcred.com",
+      // ["email"]: "ben@sportcred.com",
       [event.target.id]: event.target.value
     })
   }
@@ -173,7 +178,7 @@ class Profile extends Component {
 
     const profileContent = this.state.edit ? (
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
-        <TextField className={classes.inputField} id="email" label="ben@sportcred.com" variant="filled" onChange={this.handleInputChange} disabled /><br />
+        <TextField className={classes.inputField} id="email" label={this.props.user.email} variant="filled" onChange={this.handleInputChange} disabled /><br />
         <TextField className={classes.inputFieldShort} id="lastName" label="Lsat Name" variant="filled" onChange={this.handleInputChange} />
         <TextField className={classes.inputFieldShort} id="firstName" label="First Name" variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
@@ -200,16 +205,16 @@ class Profile extends Component {
             <div className={classes.menu}>
 
               {/* <OptionButton></OptionButton> */}
-              
+
               <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2">
                 Edit Profile
               </Typography>
-              
-              
+
+
               <Typography className={classes.option} variant="h5" component="h2">
                 <PassDialog></PassDialog>
               </Typography>
-             
+
             </div>
             <div className={classes.profile}>
               <div className={classes.profile}>
