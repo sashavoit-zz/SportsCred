@@ -1,9 +1,10 @@
-//import React from "react";
+import React from "react";
 
 // TODO: make better
-function Account() {
+function Account(props) {
+  console.log(props)
   return (
-    "Hello"
+    <h1 style={{ margin: '20px' }}>{props.user}</h1>
   );
 }
 

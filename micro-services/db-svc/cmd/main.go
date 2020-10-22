@@ -33,6 +33,7 @@ func main() {
 	apis.SetUpProfile(app, driver)
 	apis.SetUpOpenCourt(app, driver)
 	apis.SetUpTrivia(app, driver)
+	apis.SetUpSingUp(app, driver)
 
 	app.Run(":3001")
 
