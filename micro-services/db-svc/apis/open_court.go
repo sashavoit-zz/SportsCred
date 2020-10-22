@@ -22,7 +22,7 @@ type PostsUserRelationship struct {
 
 func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver){
 
-	app.GET("/allPosts", func(c *gin.Context){
+	app.GET("/allPosts", CheckAuthToken(func(c *gin.Context, _ string){
 		result, err := queries.LoadAllPosts(driver)
 		if err!=nil{
 			c.String(500, "Internal server error")
@@ -33,7 +33,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver){
 		}
 
 		c.JSON(200, result)
-	})
+	}))
 
 	//add a new post
 	app.POST("/addPost/:hash", CheckAuthToken(func(c *gin.Context, _ string) {
@@ -63,6 +63,5 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver){
 			"Note": "Post added successfully",
 		})
 	}))
-
 
 }

@@ -2,8 +2,7 @@ import React from "react";
 import Post from "./post";
 import {uid} from "react-uid";
 
-const ENDPOINT = 'http://localhost:8081/openCourt'
-const LOADPOSTS = '/loadPosts'
+const LOADPOSTS = '/allPosts'
 
 export class feed extends React.Component{
     /* TODO:the posts in the state should fetch from the db, here are some dummy data */
@@ -16,9 +15,17 @@ export class feed extends React.Component{
     }
 
     componentDidMount(){
-        fetch(ENDPOINT + LOADPOSTS)
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Token": localStorage.getItem("Token"),
+            },
+        };
+        fetch(LOADPOSTS, requestOptions)
             .then(response => response.json())
             .then((data) => (this.setState({posts: data})))
+            .catch(err => console.log(err))
     }
 
     render(){
@@ -27,7 +34,7 @@ export class feed extends React.Component{
                 {this.state.posts.map(post =>
                     <Post
                         key={uid(post)}
-                        postInfo = {post}
+                        postInfo={post}
                     />
                 )}
             </div>
