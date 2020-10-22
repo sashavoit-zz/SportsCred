@@ -3,7 +3,7 @@ package queries
 import (
 	"fmt"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
-	"log"
+	// "log"
 )
 
 func UpdateProfile(driver neo4j.Driver, firstName string, lastName string, email string, phone string, about string)(string, error){
