@@ -2,7 +2,6 @@ import React from "react";
 import Post from "./post";
 import {uid} from "react-uid";
 
-const ENDPOINT = 'http://localhost:3001'
 const LOADPOSTS = '/allPosts'
 
 export class feed extends React.Component{
@@ -23,7 +22,7 @@ export class feed extends React.Component{
                 "Token": localStorage.getItem("Token"),
             },
         };
-        fetch(ENDPOINT + LOADPOSTS, requestOptions)
+        fetch(LOADPOSTS, requestOptions)
             .then(response => response.json())
             .then((data) => (this.setState({posts: data})))
             .catch(err => console.log(err))

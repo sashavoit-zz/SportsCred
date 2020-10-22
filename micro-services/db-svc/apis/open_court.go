@@ -11,7 +11,6 @@ import (
 type Post struct {
 	Content     string
 	Email       string
-	UserProfile string
 	Likes       int
 	Dislikes    int
 	PostTime    string
@@ -46,12 +45,11 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver){
 		json.Unmarshal(jsonData, &post)
 		content := post.Content
 		email := post.Email
-		userProfile := post.UserProfile
 		likes := post.Likes
 		dislikes := post.Dislikes
 		postTime := post.PostTime
 		//add the user to the database
-		result, err := queries.AddPost(driver, content, email, userProfile, likes, dislikes, postTime)
+		result, err := queries.AddPost(driver, content, email,likes, dislikes, postTime)
 
 		if err != nil {
 			// 500 failed add user

@@ -23,8 +23,8 @@ export class openCourt extends React.Component{
         return(
             <div>
             <SideBar page="Open Court"/>
-            <UploadPost component = {this}/>
-            <Feed/>
+            <UploadPost user={this.props.user}/>
+            <Feed />
             </div>
         );
     }
