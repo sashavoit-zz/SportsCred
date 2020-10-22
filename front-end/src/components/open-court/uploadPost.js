@@ -1,6 +1,7 @@
 import React from "react";
 import {withStyles} from "@material-ui/core/styles";
 import {TextField, Button, Avatar, Container, Grid, Typography} from '@material-ui/core'
+import FaceIcon from '@material-ui/icons/Face';
 function addPost(content, author, postTime) {
     const response = fetch("/addPost/hashasdasd", {
         mode: 'cors',
@@ -36,7 +37,8 @@ const styles = theme =>({
           flexGrow:1,
       },
       avatar:{
-          margin:'auto',
+          display:"block",
+          margin: "auto",
       },
       input:{
           color:"white"
@@ -100,7 +102,8 @@ export class UploadPost extends React.Component{
                 <div>
                     <Grid className = {classes.grid} container spacing={1}>
                         <Grid item >
-                            <Avatar className={classes.avatar} alt="user profile"/>
+                            {/* <Avatar className={classes.avatar} alt="user profile"/> */}
+                            <FaceIcon className={classes.avatar} fontSize='large'/>
                             <Typography>{user.email}</Typography>                        
                         </Grid>
                         <Grid item xs>
