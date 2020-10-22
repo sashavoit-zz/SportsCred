@@ -58,7 +58,8 @@ export class UploadPost extends React.Component{
         super(props)
         this.state = {
             uploadInput:"",
-            errorText:""
+            errorText:"",
+            userName:{},
         }
     }
 
