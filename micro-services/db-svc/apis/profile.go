@@ -23,7 +23,7 @@ func SetUpProfile(app *gin.Engine, driver neo4j.Driver){
 
 	
 	//add a new post
-	app.PATCH("/profile", func(c *gin.Context){
+	app.PATCH("/profile", CheckAuthToken(func(c *gin.Context, _ string){
 
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
@@ -59,6 +59,6 @@ func SetUpProfile(app *gin.Engine, driver neo4j.Driver){
 		c.JSON(200, gin.H{
 			"good":  "this is how to send JSON to user",
 		})
-	})
+	}))
 
 }
