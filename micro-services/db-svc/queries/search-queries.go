@@ -12,12 +12,12 @@ func QueryUsers(driver neo4j.Driver, name string, skip int, pagesize int)(interf
 	defer session.Close()
 	result, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error){
 		result, err := transaction.Run(
-		"MATCH (n) \n"+
-		"WHERE n.username STARTS WITH $username \n"+
+		"MATCH (n: User) \n"+
+		"WHERE n.firstName STARTS WITH $username \n"+
 		"WITH n \n"+
-		"ORDER BY n.id \n"+
+		"ORDER BY n.firstName \n"+
 		"SKIP $skip LIMIT $pagesize \n"+
-		"WITH COLLECT({id:n.id,avatar:n.avatar,username:n.username,status:n.status}) AS result \n"+
+		"WITH COLLECT({id:n.id,avatar:n.avatar,username:n.firstName,status:n.about}) AS result \n"+
 		"RETURN result",
 		map[string]interface{}{"username":name,"skip":skip,"pagesize":pagesize})
 		if err != nil {
