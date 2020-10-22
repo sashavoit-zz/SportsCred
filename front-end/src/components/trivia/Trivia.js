@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
     introPage: {
         flexGrow: 1,
         position: 'absolute',
-        marginLeft: drawerWidth,
         textAlign: 'center',
         display: 'block',
         borderStyle: 'outset',
@@ -40,7 +39,10 @@ const useStyles = makeStyles((theme) => ({
         width: '40%',
         color: 'black',
         backgroundColor: 'white',
-        paddingTop: '5px'
+        paddingTop: '5px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        marginLeft: '35%'
     },
     topNav: {
         border: 1 + 'px solid aqua',
