@@ -22,7 +22,7 @@ func generateJWT(email string, password string) (string, error) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["authorized"] = true
 	claims["email"] = email
-	claims["exp"] = time.Now().Add(time.Minute * 5).Unix()
+	claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
 
 	// encrypt that shit
 	tokenString, err := token.SignedString(secertSigningKey)
