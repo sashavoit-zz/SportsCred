@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core";
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import SportsBasketballIcon from '@material-ui/icons/SportsBasketball';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const drawerWidth = 200;
@@ -56,14 +57,28 @@ function SideBar(props) {
     <div>
       <div className={classes.toolbar} />
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts", "Trivia"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon color="primary" /> : <MailIcon color="primary" />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        
+        <ListItem button key={"OpenCourt"} onClick = {() => history.push("/openCourt")}>
+          <ListItemIcon>
+            <SportsBasketballIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Open Court" />
+        </ListItem>
+
+        <ListItem button key={"OpenCourt"} onClick = {() => history.push("/profile")}>
+          <ListItemIcon>
+            <SportsBasketballIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Profile" />
+        </ListItem>
+
+        <ListItem button key={"OpenCourt"} onClick = {() => history.push("/trivia")}>
+          <ListItemIcon>
+            <SportsBasketballIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Trivia" />
+        </ListItem>
+
       </List>
     </div>
   );
