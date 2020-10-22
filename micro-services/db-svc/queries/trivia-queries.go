@@ -3,6 +3,7 @@ package queries
 import (
 	"fmt"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
+	"log"
 )
 
 func AddQuestion(driver neo4j.Driver, question string, option1 string, option2 string, option3 string, answer string) (string, error) {
@@ -86,6 +87,9 @@ func DeleteQuestionRelationship(driver neo4j.Driver, question string, user strin
 	if err != nil {
 		return "", err
 	}
+	log.Println("32222-----------------")
+	log.Println(question)
+	log.Println(user)
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
