@@ -10,7 +10,9 @@ const userStyles = theme =>({
     root:{
         width: "60vw",
         marginBottom:10,
-        marginTop: 10
+        marginTop: 10,
+        marginLeft:"auto",
+        marginRight:"auto"
     },
 });
 

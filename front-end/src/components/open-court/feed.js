@@ -1,8 +1,15 @@
 import React from "react";
 import Post from "./post";
 import {uid} from "react-uid";
+import { withStyles } from "@material-ui/core/styles";
 
 const LOADPOSTS = '/allPosts'
+
+const userStyles = theme =>({
+    root:{
+        marginTop:'100px'
+    },
+});
 
 export class feed extends React.Component{
     /* TODO:the posts in the state should fetch from the db, here are some dummy data */
@@ -29,8 +36,9 @@ export class feed extends React.Component{
     }
 
     render(){
+        const {classes} = this.props;
         return(
-            <div>
+            <div className =  {classes.root}>
                 {this.state.posts.map(post =>
                     <Post
                         key={uid(post)}
@@ -41,4 +49,4 @@ export class feed extends React.Component{
         );
     }
 }
-export default feed;
+export default withStyles(userStyles)(feed);
