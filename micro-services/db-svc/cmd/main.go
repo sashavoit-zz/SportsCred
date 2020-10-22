@@ -33,6 +33,7 @@ func main() {
 	apis.SetUpProfile(app, driver)
 	apis.SetUpOpenCourt(app, driver)
 	apis.SetUpTrivia(app, driver)
+	apis.SetUpAuth(app, driver)
 	apis.SetUpSingUp(app, driver)
 	apis.SetUpSearch(app, driver)
 

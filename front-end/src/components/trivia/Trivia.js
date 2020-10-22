@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
     introPage: {
         flexGrow: 1,
         position: 'absolute',
-        marginLeft: drawerWidth,
         textAlign: 'center',
         display: 'block',
         borderStyle: 'outset',
@@ -40,7 +39,10 @@ const useStyles = makeStyles((theme) => ({
         width: '40%',
         color: 'black',
         backgroundColor: 'white',
-        paddingTop: '5px'
+        paddingTop: '5px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        marginLeft: '25%'
     },
     topNav: {
         border: 1 + 'px solid aqua',
@@ -157,6 +159,22 @@ function Trivia(props) {
     document.getElementById('currentTime').innerHTML = "0";
 
     //addQuestion("What course is this?", "CSCC37", "CSCB07", "CSCC69", "CSCC01");
+    // working
+    //   addQuestion("Who is the only other player other than Jamal Murray to score 50 on less than 24 field goal attempts?", "Lebron James", "Michael Jordan", "Kareem Abdul Jabbar", "Bob Cousy");
+    //   addQuestion("Who are the two players to have 25 point halves in a single playoff series?", "James Harden/Russel Westbrook", "Michael Jordan/Kobe Bryant", "Steph Curry/Lebron James", "Jamal Murray/Allen Iverson");
+    //   addQuestion("Who was the NBA’s first ever unanimous mvp?", "Michael Jordan", "Shaquille O’Neal", "LeBron James", "Steph Curry");
+    //   addQuestion("Who scored the NBA’s first ever three pointer and what year?", "Gary Payton", "Eric Musselman", "Don Nelson", "Chris Ford");
+    //   addQuestion("Who was the youngest player to score 10,000 points?", "Kobe Bryant", "Michael Jordan", "Kevin Durant", "LeBron James");
+    //   addQuestion("Who did the Los Angeles Lakers draft twice?", "Kobe Bryant", "Lonzo Ball", "Pau Gasol", "Elgin Baylor");
+    //   addQuestion("Who scored the most points in a single NBA game?", "Michael Jordan", "James Harden", "Kobe Bryant", "Wilt Chamberlain");
+ 
+    // //   addQuestionRelationship("Who is the only other player other than Jamal Murray to score 50 on less than 24 field goal attempts?", "maya");
+    // //   addQuestionRelationship("Who are the two players to have 25 point halves in a single playoff series?", "maya");
+    //   addQuestionRelationship("Who was the NBA’s first ever unanimous mvp?", "ben");
+    //   addQuestionRelationship("Who scored the NBA’s first ever three pointer and what year?", "ben");
+    //   addQuestionRelationship("Who was the youngest player to score 10,000 points?", "ben");
+    //   addQuestionRelationship("Who did the Los Angeles Lakers draft twice?", "ben");
+    //   addQuestionRelationship("Who scored the most points in a single NBA game?", "ben");
   }
 
   //Shuffle array algorithm from the internet: https://github.com/coolaj86/knuth-shuffle
@@ -190,17 +208,40 @@ function Trivia(props) {
             "option2": option2,
             "option3": option3,
             "answer": answer
-        })
+        }),
+        headers: {
+            'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+        }
+    });
+  }
+
+async function addQuestionRelationship(question, user) {
+
+    const response = await fetch("http://localhost:3001/addQuestionRelationship/hashasdasd", {
+        mode: 'cors',
+        method: 'POST',
+        body: JSON.stringify({
+            "question": question,
+            "user": user
+        }),
+        headers: {
+            'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+        }
     });
 
-  }
+}
 
   async function getQuestion() {
 
       var responseBody = [1,2,3,4];
       responseBody = shuffle(responseBody);
 
-      const response = await fetch("http://localhost:3001/getQuestion/maya/hashasdasd", {mode: 'cors'})
+      const response = await fetch("http://localhost:3001/getQuestion/ben/hashasdasd", {
+          mode: 'cors',
+          headers: {
+              'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+          }
+        })
       .then(response => {
           if (response.ok) {
               response.json().then(json => {
@@ -224,9 +265,12 @@ function Trivia(props) {
         mode: 'cors',
         method: 'POST',
         body: JSON.stringify({
-            "user": "maya",
+            "user": "ben",
             "question": question
-        })
+        }),
+        headers: {
+            'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+        }
     });
 
   }

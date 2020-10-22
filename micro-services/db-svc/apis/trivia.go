@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"io/ioutil"
+	"log"
 )
 
 //Question struct
@@ -31,7 +32,7 @@ type Person struct {
 
 func SetUpTrivia(app *gin.Engine, driver neo4j.Driver){
 
-	app.POST("/addQuestion/:hash", func(c *gin.Context) {
+	app.POST("/addQuestion/:hash", CheckAuthToken(func(c *gin.Context, _ string){
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
@@ -59,9 +60,9 @@ func SetUpTrivia(app *gin.Engine, driver neo4j.Driver){
 		c.JSON(200, gin.H{
 			"Note": "Question added successfully.",
 		})
-	})
+	}))
 
-	app.POST("/addQuestionRelationship/:hash", func(c *gin.Context) {
+	app.POST("/addQuestionRelationship/:hash", CheckAuthToken(func(c *gin.Context, _ string){
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
@@ -72,7 +73,9 @@ func SetUpTrivia(app *gin.Engine, driver neo4j.Driver){
 
 		question := relationship.Question
 		user := relationship.User
-
+		log.Println("trivia.go: question and name:-------------------------------------")
+		log.Println(question)
+		log.Println(user)
 		//add question to the database
 		result, err := queries.AddQuestionRelationship(driver, question, user)
 		if err != nil {
@@ -86,9 +89,9 @@ func SetUpTrivia(app *gin.Engine, driver neo4j.Driver){
 		c.JSON(200, gin.H{
 			"Note": "Question added successfully.",
 		})
-	})
+	}))
 
-	app.GET("/getQuestion/:username/:hash", func(c *gin.Context) {
+	app.GET("/getQuestion/:username/:hash",CheckAuthToken(func(c *gin.Context, _ string){
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
@@ -116,9 +119,9 @@ func SetUpTrivia(app *gin.Engine, driver neo4j.Driver){
 			"option3":  result[3],
 			"answer":   result[4],
 		})
-	})
+	}))
 
-	app.POST("/deleteQuestionRelationship/:hash", func(c *gin.Context) {
+	app.POST("/deleteQuestionRelationship/:hash", CheckAuthToken(func(c *gin.Context, _ string){
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
@@ -143,5 +146,5 @@ func SetUpTrivia(app *gin.Engine, driver neo4j.Driver){
 		c.JSON(200, gin.H{
 			"Note": "Question removed successfully.",
 		})
-	})
+	}))
 }

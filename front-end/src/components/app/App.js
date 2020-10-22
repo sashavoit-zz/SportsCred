@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { CssBaseline, createMuiTheme } from "@material-ui/core";
 
@@ -14,27 +14,32 @@ import PrivateRoute from "../routes/PrivateRoute";
 import SideBar from "../SideBar/SideBar";
 import SearchUser from '../UserService/SearchUser';
 
+const theme = createMuiTheme({
+  palette: {
+    type: "dark",
+  },
+});
 
 // TODO: make better routing
 function App() {
   return (
-    <div className="App-header">
-      <SideBar page = "Trivia"></SideBar>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Router>
         <Switch>
           {/* public routes */}
           <Route exact path="/signup" component={SignUp} />
           <Route exact path="/login" component={LogIn} />
-          <Route exact path="/profile" component={Profile} />
-          <Route exact path="/searchuser" component={SearchUser}/>
           {/* private routes */}
-          <PrivateRoute exact path="/" component={Account} />
+          <PrivateRoute exact path="/searchuser" component={SearchUser}/>
+          <PrivateRoute exact path="/profile" component={Profile} />
+          <PrivateRoute exact path="/trivia" component={Trivia} />
+          <PrivateRoute exact path="/the-zone" component={openCourt}/>
           {/* Add new paths heres */}
-          <Route exact path="/trivia" component={Trivia}/>
-          <Route exact path="/openCourt" component={openCourt}/>
+          <Route path="/" component={() => <Redirect to="/the-zone"/>} />
         </Switch>
       </Router>
-    </div>
+    </ThemeProvider>
   );
 }
 

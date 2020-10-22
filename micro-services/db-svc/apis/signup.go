@@ -75,7 +75,7 @@ func creatAccountInDB(FirstName string, LastName string, Phone string, Email str
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"CREATE (n:User { firstname:$firstname, lastname:$lastname, phone:$phone, email:$email, password:$password, birthday:$birthday }) return n",
+			"CREATE (n:User { firstName:$firstname, lastName:$lastname, phone:$phone, email:$email, password:$password, birthday:$birthday }) return n",
 			map[string]interface{}{"firstname": FirstName, "lastname": LastName, "phone": Phone, "email": Email, "password": Password, "birthday": Birthday})
 		if err != nil {
 			return nil, err

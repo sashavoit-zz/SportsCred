@@ -21,10 +21,28 @@ type Profile struct{
 
 func SetUpProfile(app *gin.Engine, driver neo4j.Driver){
 
-	
-	//add a new post
-	app.PATCH("/profile", func(c *gin.Context){
+	/// Route for getting all exisiting reports
+	app.GET("/user/:email", CheckAuthToken(func(c *gin.Context, _ string){
+		email := c.Param("email");
+		//add the user to the database
+		result, err := queries.GetUserByEmail(driver, email)
+		if err != nil {
+			// 500 failed add user
+			c.String(500, "Internal Error")
+		}else if result == ""{
+			// 400 bad request (not exist or wrong password)
+			c.String(400, "Bad Request")
+			//c.JSON(400, gin.H{"message":"pong",})
+		}
 
+		c.JSON(200, gin.H{
+			"user" : result,
+		})
+	}))
+
+	//add a new post
+	//app.PATCH("/profile", func(c *gin.Context){
+	app.PATCH("/profile", CheckAuthToken(func(c *gin.Context, _ string){
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
@@ -59,6 +77,6 @@ func SetUpProfile(app *gin.Engine, driver neo4j.Driver){
 		c.JSON(200, gin.H{
 			"good":  "this is how to send JSON to user",
 		})
-	})
+	}))
 
 }

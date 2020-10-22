@@ -1,18 +1,22 @@
 import React from "react";
 import {withStyles} from "@material-ui/core/styles";
 import {TextField, Button, Avatar, Container, Grid, Typography} from '@material-ui/core'
-function addPost(content, author, authorProfile, postTime) {
-    const response = fetch("http://localhost:3001/addPost/hashasdasd", {
+import FaceIcon from '@material-ui/icons/Face';
+function addPost(content, author, postTime) {
+    const response = fetch("/addPost/hashasdasd", {
         mode: 'cors',
         method: 'POST',
         body: JSON.stringify({
             "content":content,
             "email": author,
-            "userProfile":authorProfile,
             "likes":0,
             "dislikes":0,
             "postTime":postTime
-        })
+        }),
+        headers: {
+            "Content-Type": "application/json",
+            "Token": localStorage.getItem("Token"),
+          },
     });
       }
 
@@ -24,7 +28,6 @@ const styles = theme =>({
              margin:"auto",
              display:"flex",
          },
-
       },
       container:{
           margin:'auto',
@@ -34,7 +37,8 @@ const styles = theme =>({
           flexGrow:1,
       },
       avatar:{
-          margin:'auto',
+          display:"block",
+          margin: "auto",
       },
       input:{
           color:"white"
@@ -50,31 +54,54 @@ const styles = theme =>({
 
 
 export class UploadPost extends React.Component{
-    state = {
-        uploadInput:"",
-        errorText:""
-    };
-
+    constructor(props) {
+        super(props)
+        this.state = {
+            uploadInput:"",
+            errorText:"",
+            firstName:"",
+            lastName:""
+        }
+    }
+    // componentDidMount(){
+    //     console.log("in the componentDidMount");
+    //     console.log("the email is "+this.props.user.email);
+    //     const requestOptions = {
+    //         method: "GET",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             "Token": localStorage.getItem("Token"),
+    //           },
+    //     };
+    //     fetch("/getUserName/"+this.props.user.email,requestOptionss)
+    //         .then(response => response.json())
+    //         .then((data) => {
+    //             this.setState({
+    //                     firstName:data.firstName,
+    //                     lastName:data.lastName
+    //             })
+    //         })
+    //         .catch(err => console.log(err))
+    // }
     render(){
-        const {component} = this.props;
+        const {user} = this.props;
         const {classes} = this.props;
-        const handleInput=(component, field)=>{
+        const handleInput=(field)=>{
             const value = field.value;
             const name = field.name;
-            component.setState({
+            this.setState({
                 [name]:value
             })
         }
-        const handleSubmit = (component) =>{
+        const handleSubmit = () =>{
             if(this.state.uploadInput.length === 0){
                 /*handling if user uploading post with empty content, will occur error message*/
                 handleInputEmpty();
             }
             else{
-                const posts = component.state.posts;
                 const today = new Date();
                 const date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
-                addPost(this.state.uploadInput,component.state.currentUser.email, component.state.currentUser.profilePic,date)
+                addPost(this.state.uploadInput,user.email,date)
                 reset()
             }
         }
@@ -96,8 +123,9 @@ export class UploadPost extends React.Component{
                 <div>
                     <Grid className = {classes.grid} container spacing={1}>
                         <Grid item >
-                            <Avatar className={classes.avatar} alt="user profile" src={component.state.currentUser.profilePic}/>
-                            <Typography>{component.state.currentUser.userName}</Typography>                        
+                            {/* <Avatar className={classes.avatar} alt="user profile"/> */}
+                            <FaceIcon className={classes.avatar} fontSize='large'/>
+                            <Typography>{user.email}</Typography>                        
                         </Grid>
                         <Grid item xs>
                             <TextField 
@@ -106,7 +134,7 @@ export class UploadPost extends React.Component{
                             multiline
                             name = "uploadInput"
                             value={this.state.uploadInput}
-                            onChange={e => handleInput(this,e.target)}
+                            onChange={e => handleInput(e.target)}
                             variant="outlined"
                             placeholder="What's in your mind?"
                             InputProps={
@@ -121,7 +149,7 @@ export class UploadPost extends React.Component{
                     className ={classes.button}
                     variant="contained" 
                     color="primary"
-                    onClick={e=>handleSubmit(component)}
+                    onClick={e=>handleSubmit()}
                     >
                         Submit
                     </Button>

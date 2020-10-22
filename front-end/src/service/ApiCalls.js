@@ -8,7 +8,7 @@ const getAuthToken = async (username, password) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      username,
+      email: username,
       password,
     }),
   };
@@ -85,7 +85,7 @@ const getUser = async () => {
     throw "err";
   } else {
     let body = await res.json();
-    return body.username;
+    return body.email;
   }
 };
 

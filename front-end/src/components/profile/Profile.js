@@ -16,16 +16,11 @@ import TextField from '@material-ui/core/TextField';
 import FaceIcon from '@material-ui/icons/Face';
 const USERNAME = "Ben"
 const ACSSCORE = "560"
+
 const log = console.log
 const styles = theme => ({
   root: {
-    position: "fixed",
-    top: 90,
-    left: 220,
-    bottom: 20,
-    right: 20,
-    color: "white",
-    backgroundColor:"#00000060"
+    backgroundColor: "#00000060"
     //width: "300px",
   },
   content: {
@@ -86,33 +81,35 @@ const styles = theme => ({
   },
   inputField: {
     //color: "white",
-    backgroundColor: "white",
+    backgroundColor: "transparent",
+    color: "white",
     width: "50%",
     marginTop: "20px",
   },
   inputFieldShort: {
     //color: "white",
-    backgroundColor: "white",
+    backgroundColor: "transparent",
+    color: "white",
     width: "24%",
     marginRight: "1%",
     marginLeft: "1%",
     marginTop: "20px",
   },
   submitButton: {
-    marginTop:"20px",
-    color:"white",
+    marginTop: "20px",
+    color: "white",
     backgroundColor: "#0066cc",
   },
   cancleButton: {
     marginTop: "20px",
     color: "white",
     backgroundColor: "#333333",
-  }
+  },
 });
 
 function post_profile(input) {
-
-  const url = 'http://localhost:3001/profile';
+  log(input)
+  const url = '/profile'; //http://localhost:3001
   const data = {
     email: input.email,
     lastName: input.lastName,
@@ -125,12 +122,43 @@ function post_profile(input) {
     body: JSON.stringify(data),
     headers: {
       'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
     }
   });
   fetch(profile_request)
     .then(res => {
-      //
+      const name_tag = document.querySelector("#username");
+      name_tag.textContent = input.lastName + " " + input.firstName;
+    })
+    .catch((error) => {
+      console.log(error)
+    });
+}
+
+function get_user(email) {
+  const user_url = '/user/' + email;
+  console.log("-0-------------------");
+  console.log(user_url);
+  const user_request = new Request(user_url, {
+    method: 'get',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+    }
+  });
+  fetch(user_request)
+    .then(res => {
+      if (res.status === 200) {
+        return res.json();
+      } else {
+        console.log('could not get user');
+      }
+    })
+    .then(data => {
+      const name_tag = document.querySelector("#username");
+      name_tag.textContent = data.user;
+      //render_reports(data);
     })
     .catch((error) => {
       console.log(error)
@@ -139,8 +167,13 @@ function post_profile(input) {
 
 
 class Profile extends Component {
-  state = {
-    edit: false
+  constructor(props) {
+    super(props);
+
+    get_user(this.props.user.email)
+    this.state = {
+      edit: false
+    }
   }
 
   handleBackProfile = (event) => {
@@ -152,7 +185,7 @@ class Profile extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault()
-    const data = this.state
+    const data = { ...this.state, ...this.props.user }
     console.log("form submit:", data)
     post_profile(data);
     this.handleBackProfile(event);
@@ -162,7 +195,7 @@ class Profile extends Component {
     event.preventDefault()
     this.setState({
       //console.log(event.target.value)
-      ["email"]: "ben@sportcred.com",
+      // ["email"]: "ben@sportcred.com",
       [event.target.id]: event.target.value
     })
   }
@@ -173,8 +206,8 @@ class Profile extends Component {
 
     const profileContent = this.state.edit ? (
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
-        <TextField className={classes.inputField} id="email" label="ben@sportcred.com" variant="filled" onChange={this.handleInputChange} disabled /><br />
-        <TextField className={classes.inputFieldShort} id="lastName" label="Lsat Name" variant="filled" onChange={this.handleInputChange} />
+        <TextField className={classes.inputField} id="email" label={this.props.user.email} variant="filled" onChange={this.handleInputChange} disabled /><br />
+        <TextField className={classes.inputFieldShort} id="lastName" label="Last Name" variant="filled" onChange={this.handleInputChange} />
         <TextField className={classes.inputFieldShort} id="firstName" label="First Name" variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Help people discover your account by using the name you re <br />
@@ -186,7 +219,7 @@ class Profile extends Component {
           Personal Information (Email & Phone Number): <br />
           This wont be a part of your public profile.
         </div>
-        <Button className={classes.submitButton} type="submit">Submit</Button> <Button className={classes.cancleButton} onClick={this.handleBackProfile} >Cancle</Button>
+        <Button className={classes.submitButton} type="submit">Submit</Button> <Button className={classes.cancleButton} onClick={this.handleBackProfile} >Cancel</Button>
       </form>
     ) : (
         <Tabs>
@@ -194,29 +227,27 @@ class Profile extends Component {
       )
 
     return (
-      <SideBar page="Profile">
         <Card className={classes.root}>
           <CardContent className={classes.content}>
             <div className={classes.menu}>
 
               {/* <OptionButton></OptionButton> */}
-              
-              <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2">
+
+            <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
                 Edit Profile
               </Typography>
-              
-              
-              <Typography className={classes.option} variant="h5" component="h2">
+
+
+            <Typography className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
                 <PassDialog></PassDialog>
               </Typography>
-             
+
             </div>
             <div className={classes.profile}>
               <div className={classes.profile}>
                 <div className={classes.leftProfile}>
                   <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
-                  <Typography onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
-                    {USERNAME}
+                  <Typography id="username" onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
                   </Typography>
                 </div>
                 <div className={classes.rightProfile}>
@@ -234,7 +265,6 @@ class Profile extends Component {
             </div>
           </CardContent>
         </Card>
-      </SideBar>
     );
   }
 }
