@@ -87,13 +87,15 @@ const styles = theme => ({
   },
   inputField: {
     //color: "white",
-    backgroundColor: "white",
+    backgroundColor: "transparent",
+    color:"white",
     width: "50%",
     marginTop: "20px",
   },
   inputFieldShort: {
     //color: "white",
-    backgroundColor: "white",
+    backgroundColor: "transparent",
+    color: "white",
     width: "24%",
     marginRight: "1%",
     marginLeft: "1%",
@@ -108,7 +110,7 @@ const styles = theme => ({
     marginTop: "20px",
     color: "white",
     backgroundColor: "#333333",
-  }
+  },
 });
 
 function post_profile(input) {
@@ -139,10 +141,43 @@ function post_profile(input) {
     });
 }
 
+function get_user(email) {
+  const user_url = '/user/' + email;
+  console.log("-0-------------------");
+  console.log(user_url);
+  const user_request = new Request(user_url, {
+    method: 'get',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+    }
+  });
+  fetch(user_request)
+    .then(res => {
+      if (res.status === 200) {
+        return res.json();
+      } else {
+        console.log('could not get user');
+      }
+    })
+    .then(data => {
+      const name_tag = document.querySelector("#username");
+      console.log("09090909090909===")
+      console.log(data)
+      name_tag.textContent = data.user;
+      //render_reports(data);
+    })
+    .catch((error) => {
+      console.log(error)
+    });
+}
+
 
 class Profile extends Component {
   constructor(props) {
     super(props);
+    
+    get_user(this.props.user.email)
     this.state = {
       edit: false
     }
@@ -220,8 +255,8 @@ class Profile extends Component {
               <div className={classes.profile}>
                 <div className={classes.leftProfile}>
                   <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
-                  <Typography onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
-                    {USERNAME}
+                  <Typography id="username" onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
+                    {this.props.user.email }
                   </Typography>
                 </div>
                 <div className={classes.rightProfile}>
