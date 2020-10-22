@@ -192,7 +192,6 @@ class Profile extends Component {
       )
 
     return (
-      <SideBar page="Profile">
         <Card className={classes.root}>
           <CardContent className={classes.content}>
             <div className={classes.menu}>
@@ -232,7 +231,6 @@ class Profile extends Component {
             </div>
           </CardContent>
         </Card>
-      </SideBar>
     );
   }
 }
