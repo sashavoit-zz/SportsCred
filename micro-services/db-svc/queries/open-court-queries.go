@@ -73,9 +73,9 @@ func GetUserNameByEmail(driver neo4j.Driver, email string) (interface{}, error) 
 
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH(u: User) \n"+
-				"RETURN collect({firstName: u.firstName, lastName: u.lastName) as userName",
-			map[string]interface{}{})
+			"MATCH(u: User{email:$email}) \n"+
+				"RETURN {firstName: u.firstName, lastName: u.lastName} as userName",
+			map[string]interface{}{"email": email})
 		if err != nil {
 			return nil, err
 		}

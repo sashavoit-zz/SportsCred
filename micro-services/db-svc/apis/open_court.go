@@ -65,13 +65,8 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 		})
 	}))
 
-	app.POST("/getUserName", CheckAuthToken(func(c *gin.Context, _ string) {
-		jsonData, err := ioutil.ReadAll(c.Request.Body)
-		if err != nil {
-		}
-		var post Post
-		json.Unmarshal(jsonData, &post)
-		email := post.Email
+	app.GET("/getUserName/:email", CheckAuthToken(func(c *gin.Context, _ string) {
+		email := c.Param("email")
 		result, err := queries.GetUserNameByEmail(driver, email)
 
 		if err != nil {
