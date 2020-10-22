@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: '5px',
         top: '50%',
         transform: 'translateY(-50%)',
-        marginLeft: '35%'
+        marginLeft: '25%'
     },
     topNav: {
         border: 1 + 'px solid aqua',
