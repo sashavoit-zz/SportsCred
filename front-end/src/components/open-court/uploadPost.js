@@ -73,7 +73,7 @@ export class UploadPost extends React.Component{
                 "Token": localStorage.getItem("Token"),
             },
         };
-        fetch("/getUserName/"+this.props.user.email)
+        fetch("/getUserName/"+this.props.user.email,requestOptions)
             .then(response => response.json())
             .then((data) => {
                 this.setState({
