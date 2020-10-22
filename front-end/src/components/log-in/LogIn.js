@@ -31,6 +31,10 @@ function LogIn(props) {
     }
   };
 
+  const handleSignUp = (event) => {
+    window.location.href = '../signup';
+  }
+
   const handleChange = (event, field) => {
     // TODO: update to use label instead of field
     let newVal = event.target.value;
@@ -119,7 +123,7 @@ function LogIn(props) {
               <Grid item>
                 <Button
                   variant="outlined"
-                  //onClick={handleSignUp} //TODO
+                  onClick={handleSignUp} //TODO
                 >
                   <span style={{ fontWeight: "600" }}>Sign Up</span>
                 </Button>

@@ -18,7 +18,6 @@ function SignUp() {
 
   const signInHandler = async () => {
     try {
-      //history.replace('/')
       result = await doesEmailExist(email);
       if(result) {
         setOpen(true);
@@ -36,6 +35,7 @@ function SignUp() {
         createUserAccount(firstName, lastName, phoneNumber, email, password, document.getElementById("date-picker-dialog").value)
         setOpen1(false)
         setOpen(false);
+        window.location.href = '../login';
       }
     } catch (err) {
       console.log(err)
