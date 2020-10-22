@@ -4,12 +4,13 @@ import { ThemeProvider } from "@material-ui/styles";
 import { CssBaseline, createMuiTheme } from "@material-ui/core";
 
 import "./App.css";
-import SignUp from '../sign-up/SignUp'
+import SignUp from "../sign-up/SignUp";
 import openCourt from '../open-court/index'
-import Account from '../profile/Account'
+import LogIn from "../log-in/LogIn";
+import Account from "../profile/Account";
 import Trivia from '../trivia/Trivia'
-import Profile from '../profile/Profile'
-import PrivateRoute from '../routes/RestrictedRoute'
+import Profile from "../profile/Profile";
+import PrivateRoute from "../routes/PrivateRoute";
 import SideBar from "../SideBar/SideBar"
 
 
