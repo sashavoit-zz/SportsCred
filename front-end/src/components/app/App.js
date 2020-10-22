@@ -11,14 +11,14 @@ import Account from "../profile/Account";
 import Trivia from '../trivia/Trivia'
 import Profile from "../profile/Profile";
 import PrivateRoute from "../routes/PrivateRoute";
-import SideBar from "../SideBar/SideBar"
+import SideBar from "../SideBar/SideBar";
+import SearchUser from '../UserService/SearchUser';
 
 const theme = createMuiTheme({
   palette: {
     type: "dark",
   },
 });
-
 
 // TODO: make better routing
 function App() {
@@ -31,6 +31,7 @@ function App() {
           <Route exact path="/signup" component={SignUp} />
           <Route exact path="/login" component={LogIn} />
           {/* private routes */}
+          <PrivateRoute exact path="/searchuser" component={SearchUser}/>
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/trivia" component={Trivia} />
           <PrivateRoute exact path="/the-zone" component={openCourt}/>
