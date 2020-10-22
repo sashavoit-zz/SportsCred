@@ -11,7 +11,8 @@ import Account from "../profile/Account";
 import Trivia from '../trivia/Trivia'
 import Profile from "../profile/Profile";
 import PrivateRoute from "../routes/PrivateRoute";
-import SideBar from "../SideBar/SideBar"
+import SideBar from "../SideBar/SideBar";
+import SearchUser from '../UserService/SearchUser';
 
 
 // TODO: make better routing
@@ -25,6 +26,7 @@ function App() {
           <Route exact path="/signup" component={SignUp} />
           <Route exact path="/login" component={LogIn} />
           <Route exact path="/profile" component={Profile} />
+          <Route exact path="/searchuser" component={SearchUser}/>
           {/* private routes */}
           <PrivateRoute exact path="/" component={Account} />
           {/* Add new paths heres */}
