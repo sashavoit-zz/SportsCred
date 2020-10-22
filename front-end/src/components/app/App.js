@@ -36,8 +36,6 @@ function App() {
           <PrivateRoute exact path="/" component={Account} />
           <PrivateRoute exact path="/openCourt" component={openCourt}/>
           {/* Add new paths heres */}
-
- 
         </Switch>
       </Router>
     </ThemeProvider>
