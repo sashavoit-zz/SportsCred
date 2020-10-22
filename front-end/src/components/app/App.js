@@ -34,8 +34,10 @@ function App() {
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/trivia" component={Trivia} />
           <PrivateRoute exact path="/" component={Account} />
+          <PrivateRoute exact path="/openCourt" component={openCourt}/>
           {/* Add new paths heres */}
-          <Route exact path="/openCourt" component={openCourt} />
+
+ 
         </Switch>
       </Router>
     </ThemeProvider>

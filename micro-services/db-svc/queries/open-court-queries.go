@@ -38,7 +38,7 @@ func LoadAllPosts(driver neo4j.Driver)(interface{}, error){
 }
 
 // add post in the database
-func AddPost(driver neo4j.Driver, content string, email string, userProfile string, likes int, dislikes int, postTime string) (string, error) {
+func AddPost(driver neo4j.Driver, content string, email string, likes int, dislikes int, postTime string) (string, error) {
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
 		return "", err
@@ -46,12 +46,12 @@ func AddPost(driver neo4j.Driver, content string, email string, userProfile stri
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (n:Post {content:$content, email:$email, userProfile:$userProfile, likes:$likes, dislikes:$dislikes, postTime:$postTime})\n"+
+			"CREATE (n:Post {content:$content, email:$email, likes:$likes, dislikes:$dislikes, postTime:$postTime})\n"+
 				"SET n.postId = id(n)\n"+
 				"WITH n \n"+
 				"MATCH(u:User{email:$email})\n"+
 				"MERGE (u)-[r:CREATED]->(n)", // or MERGE
-			map[string]interface{}{"content": content, "email": email, "userProfile": userProfile, "likes": likes, "dislikes": dislikes, "postTime": postTime})
+			map[string]interface{}{"content": content, "email": email, "likes": likes, "dislikes": dislikes, "postTime": postTime})
 		if err != nil {
 			return nil, err
 		}
