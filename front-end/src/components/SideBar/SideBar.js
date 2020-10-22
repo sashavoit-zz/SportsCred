@@ -58,18 +58,11 @@ function SideBar(props) {
       <div className={classes.toolbar} />
       <List>
         
-        <ListItem button key={"OpenCourt"} onClick = {() => history.push("/openCourt")}>
+        <ListItem button key={"OpenCourt"} onClick = {() => history.push("/the-zone")}>
           <ListItemIcon>
             <SportsBasketballIcon color="primary" />
           </ListItemIcon>
-          <ListItemText primary="Open Court" />
-        </ListItem>
-
-        <ListItem button key={"OpenCourt"} onClick = {() => history.push("/profile")}>
-          <ListItemIcon>
-            <SportsBasketballIcon color="primary" />
-          </ListItemIcon>
-          <ListItemText primary="Profile" />
+          <ListItemText primary="The Zone" />
         </ListItem>
 
         <ListItem button key={"OpenCourt"} onClick = {() => history.push("/trivia")}>
@@ -77,6 +70,13 @@ function SideBar(props) {
             <SportsBasketballIcon color="primary" />
           </ListItemIcon>
           <ListItemText primary="Trivia" />
+        </ListItem>
+
+        <ListItem button key={"OpenCourt"} onClick = {() => history.push("/profile")}>
+          <ListItemIcon>
+            <SportsBasketballIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Profile" />
         </ListItem>
 
       </List>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { CssBaseline, createMuiTheme } from "@material-ui/core";
 
@@ -33,9 +33,9 @@ function App() {
           {/* private routes */}
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/trivia" component={Trivia} />
-          <PrivateRoute exact path="/" component={Account} />
-          <PrivateRoute exact path="/openCourt" component={openCourt}/>
+          <PrivateRoute exact path="/the-zone" component={openCourt}/>
           {/* Add new paths heres */}
+          <Route path="/" component={() => <Redirect to="/the-zone"/>} />
         </Switch>
       </Router>
     </ThemeProvider>
