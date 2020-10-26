@@ -34,10 +34,25 @@ func SetUpProfile(app *gin.Engine, driver neo4j.Driver){
 			c.String(400, "Bad Request")
 			//c.JSON(400, gin.H{"message":"pong",})
 		}
-
-		c.JSON(200, gin.H{
-			"user" : result,
-		})
+		log.Println("-------------------88880")
+		log.Println(result)
+		js, err := json.Marshal(result)
+		if err != nil {
+			c.String(500, "Internal Error")
+		}
+		log.Println("-------------------88880999")
+		log.Println(js)
+		// type User struct{
+		// 	firstName string
+		// 	lastName string
+		// }
+		// a := User{
+		// 	"fname","lname",
+		// }
+		c.JSON(200, result)
+		// c.JSON(200, gin.H{
+		// 	"user" : js,
+		// })
 	}))
 
 	//add a new post

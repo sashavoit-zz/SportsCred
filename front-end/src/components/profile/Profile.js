@@ -136,41 +136,41 @@ function post_profile(input) {
     });
 }
 
-function get_user(email) {
-  const user_url = '/user/' + email;
-  console.log("-0-------------------");
-  console.log(user_url);
-  const user_request = new Request(user_url, {
-    method: 'get',
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
-    }
-  });
-  fetch(user_request)
-    .then(res => {
-      if (res.status === 200) {
-        return res.json();
-      } else {
-        console.log('could not get user');
-      }
-    })
-    .then(data => {
-      const name_tag = document.querySelector("#username");
-      name_tag.textContent = data.user;
-      //render_reports(data);
-    })
-    .catch((error) => {
-      console.log(error)
-    });
-}
-
-
 class Profile extends Component {
   constructor(props) {
     super(props);
 
-    get_user(this.props.user.email)
+    // get_user(this.props.user.email)
+    const user_url = '/user/' + this.props.user.email;
+    const user_request = new Request(user_url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+      }
+    });
+    fetch(user_request)
+      .then(res => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          console.log('could not get user');
+        }
+      })
+      .then(data => {
+        const name_tag = document.querySelector("#username");
+        name_tag.textContent = data.FirstName + " " + data.LastName;
+        this.setState({
+          firstName: data.FirstName,
+          lastName: data.LastName,
+          about: data.About,
+          phone: data.Phone
+        })
+        //render_reports(data);
+      })
+      .catch((error) => {
+        console.log(error)
+      });
     this.state = {
       edit: false
     }
@@ -207,14 +207,14 @@ class Profile extends Component {
     const profileContent = this.state.edit ? (
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
         <TextField className={classes.inputField} id="email" label={this.props.user.email} variant="filled" onChange={this.handleInputChange} disabled /><br />
-        <TextField className={classes.inputFieldShort} id="lastName" label="Last Name" variant="filled" onChange={this.handleInputChange} />
-        <TextField className={classes.inputFieldShort} id="firstName" label="First Name" variant="filled" onChange={this.handleInputChange} /><br />
+        <TextField className={classes.inputFieldShort} id="lastName" label="Last Name" value={this.state.lastName} variant="filled" onChange={this.handleInputChange} />
+        <TextField className={classes.inputFieldShort} id="firstName" label="First Name" value={this.state.firstName} variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Help people discover your account by using the name you re <br />
           known by: either your full name, nickname, or business name
         </div>
-        <TextField className={classes.inputField} id="about" label="About" variant="filled" onChange={this.handleInputChange} /><br />
-        <TextField className={classes.inputField} id="phone" label="Phone Number" variant="filled" onChange={this.handleInputChange} /><br />
+        <TextField className={classes.inputField} id="about" label="About" value={this.state.about} variant="filled" onChange={this.handleInputChange} /><br />
+        <TextField className={classes.inputField} id="phone" label="Phone Number" value={this.state.phone} variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Personal Information (Email & Phone Number): <br />
           This wont be a part of your public profile.
