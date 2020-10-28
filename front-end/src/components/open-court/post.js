@@ -1,5 +1,5 @@
 import React from 'react';
-import {CardActions,Card, CardHeader,CardContent, Typography, IconButton,Avatar} from '@material-ui/core';
+import {CardActions,Card, CardHeader,CardContent, Typography, IconButton,Avatar,Link, CardActionArea} from '@material-ui/core';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import ShareIcon from '@material-ui/icons/Share';
@@ -14,13 +14,42 @@ const userStyles = theme =>({
         marginLeft:"auto",
         marginRight:"auto"
     },
+    card:{
+        width:'60%',
+        marginTop:'15px',
+        marginLeft:'3%',
+        borderLeftWidth: "5px",
+        borderLeftStyle: "solid",
+        borderLeftColor:"#757ce8"
+    },
+    embeds:{
+        backgroundColor: "#303030",  
+    },
+    url:{
+        color:"#757ce8",
+        hover:{
+            color:"green"
+        }
+    },
+
+
 });
 
 export class Post extends React.Component{
+    componentDidMount () {
+        const script = document.createElement("script");
+    
+        script.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2";
+        script.async = true;
+        script.defer = true;
+    
+        document.body.appendChild(script);
+    }
     render(){
         const {postInfo} = this.props;
         // const classes = userStyles();
         const {classes} = this.props;
+        const url = postInfo.content.match(/\bhttps?:\/\/\S+/gi)
         return (
             <div>
                 <Card className={classes.root}>
@@ -33,9 +62,31 @@ export class Post extends React.Component{
                     >
                     </CardHeader> 
                     <CardContent>
-                        <Typography variant ="body1" color="textSecondary">
+                        {url == null
+                        ?<Typography variant ="body1" color="textSecondary">
                             {postInfo.content}
                         </Typography>
+                        :<div>
+                            <Typography variant ="body1" color="textSecondary">
+                                {postInfo.content.split(url)}
+                                <Link href={url} className = {classes.url}>
+                                {url} 
+                                </Link>
+                                <Card className = {classes.card}>
+                                    <CardActionArea >
+                                    <CardContent className = {classes.embeds}>
+                                    <div class="fb-post" 
+                                        data-href={url}
+                                        href = {url}
+                                        data-width="500">
+                                    </div>
+                                    </CardContent>
+                                    </CardActionArea>
+                                    </Card>
+                            </Typography>
+                         
+                        </div>
+                        }
                     </CardContent>
                     <CardActions disableSpacing>
                         <IconButton>
