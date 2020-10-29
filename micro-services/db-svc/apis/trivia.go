@@ -3,10 +3,11 @@ package apis
 import (
 	"db-svc/queries"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"io/ioutil"
 	"log"
+
+	"github.com/gin-gonic/gin"
+	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
 
 //Question struct
@@ -30,9 +31,9 @@ type Person struct {
 	Password string
 }
 
-func SetUpTrivia(app *gin.Engine, driver neo4j.Driver){
+func SetUpTrivia(app *gin.Engine, driver neo4j.Driver) {
 
-	app.POST("/addQuestion/:hash", CheckAuthToken(func(c *gin.Context, _ string){
+	app.POST("/addQuestion/:hash", CheckAuthToken(func(c *gin.Context, _ string) {
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
@@ -62,7 +63,7 @@ func SetUpTrivia(app *gin.Engine, driver neo4j.Driver){
 		})
 	}))
 
-	app.POST("/addQuestionRelationship/:hash", CheckAuthToken(func(c *gin.Context, _ string){
+	app.POST("/addQuestionRelationship/:hash", CheckAuthToken(func(c *gin.Context, _ string) {
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
@@ -91,7 +92,7 @@ func SetUpTrivia(app *gin.Engine, driver neo4j.Driver){
 		})
 	}))
 
-	app.GET("/getQuestion/:username/:hash",CheckAuthToken(func(c *gin.Context, _ string){
+	app.GET("/getQuestion/:username/:hash", CheckAuthToken(func(c *gin.Context, _ string) {
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
@@ -100,7 +101,8 @@ func SetUpTrivia(app *gin.Engine, driver neo4j.Driver){
 		var relationship QuestionRelationship
 		json.Unmarshal(jsonData, &relationship)
 
-		user := c.Param("username")
+		//user := c.Param("username")
+		user := c.Request.Header.Get("User")
 
 		// get question from db
 		result, err := queries.GetQuestion(driver, user)
@@ -121,7 +123,7 @@ func SetUpTrivia(app *gin.Engine, driver neo4j.Driver){
 		})
 	}))
 
-	app.POST("/deleteQuestionRelationship/:hash", CheckAuthToken(func(c *gin.Context, _ string){
+	app.POST("/deleteQuestionRelationship/:hash", CheckAuthToken(func(c *gin.Context, _ string) {
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {

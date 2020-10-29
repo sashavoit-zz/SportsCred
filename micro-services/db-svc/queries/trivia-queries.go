@@ -2,8 +2,9 @@ package queries
 
 import (
 	"fmt"
-	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"log"
+
+	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
 
 func AddQuestion(driver neo4j.Driver, question string, option1 string, option2 string, option3 string, answer string) (string, error) {
@@ -35,7 +36,7 @@ func AddQuestionRelationship(driver neo4j.Driver, question string, user string) 
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH (a:Question {question:$question}),(t:User {name:$user})\n"+"MERGE (t)-[r:NOT_ANSWERED]->(a)\n"+"RETURN r", // or MERGE
+			"MATCH (a:Question {question:$question}),(t:User {email:$user})\n"+"MERGE (t)-[r:NOT_ANSWERED]->(a)\n"+"RETURN r", // or MERGE
 			map[string]interface{}{"question": question, "user": user})
 		if err != nil {
 			return nil, err
@@ -58,7 +59,7 @@ func GetQuestion(driver neo4j.Driver, user string) ([6]string, error) {
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH (n:Question)-[r:NOT_ANSWERED]-(t:User {name:$user})\n"+"RETURN n.question, n.option1, n.option2, n.option3, n.answer\n"+"LIMIT 1", // or MERGE
+			"MATCH (n:Question)-[r:NOT_ANSWERED]-(t:User {email:$user})\n"+"RETURN n.question, n.option1, n.option2, n.option3, n.answer\n"+"LIMIT 1", // or MERGE
 			map[string]interface{}{"user": user})
 		if err != nil {
 			return nil, err
@@ -93,7 +94,7 @@ func DeleteQuestionRelationship(driver neo4j.Driver, question string, user strin
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH (a:Question {question:$question})-[r:NOT_ANSWERED]-(t:User {name:$user})\n"+"DELETE r", // or MERGE
+			"MATCH (a:Question {question:$question})-[r:NOT_ANSWERED]-(t:User {email:$user})\n"+"DELETE r", // or MERGE
 			map[string]interface{}{"question": question, "user": user})
 		if err != nil {
 			return nil, err

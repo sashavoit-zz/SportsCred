@@ -175,6 +175,7 @@ function Trivia(props) {
     //   addQuestionRelationship("Who was the youngest player to score 10,000 points?", "ben");
     //   addQuestionRelationship("Who did the Los Angeles Lakers draft twice?", "ben");
     //   addQuestionRelationship("Who scored the most points in a single NBA game?", "ben");
+    //addQuestionRelationship("Who holds the record for most assists in a single game?", "hello@mail.com");
   }
 
   //Shuffle array algorithm from the internet: https://github.com/coolaj86/knuth-shuffle
@@ -222,7 +223,7 @@ async function addQuestionRelationship(question, user) {
         method: 'POST',
         body: JSON.stringify({
             "question": question,
-            "user": user
+            "user": "hello@mail.com"
         }),
         headers: {
             'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
@@ -236,10 +237,12 @@ async function addQuestionRelationship(question, user) {
       var responseBody = [1,2,3,4];
       responseBody = shuffle(responseBody);
 
-      const response = await fetch("http://localhost:3001/getQuestion/ben/hashasdasd", {
+      var url = "http://localhost:3001/getQuestion/" + "maya" + "/hashasdasd";
+      const response = await fetch(url, {
           mode: 'cors',
           headers: {
-              'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+              'Token': localStorage.getItem("Token"), // move whole function to ApiCalls.js later
+              'User': localStorage.getItem("User")
           }
         })
       .then(response => {
@@ -265,7 +268,7 @@ async function addQuestionRelationship(question, user) {
         mode: 'cors',
         method: 'POST',
         body: JSON.stringify({
-            "user": "ben",
+            "user": localStorage.getItem("User"),
             "question": question
         }),
         headers: {
