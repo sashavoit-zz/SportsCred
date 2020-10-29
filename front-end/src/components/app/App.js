@@ -5,6 +5,7 @@ import { CssBaseline, createMuiTheme } from "@material-ui/core";
 
 import "./App.css";
 import SignUp from "../sign-up/SignUp";
+import DebateAndAnalysis from "../debate-and-analysis/DebateAndAnalysis"
 import openCourt from '../open-court/index'
 import LogIn from "../log-in/LogIn";
 import Account from "../profile/Account";
@@ -35,6 +36,7 @@ function App() {
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/trivia" component={Trivia} />
           <PrivateRoute exact path="/the-zone" component={openCourt}/>
+          <PrivateRoute exact path="/debateandanalysis" component={DebateAndAnalysis}/>
           {/* Add new paths heres */}
           <Route path="/" component={() => <Redirect to="/the-zone"/>} />
         </Switch>

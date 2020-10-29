@@ -20,7 +20,7 @@ import Menu from "@material-ui/core/Menu";
 import SportsBasketballIcon from "@material-ui/icons/SportsBasketball";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
-const drawerWidth = 200;
+const drawerWidth = 250;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -142,6 +142,17 @@ function SideBar(props) {
             <SportsBasketballIcon color="primary" />
           </ListItemIcon>
           <ListItemText primary="Profile" />
+        </ListItem>
+
+        <ListItem
+          button
+          key={"OpenCourt"}
+          onClick={() => history.push("/debateandanalysis")}
+        >
+          <ListItemIcon>
+            <SportsBasketballIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Debate & Analysis" />
         </ListItem>
       </List>
     </div>
