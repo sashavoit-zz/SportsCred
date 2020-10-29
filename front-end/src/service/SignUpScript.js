@@ -54,38 +54,38 @@ async function addQuestionsToUser(user) {
     addQuestionRelationship("Youngest player to ever record a triple double in NBA history?", user);
     addQuestionRelationship("What year was the NBA created?", user);
 
-    addQuestion("What university did Dwayne Wade attend?", user);
-    addQuestion("How many players to this date have made the jump from high school to the NBA?", user);
-    addQuestion("How many championship rings does the Laker franchise have?", user);
-    addQuestion("What is Shaquille O’neal’s career PPG average?", user);
-    addQuestion("Who scored the Toronto Raptors first ever franchise basket?", user);
-    addQuestion("Who is the only player to average a triple double in the NBA finals?", user);
-    addQuestion("Who was the only team to beat Michael Jordan in a series between 1991 and 1998?", user);
-    addQuestion("How many points did Reggie Miller score in the final 18.7 seconds of Game 1 against the New York Knicks in 1995?", user);
-    addQuestion("Which coach did Latrell Spreewell choke in practice?", user);
-    addQuestion("Who did the Toronto Raptors trade in exchange to the rights for Vince Carter in 1998?", user);
-    addQuestion("Who won the 1997 rookie of the year?", user);
-    addQuestion("Who were the first team to be a #1 seed and lose to a #8 seed in the NBA playoffs?", user);
-    addQuestion("When was the last time Kobe Byrant made all NBA first team?", user);
-    addQuestion("What two teams did Kareem Abdul-Jabbar play for?", user);
-    addQuestion("What team originally drafted Brandon Roy in 2006?", user);
-    addQuestion("1989 NBA Playoffs - Game 5 between the Chicago Bulls and Cleveland Cavaliers - Michael Jordan made what came to be known today as 'the Shot'. The Bulls were trailing by one point and had the ball with 3 seconds to go. Who did Jordan shoot over?", user);
-    addQuestion("What shoes was Jordan wearing when he  made his first well known 'game winner'?", user);
-    addQuestion("Which of the following was a NBA scoring champ one year after being named Rookie of the Year?", user);
-    addQuestion("What number did Scottie Pippen wear?", user);
-    addQuestion("Who won the 2005 NBA MVP?", user);
-    addQuestion("What player led the NBA in points per game during the 03-04 season?", user);
-    addQuestion("What year did LeBron James win his first MVP?", user);
-    addQuestion("Who was the NBA’s first ever MVP in 1956?", user);
-    addQuestion("What was LeBron James rookie stat line?", user);
-    addQuestion("Who won MVP in 2008?", user);
-    addQuestion("What team did Damian Lillard eliminate with an iconic game winner over Paul George?", user);
-    addQuestion("How many sixth man of the year awards has Jamal Crawford won?", user);
-    addQuestion("Which player is the all time leader in points scored for the Memphis Grizzlies?", user);
-    addQuestion("Which player was traded from the Toronto Raptors for Kawhi Leonard?", user);
-    addQuestion("Which player scored 37 points in a single quarter?", user);
-    addQuestion("Who is the all time leader in points scored for the Toronto Raptors?", user);
-    addQuestion("What is Dwayne Wade’s nickname?", user);
+    addQuestionRelationship("What university did Dwayne Wade attend?", user);
+    addQuestionRelationship("How many players to this date have made the jump from high school to the NBA?", user);
+    addQuestionRelationship("How many championship rings does the Laker franchise have?", user);
+    addQuestionRelationship("What is Shaquille O’neal’s career PPG average?", user);
+    addQuestionRelationship("Who scored the Toronto Raptors first ever franchise basket?", user);
+    addQuestionRelationship("Who is the only player to average a triple double in the NBA finals?", user);
+    addQuestionRelationship("Who was the only team to beat Michael Jordan in a series between 1991 and 1998?", user);
+    addQuestionRelationship("How many points did Reggie Miller score in the final 18.7 seconds of Game 1 against the New York Knicks in 1995?", user);
+    addQuestionRelationship("Which coach did Latrell Spreewell choke in practice?", user);
+    addQuestionRelationship("Who did the Toronto Raptors trade in exchange to the rights for Vince Carter in 1998?", user);
+    addQuestionRelationship("Who won the 1997 rookie of the year?", user);
+    addQuestionRelationship("Who were the first team to be a #1 seed and lose to a #8 seed in the NBA playoffs?", user);
+    addQuestionRelationship("When was the last time Kobe Byrant made all NBA first team?", user);
+    addQuestionRelationship("What two teams did Kareem Abdul-Jabbar play for?", user);
+    addQuestionRelationship("What team originally drafted Brandon Roy in 2006?", user);
+    addQuestionRelationship("1989 NBA Playoffs - Game 5 between the Chicago Bulls and Cleveland Cavaliers - Michael Jordan made what came to be known today as 'the Shot'. The Bulls were trailing by one point and had the ball with 3 seconds to go. Who did Jordan shoot over?", user);
+    addQuestionRelationship("What shoes was Jordan wearing when he  made his first well known 'game winner'?", user);
+    addQuestionRelationship("Which of the following was a NBA scoring champ one year after being named Rookie of the Year?", user);
+    addQuestionRelationship("What number did Scottie Pippen wear?", user);
+    addQuestionRelationship("Who won the 2005 NBA MVP?", user);
+    addQuestionRelationship("What player led the NBA in points per game during the 03-04 season?", user);
+    addQuestionRelationship("What year did LeBron James win his first MVP?", user);
+    addQuestionRelationship("Who was the NBA’s first ever MVP in 1956?", user);
+    addQuestionRelationship("What was LeBron James rookie stat line?", user);
+    addQuestionRelationship("Who won MVP in 2008?", user);
+    addQuestionRelationship("What team did Damian Lillard eliminate with an iconic game winner over Paul George?", user);
+    addQuestionRelationship("How many sixth man of the year awards has Jamal Crawford won?", user);
+    addQuestionRelationship("Which player is the all time leader in points scored for the Memphis Grizzlies?", user);
+    addQuestionRelationship("Which player was traded from the Toronto Raptors for Kawhi Leonard?", user);
+    addQuestionRelationship("Which player scored 37 points in a single quarter?", user);
+    addQuestionRelationship("Who is the all time leader in points scored for the Toronto Raptors?", user);
+    addQuestionRelationship("What is Dwayne Wade’s nickname?", user);
 }
 
 async function addQuestionsToDb() {
@@ -143,3 +143,5 @@ async function addQuestionsToDb() {
     addQuestion("Who is the all time leader in points scored for the Toronto Raptors?", "Kawhi Leonard", "Chris Bosh", "Vince Carter", "DeMar DeRozan");
     addQuestion("What is Dwayne Wade’s nickname?", "Invisible Man", "Speedy", "Lightning", "Flash");
 }
+
+export { addQuestionRelationship, addQuestion, addQuestionsToUser, addQuestionsToDb };

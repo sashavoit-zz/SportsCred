@@ -92,6 +92,35 @@ func SetUpTrivia(app *gin.Engine, driver neo4j.Driver) {
 		})
 	}))
 
+	app.POST("/addQuestionRelationship2/:hash", func(c *gin.Context) {
+		// bind
+		jsonData, err := ioutil.ReadAll(c.Request.Body)
+		if err != nil {
+			// Handle error
+		}
+		var relationship QuestionRelationship
+		json.Unmarshal(jsonData, &relationship)
+
+		question := relationship.Question
+		user := relationship.User
+		log.Println("trivia.go: question and name:-------------------------------------")
+		log.Println(question)
+		log.Println(user)
+		//add question to the database
+		result, err := queries.AddQuestionRelationship(driver, question, user)
+		if err != nil {
+			// 500 failed add user
+			c.String(500, "Internal Error")
+		} else if result == "" {
+			// 400 bad request (not exist or wrong password)
+			c.String(400, "Bad Request")
+			//c.JSON(400, gin.H{"message":"pong",})
+		}
+		c.JSON(200, gin.H{
+			"Note": "Question added successfully.",
+		})
+	})
+
 	app.GET("/getQuestion/:username/:hash", CheckAuthToken(func(c *gin.Context, _ string) {
 		// bind
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
