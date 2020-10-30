@@ -1,8 +1,14 @@
 import React from "react";
 import SideBar from "../SideBar/SideBar";
-import { CircularProgress, Box, Typography, Card, CardContent, CardActions, Button, TextField } from "@material-ui/core";
+import { CircularProgress, Box, Typography, Card, CardContent, CardActions, Button, TextField, Grid } from "@material-ui/core";
+import pfp1 from '../../assets/images/pfp1.png';
 
-export class DebateAndAnalysis extends React.Component{
+function goToAnalysis() {
+  window.location.href = '../analysis';
+}
+
+export class Debate extends React.Component{
+
   constructor(props) {
     super(props);
     var timeNext = new Date()
@@ -50,18 +56,29 @@ export class DebateAndAnalysis extends React.Component{
                   Who is the greatest of all time?
                 </Typography>
                 <br></br>
-                <TextField
-                  id="outlined-multiline-static"
-                  label="Your answer"
-                  multiline
-                  rows={4}
-                  variant="outlined"
-                  fullWidth="true"
-                />
+                <Box display="flex">
+                  <Box p={1}>
+                    <img src={pfp1} width="50" height="50"/>
+                  </Box>
+                  <Box p={1} flexGrow={1}>
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="Your answer"
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        fullWidth="true"
+                      />
+                  </Box>
+                </Box>
               </CardContent>
-              <CardActions>
-                <Button variant="contained" color="primary" > Debate</Button>
-              </CardActions>
+              <Box display="flex" justifyContent="flex-end" m={1}>
+                <CardActions>
+                  <Button variant="contained" color="primary"
+                    onClick={goToAnalysis}
+                  > Debate</Button>
+                </CardActions>
+              </Box>
             </Card>
             <Box position="absolute" top="80px" right="40px" display="inline-flex" height="90px" width="90px" >
               <CircularProgress variant="static" value={this.state.percentTime} size="90px" />
@@ -85,4 +102,4 @@ export class DebateAndAnalysis extends React.Component{
   }
 }
 
-export default DebateAndAnalysis;
+export default Debate;

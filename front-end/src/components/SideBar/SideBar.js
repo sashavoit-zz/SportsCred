@@ -147,7 +147,7 @@ function SideBar(props) {
         <ListItem
           button
           key={"OpenCourt"}
-          onClick={() => history.push("/debateandanalysis")}
+          onClick={() => history.push("/debate")}
         >
           <ListItemIcon>
             <SportsBasketballIcon color="primary" />
