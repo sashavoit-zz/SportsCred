@@ -4,7 +4,7 @@ import (
 	"db-svc/queries"
 	"encoding/json"
 	"io/ioutil"
-
+	"log"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
@@ -33,6 +33,23 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 			return
 		}
 
+		c.JSON(200, result)
+	}))
+
+	app.GET("/post/:id", CheckAuthToken(func(c *gin.Context, _ string) {
+		id := c.Param("id");
+		log.Println("000000")
+		log.Println(id)
+		result, err := queries.LoadPost(driver, id)
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		} else if result == nil {
+			c.String(404, "Not found")
+			return
+		}
+		log.Println("0000001")
+		log.Println(result)
 		c.JSON(200, result)
 	}))
 

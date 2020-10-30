@@ -18,6 +18,7 @@ import CloseIcon from '@material-ui/icons/Close';
 // import { useParams } from "react-router";
 
 import FaceIcon from '@material-ui/icons/Face';
+import { CardHeader } from '@material-ui/core';
 const ACSSCORE = "560"
 const letters = /^[A-Za-z]*$/;
 const numbers = /^[+\d]?(?:[\d-.\s()]*)$/;
@@ -114,23 +115,53 @@ const styles = theme => ({
   },
 });
 
-// function printParams(input) {
-//   let { id } = useParams();
-//   log(id)
-// }
-
 class OpenCourtPost extends Component {
   constructor(props) {
     super(props);
     log("--------------------------999")
     log(props)
-    // printParams()
     this.state = {
-      edit: false,
-      errmsg:false
+      //id: props.param,
+      // edit: false,
+      // errmsg:false
     }
   }
 
+  componentDidMount() {
+    const user_url = '/post/' + this.props.param;
+    const user_request = new Request(user_url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+      }
+    });
+    fetch(user_request)
+      .then(res => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          console.log('could not get post');
+        }
+      })
+      .then(data => {
+        // success get post object in data
+        log("okhteethetheht--")
+        log(data)
+        // const name_tag = document.querySelector("#username");
+        // name_tag.textContent = data.FirstName + " " + data.LastName;
+        this.setState({
+          title: data.Title,
+          content: data.Content,
+          likes: data.Likes,
+          dislikes: data.Dislikes
+        })
+        //render_reports(data);
+      })
+      .catch((error) => {
+        console.log(error)
+      });
+  }
 
 
   render() {
@@ -144,40 +175,11 @@ class OpenCourtPost extends Component {
     return (
         <Card className={classes.root}>
           <CardContent className={classes.content}>
-            <div className={classes.menu}>
-
-              {/* <OptionButton></OptionButton> */}
-
-            <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
-                Edit Profile
-              </Typography>
-
-
-            <Typography className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
-                
-              </Typography>
-
-            </div>
-            <div className={classes.profile}>
-              <div className={classes.profile}>
-                <div className={classes.leftProfile}>
-                  <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
-                  <Typography id="username" onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
-                  </Typography>
-                </div>
-                <div className={classes.rightProfile}>
-                  <Typography variant="h5" component="h2">
-                    ACS Score: {ACSSCORE}
-                  </Typography>
-                  <div className={classes.blueText}>
-                    Update Profile Picture
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={classes.bottomProfile}>
-              
-            </div>
+            <CardHeader
+              title={this.state.title}//{postInfo.firstName + " " + postInfo.lastName}
+              subheader={this.state.content + "this is content of the post"} //{postInfo.time}
+            >
+            </CardHeader>
           </CardContent>
         </Card>
     );

@@ -66,12 +66,12 @@ func SetUpProfile(app *gin.Engine, driver neo4j.Driver){
 		var profile Profile
 		json.Unmarshal(jsonData, &profile)
 
-		log.Println("333---")
-		log.Println(profile.FirstName)
-		log.Println(profile.LastName)
-		log.Println(profile.Email)
-		log.Println(profile.Phone)
-		log.Println(profile.About)
+		// log.Println("333---")
+		// log.Println(profile.FirstName)
+		// log.Println(profile.LastName)
+		// log.Println(profile.Email)
+		// log.Println(profile.Phone)
+		// log.Println(profile.About)
 		//err = client.Set("id", jsonData, 0).Err()
 		firstName := profile.FirstName
 		lastName := profile.LastName
