@@ -5,6 +5,8 @@ import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import ShareIcon from '@material-ui/icons/Share';
 import { withStyles } from "@material-ui/core/styles";
 import CommentIcon from '@material-ui/icons/Comment';
+//import { useH } from "react-router-dom/cjs/react-router-dom.min";
+import { Link } from 'react-router-dom'
 
 const userStyles = theme =>({
     root:{
@@ -16,22 +18,32 @@ const userStyles = theme =>({
     },
 });
 
+// handleOnSubmit = () => {
+//     this.props.history.push(`/dashboard`);
+// };
+
 export class Post extends React.Component{
     render(){
+        //let history = useH();
         const {postInfo} = this.props;
         // const classes = userStyles();
+        console.log(postInfo)
         const {classes} = this.props;
         return (
             <div>
                 <Card className={classes.root}>
-                    <CardHeader
-                        //avatar={
-                        //    <Avatar src ={postInfo.AuthorProfile}/>
-                        //}
-                        title={postInfo.firstName + " " + postInfo.lastName}
-                        subheader = {postInfo.time}
-                    >
-                    </CardHeader> 
+                    <Link to={"/the-zone/" + postInfo.postId}> 
+                        <CardHeader
+                            //avatar={
+                            //    <Avatar src ={postInfo.AuthorProfile}/>
+                            //}
+                            //onClick={() => history.push("/the-zone/" + postInfo.postId)}
+                            title={postInfo.firstName + " " + postInfo.lastName}
+                            subheader = {postInfo.time}
+                            >
+                            
+                        </CardHeader>
+                    </Link>
                     <CardContent>
                         <Typography variant ="body1" color="textSecondary">
                             {postInfo.content}

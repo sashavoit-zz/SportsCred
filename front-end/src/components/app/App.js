@@ -36,7 +36,7 @@ function App() {
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/trivia" component={Trivia} />
           <PrivateRoute exact path="/the-zone" component={openCourt}/>
-          <PrivateRoute exact path="/openCourt/:post" component={OpenCourtPost} />
+          <PrivateRoute exact path="/the-zone/:post" component={OpenCourtPost} />
           {/* Add new paths heres */}
           <Route path="/" component={() => <Redirect to="/the-zone"/>} />
         </Switch>
