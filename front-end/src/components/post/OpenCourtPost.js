@@ -15,6 +15,8 @@ import {Collapse, IconButton} from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 
+// import { useParams } from "react-router";
+
 import FaceIcon from '@material-ui/icons/Face';
 const ACSSCORE = "560"
 const letters = /^[A-Za-z]*$/;
@@ -112,11 +114,17 @@ const styles = theme => ({
   },
 });
 
+// function printParams(input) {
+//   let { id } = useParams();
+//   log(id)
+// }
 
 class OpenCourtPost extends Component {
   constructor(props) {
     super(props);
-    
+    log("--------------------------999")
+    log(props)
+    // printParams()
     this.state = {
       edit: false,
       errmsg:false
@@ -128,10 +136,10 @@ class OpenCourtPost extends Component {
   render() {
     const { classes } = this.props;
     
-    log("03928498394893284923849328492349823000")
-    log(this.props.match.params.post)
-    log("03928498394893284923849328492349823000")
-    log(this.props)
+    // log("03928498394893284923849328492349823000")
+    // //log(this.props.match.params.post)
+    // log("03928498394893284923849328492349823000")
+    // log(this.props)
 
     return (
         <Card className={classes.root}>
