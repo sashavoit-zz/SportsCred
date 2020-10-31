@@ -26,7 +26,7 @@ func GetDailyPicks(driver neo4j.Driver, email string) (interface{}, error){
 				   "}\n" +
 				   "WITH closestGame\n" +
 				   "MATCH(g: Game) WHERE g.date = closestGame.date\n" +
-				   "RETURN COLLECT({team1_name: g.team1_name, team2_name: g.team2_name, team1_init: g.team1_init, team2_init: g.team2_init, date: toString(g.date), winner: g.winner}) AS games\n",
+				   "RETURN COLLECT({game_id: ID(g), team1_name: g.team1_name, team2_name: g.team2_name, team1_init: g.team1_init, team2_init: g.team2_init, date: toString(g.date), winner: g.winner}) AS games\n",
 			map[string]interface{}{"today": today, "email": email})
 		if err != nil {
 			panic(err)
@@ -37,6 +37,57 @@ func GetDailyPicks(driver neo4j.Driver, email string) (interface{}, error){
 			return value, nil
 		}
 		return nil, nil
+	})
+
+	return result, err
+}
+
+func AddNewPrediction(driver neo4j.Driver, email string, gameId int, prediction string) (interface{}, error){
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		panic(err)
+		return nil, err
+	}
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"MATCH(u:User {email: $email})\n" +
+				"MATCH(g:Game)\n"+
+			    "WHERE ID(g) = $game_id\n"+
+				"CREATE (u)-[:PREDICTED {winner: $prediction, seen: false}]->(g)\n",
+			map[string]interface{}{"game_id": gameId, "email": email, "prediction": prediction})
+		if err != nil {
+			panic(err)
+			return nil, err
+		}
+		return result, nil
+	})
+
+	return result, err
+}
+
+func IfMadePrediction(driver neo4j.Driver, email string, date string) (interface{}, error){
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		panic(err)
+		return false, err
+	}
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"MATCH(u:User {email: $email})\n" +
+				"MATCH(g:Game {date: date($date)})\n"+
+				"WHERE NOT (u)-[:PREDICTED]->(g)\n"+
+				"RETURN g\n",
+			map[string]interface{}{"email": email, "date": date})
+		if err != nil {
+			panic(err)
+			return nil, err
+		}
+
+		return !result.Next(), nil
 	})
 
 	return result, err
