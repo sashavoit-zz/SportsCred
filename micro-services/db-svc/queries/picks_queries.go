@@ -1,6 +1,7 @@
 package queries
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"reflect"
@@ -106,6 +107,7 @@ func GetNewResults(driver neo4j.Driver, email string) (interface{}, error){
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
 			"MATCH (u:User {email: $email})-[p:PREDICTED {seen: false}]->(g:Game)\n"+
+				"WHERE EXISTS (g.winner)\n"+
 				"SET p.seen = true\n"+
 				"WITH g, (p.winner = g.winner) AS ifCorrect\n" +
 				"RETURN COLLECT({game_id: ID(g), team1_name: g.team1_name, team2_name: g.team2_name, team1_init: g.team1_init, team2_init: g.team2_init, date: toString(g.date), winner: g.winner, correct: ifCorrect}) as results, COUNT(g) as counter",
@@ -154,4 +156,38 @@ func AddGameOutcome(driver neo4j.Driver, gameId int, winner string) (interface{}
 	})
 
 	return result, err
+}
+
+func GetUsersThatPredicted(driver neo4j.Driver, gameId int) ([]string, error){
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		panic(err)
+		return nil, err
+	}
+	defer session.Close()
+
+	var emails []string
+
+	_, err = session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"MATCH (u:User)-[:PREDICTED]->(g:Game)\n" +
+				"WHERE ID(g) = $game_id\n" +
+				"WITH u\n" +
+				"RETURN COLLECT(u.email) as emails\n",
+			map[string]interface{}{"game_id": gameId})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next(){
+			value, _ := result.Record().Get("emails")
+			bytes, _ := json.Marshal(value)
+			json.Unmarshal(bytes, &emails)
+			return nil, nil
+		}
+
+		return nil, nil
+	})
+
+	return emails, err
 }

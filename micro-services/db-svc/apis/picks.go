@@ -8,9 +8,14 @@ import (
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"io/ioutil"
 	"reflect"
+	"time"
 )
 
+
 func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
+
+	channels := make(map[string]chan int)
+	const timeout = 3 * time.Hour
 
 	app.GET("/picks/dailyPicks", CheckAuthToken(func(c *gin.Context, _ string){
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
@@ -87,11 +92,31 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 			return
 		}
 		if result == nil || reflect.ValueOf(result).IsNil() {
-			fmt.Print("empty")
-			//TODO: implement long polling here
-		}else{
-			c.JSON(200, result)
+
+			//Waiting for new relevant data to appear
+			channels[data.Email] = make(chan int)
+			timer := make(chan int)
+			go func(){
+				time.Sleep(timeout)
+				timer<-0
+			}()
+			for {
+				select {
+				case <- channels[data.Email]:
+					result, err := queries.GetNewResults(driver, data.Email)
+					if err != nil {
+						c.String(500, "Internal server error")
+						return
+					}
+					c.JSON(200, result)
+					return
+				case <- timer:
+					c.JSON(408, nil)
+					return
+				}
+			}
 		}
+		c.JSON(200, result)
 	}))
 
 	app.PATCH("picks/updGameOutcome", CheckAuthToken(func(c *gin.Context, _ string){
@@ -109,7 +134,16 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 			return
 		}
 
-		//TODO: here we should notify channels that new data has been added to db
+		//Notifying channels that new data has been added
+		go func(){
+			emails, err := queries.GetUsersThatPredicted(driver, data.GameId)
+			if err!=nil{
+				return
+			}
+			for _, email := range emails{
+				channels[email] <- data.GameId
+			}
+		}()
 
 		c.JSON(200, nil)
 	}))
