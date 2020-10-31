@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"reflect"
+	"time"
 )
 
 func GetDailyPicks(driver neo4j.Driver, email string) (interface{}, error){
-	//today:= time.Now().Format("2006-01-01")
-	today := "2020-07-30"
+	today:= time.Now().Format("2006-01-01")
+	//today := "2020-07-30"
 
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
