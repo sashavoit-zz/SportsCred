@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"io/ioutil"
+	"reflect"
 )
 
 func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
@@ -69,7 +70,47 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 		}
 
 		c.JSON(200, nil)
-
 	}))
 
+
+	app.GET("/picks/newResults", CheckAuthToken(func(c *gin.Context, _ string){
+		jsonData, err := ioutil.ReadAll(c.Request.Body)
+		type Data struct {
+			Email string `json:"email"`
+		}
+		var data Data
+		json.Unmarshal(jsonData, &data)
+
+		result, err := queries.GetNewResults(driver, data.Email)
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		}
+		if result == nil || reflect.ValueOf(result).IsNil() {
+			fmt.Print("empty")
+			//TODO: implement long polling here
+		}else{
+			c.JSON(200, result)
+		}
+	}))
+
+	app.PATCH("picks/updGameOutcome", CheckAuthToken(func(c *gin.Context, _ string){
+		jsonData, err := ioutil.ReadAll(c.Request.Body)
+		type Data struct {
+			GameId int `json:"game_id"`
+			Winner string `json:"winner"`
+		}
+		var data Data
+		json.Unmarshal(jsonData, &data)
+
+		_, err = queries.AddGameOutcome(driver, data.GameId, data.Winner)
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		}
+
+		//TODO: here we should notify channels that new data has been added to db
+
+		c.JSON(200, nil)
+	}))
 }

@@ -1,7 +1,9 @@
 package queries
 
 import (
+	"fmt"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
+	"reflect"
 )
 
 func GetDailyPicks(driver neo4j.Driver, email string) (interface{}, error){
@@ -88,6 +90,67 @@ func IfMadePrediction(driver neo4j.Driver, email string, date string) (interface
 		}
 
 		return !result.Next(), nil
+	})
+
+	return result, err
+}
+
+func GetNewResults(driver neo4j.Driver, email string) (interface{}, error){
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		panic(err)
+		return nil, err
+	}
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"MATCH (u:User {email: $email})-[p:PREDICTED {seen: false}]->(g:Game)\n"+
+				"SET p.seen = true\n"+
+				"WITH g, (p.winner = g.winner) AS ifCorrect\n" +
+				"RETURN COLLECT({game_id: ID(g), team1_name: g.team1_name, team2_name: g.team2_name, team1_init: g.team1_init, team2_init: g.team2_init, date: toString(g.date), winner: g.winner, correct: ifCorrect}) as results, COUNT(g) as counter",
+			map[string]interface{}{"email": email})
+		if err != nil {
+			fmt.Print(err)
+			return nil, err
+		}
+
+		if result.Next() {
+			value, _ := result.Record().Get("results")
+			counter, _ := result.Record().Get("counter")
+
+			if reflect.ValueOf(counter).IsZero(){
+				return nil, nil
+			}
+
+			return value, nil
+		} else {
+			return nil, nil
+		}
+	})
+
+	return result, err
+}
+
+func AddGameOutcome(driver neo4j.Driver, gameId int, winner string) (interface{}, error){
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		panic(err)
+		return nil, err
+	}
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		_, err = transaction.Run(
+			"MATCH (g:Game)\n"+
+				"WHERE ID(g) = $game_id\n" +
+				"SET g.winner = $winner\n",
+			map[string]interface{}{"game_id": gameId, "winner": winner})
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, nil
 	})
 
 	return result, err
