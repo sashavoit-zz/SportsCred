@@ -109,9 +109,11 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 						return
 					}
 					c.JSON(200, result)
+					close(channels[data.Email])
 					return
 				case <- timer:
 					c.JSON(408, nil)
+					close(channels[data.Email])
 					return
 				}
 			}
