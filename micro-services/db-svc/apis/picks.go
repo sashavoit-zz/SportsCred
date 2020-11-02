@@ -42,12 +42,11 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		type Data struct {
 			Email string `json:"email"`
-			Date string `json:"date"`
 		}
 		var data Data
 		json.Unmarshal(jsonData, &data)
 
-		result, err := queries.IfMadePrediction(driver, data.Email, data.Date)
+		result, err := queries.IfMadePrediction(driver, data.Email)
 		if err != nil {
 			fmt.Print(err)
 			c.String(500, "Internal server error")
