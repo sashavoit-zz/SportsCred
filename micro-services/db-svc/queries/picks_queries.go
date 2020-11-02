@@ -192,3 +192,31 @@ func GetUsersThatPredicted(driver neo4j.Driver, gameId int) ([]string, error){
 
 	return emails, err
 }
+
+func AddGame(driver neo4j.Driver, team1Init string, team1Name string, team2Init string, team2Name string, date string) (interface{}, error){
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		panic(err)
+		return nil, err
+	}
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"CREATE (g: Game {team1_init: $team1_init, team2_init: $team2_init, team1_name: $team1_name, team2_name: $team2_name, date: date($date)})\n" +
+				"RETURN ID(g) as id",
+			map[string]interface{}{"team1_init": team1Init, "team2_init": team2Init, "team1_name": team1Name,"team2_name": team2Name, "date": date})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next(){
+			value, _ := result.Record().Get("id")
+			return value, nil
+		}
+
+		return nil, nil
+	})
+
+	return result, err
+}

@@ -63,12 +63,12 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 		type Data struct {
 			Email string `json:"email"`
 			GameId int `json:"game_id"`
-			Prediction string `json:"prediction"`
+			Winner string `json:"winner"`
 		}
 		var data Data
 		json.Unmarshal(jsonData, &data)
 
-		_, err = queries.AddNewPrediction(driver, data.Email, data.GameId, data.Prediction)
+		_, err = queries.AddNewPrediction(driver, data.Email, data.GameId, data.Winner)
 		if err != nil {
 			c.String(500, "Internal server error")
 			return
@@ -121,7 +121,30 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 		c.JSON(200, result)
 	}))
 
-	app.PATCH("picks/updGameOutcome", CheckAuthToken(func(c *gin.Context, _ string){
+	app.POST("/picks/addGame", CheckAuthToken(func(c *gin.Context, _ string){
+		jsonData, err := ioutil.ReadAll(c.Request.Body)
+		type Data struct {
+			Team1Name string `json:"team1_name"`
+			Team2Name string `json:"team2_name"`
+			Team1Init string `json:"team1_init"`
+			Team2Init string `json:"team2_init"`
+			Date string `json:"date"`
+			Winner string `json:"winner"`
+		}
+		var data Data
+		json.Unmarshal(jsonData, &data)
+
+		result, err := queries.AddGame(driver, data.Team1Init, data.Team1Name, data.Team2Init, data.Team2Name, data.Date)
+
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		}
+
+		c.JSON(200, result)
+	}))
+
+	app.PATCH("/picks/updGameOutcome", CheckAuthToken(func(c *gin.Context, _ string){
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		type Data struct {
 			GameId int `json:"game_id"`
