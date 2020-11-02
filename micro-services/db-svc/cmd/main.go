@@ -34,8 +34,9 @@ func main() {
 	apis.SetUpOpenCourt(app, driver)
 	apis.SetUpTrivia(app, driver)
 	apis.SetUpAuth(app, driver)
-	apis.SetUpSingUp(app, driver)
+	apis.SetUpSignUp(app, driver)
 	apis.SetUpSearch(app, driver)
+	apis.SetUpDebate(app, driver)
 
 	app.Run(":3001")
 

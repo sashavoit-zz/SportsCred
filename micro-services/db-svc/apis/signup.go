@@ -10,6 +10,31 @@ import (
 
 var neo4jDriver1 neo4j.Driver // used in all db related funcs
 
+func setSignUpDBConstraint() (bool, error) {
+	session, err := neo4jDriver1.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return false, err
+	}
+	defer session.Close()
+
+	session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"CREATE CONSTRAINT ON (n:User) ASSERT n.email IS UNIQUE",
+			map[string]interface{}{"message": "hello, world"})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+
+		return nil, result.Err()
+	})
+
+	return true, nil
+}
+
 func checkEmailExists(email string) (bool, error) {
 	// session set up
 	session, err := neo4jDriver1.Session(neo4j.AccessModeWrite)
@@ -123,8 +148,10 @@ func createUserAccount(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "account created"})
 }
 
-func SetUpSingUp(server *gin.Engine, driver neo4j.Driver) {
+// SetUpSignUp sets up signup
+func SetUpSignUp(server *gin.Engine, driver neo4j.Driver) {
 	neo4jDriver1 = driver
+	setSignUpDBConstraint()
 	// endpoints
 	server.POST("/checkEmailExists", checkEmail)
 	server.POST("/createUserAccount", createUserAccount)
