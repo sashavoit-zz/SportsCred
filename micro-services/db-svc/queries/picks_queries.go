@@ -9,7 +9,7 @@ import (
 )
 
 func GetDailyPicks(driver neo4j.Driver, email string) (interface{}, error){
-	today:= time.Now().Format("2006-01-01")
+	today:= time.Now().Format("2006-01-02")
 	//today := "2020-07-30"
 
 	session, err := driver.Session(neo4j.AccessModeWrite)
@@ -28,8 +28,9 @@ func GetDailyPicks(driver neo4j.Driver, email string) (interface{}, error){
 				   "	WHERE g.date > date($today) AND NOT (u)-[:PREDICTED]->(g)\n" +
 				   "    RETURN g as closestGame LIMIT 1\n" +
 				   "}\n" +
-				   "WITH closestGame\n" +
-				   "MATCH(g: Game) WHERE g.date = closestGame.date\n" +
+				   "WITH closestGame, u\n" +
+				   "MATCH(g: Game)\n" +
+				   "WHERE g.date = closestGame.date AND NOT (u)-[:PREDICTED]->(g)\n" +
 				   "RETURN COLLECT({game_id: ID(g), team1_name: g.team1_name, team2_name: g.team2_name, team1_init: g.team1_init, team2_init: g.team2_init, date: toString(g.date), winner: g.winner}) AS games\n",
 			map[string]interface{}{"today": today, "email": email})
 		if err != nil {
@@ -46,7 +47,10 @@ func GetDailyPicks(driver neo4j.Driver, email string) (interface{}, error){
 	return result, err
 }
 
-func AddNewPrediction(driver neo4j.Driver, email string, gameId int, prediction string) (interface{}, error){
+func AddNewPrediction(driver neo4j.Driver, email string, gameId int, winner string) (interface{}, error){
+	today:= time.Now().Format("2006-01-02")
+	//today := "2020-07-30"
+
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
 		panic(err)
@@ -54,24 +58,26 @@ func AddNewPrediction(driver neo4j.Driver, email string, gameId int, prediction 
 	}
 	defer session.Close()
 
-	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
-		result, err := transaction.Run(
+	_, err = session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		_, err := transaction.Run(
 			"MATCH(u:User {email: $email})\n" +
 				"MATCH(g:Game)\n"+
 			    "WHERE ID(g) = $game_id\n"+
-				"CREATE (u)-[:PREDICTED {winner: $prediction, seen: false}]->(g)\n",
-			map[string]interface{}{"game_id": gameId, "email": email, "prediction": prediction})
+				"CREATE (u)-[:PREDICTED {winner: $winner, date: date($today), seen: false}]->(g)\n",
+			map[string]interface{}{"game_id": gameId, "email": email, "winner": winner, "today": today})
 		if err != nil {
-			panic(err)
 			return nil, err
 		}
-		return result, nil
+		return nil, nil
 	})
 
-	return result, err
+	return nil, err
 }
 
-func IfMadePrediction(driver neo4j.Driver, email string, date string) (interface{}, error){
+func IfMadePrediction(driver neo4j.Driver, email string) (interface{}, error){
+	today:= time.Now().Format("2006-01-02")
+	//today := "2020-07-30"
+
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
 		panic(err)
@@ -81,11 +87,11 @@ func IfMadePrediction(driver neo4j.Driver, email string, date string) (interface
 
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH(u:User {email: $email})\n" +
-				"MATCH(g:Game {date: date($date)})\n"+
-				"WHERE NOT (u)-[:PREDICTED]->(g)\n"+
-				"RETURN g\n",
-			map[string]interface{}{"email": email, "date": date})
+				"MATCH(u:User {email: $email})-[:PREDICTED {date: date($today), seen: false}]->(g:Game)\n"+
+					"MATCH(game:Game)\n" +
+					"WHERE g.date = game.date AND NOT (u)-[:PREDICTED]->(game)\n"+
+					"RETURN game\n",
+			map[string]interface{}{"email": email, "today": today})
 		if err != nil {
 			panic(err)
 			return nil, err
@@ -191,4 +197,32 @@ func GetUsersThatPredicted(driver neo4j.Driver, gameId int) ([]string, error){
 	})
 
 	return emails, err
+}
+
+func AddGame(driver neo4j.Driver, team1Init string, team1Name string, team2Init string, team2Name string, date string) (interface{}, error){
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		panic(err)
+		return nil, err
+	}
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"CREATE (g: Game {team1_init: $team1_init, team2_init: $team2_init, team1_name: $team1_name, team2_name: $team2_name, date: date($date)})\n" +
+				"RETURN ID(g) as id",
+			map[string]interface{}{"team1_init": team1Init, "team2_init": team2Init, "team1_name": team1Name,"team2_name": team2Name, "date": date})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next(){
+			value, _ := result.Record().Get("id")
+			return value, nil
+		}
+
+		return nil, nil
+	})
+
+	return result, err
 }
