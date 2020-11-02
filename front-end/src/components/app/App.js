@@ -13,6 +13,7 @@ import Profile from "../profile/Profile";
 import PrivateRoute from "../routes/PrivateRoute";
 import SideBar from "../SideBar/SideBar";
 import SearchUser from '../UserService/SearchUser';
+import Predictions from '../picks-n-predictions/Predictions'
 
 const theme = createMuiTheme({
   palette: {
@@ -35,6 +36,7 @@ function App() {
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/trivia" component={Trivia} />
           <PrivateRoute exact path="/the-zone" component={openCourt}/>
+          <PrivateRoute exact path="/predictions" component={Predictions}/>
           {/* Add new paths heres */}
           <Route path="/" component={() => <Redirect to="/the-zone"/>} />
         </Switch>
