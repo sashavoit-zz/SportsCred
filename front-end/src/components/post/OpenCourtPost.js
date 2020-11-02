@@ -7,6 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -19,6 +20,26 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import FaceIcon from '@material-ui/icons/Face';
 import { CardHeader } from '@material-ui/core';
+
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  RedditShareButton,
+  TwitterShareButton,
+} from "react-share";
+
+import {
+  FacebookShareCount,
+  RedditShareCount,
+} from "react-share";
+
+import {
+  EmailIcon,
+  FacebookIcon,
+  RedditIcon,
+  TwitterIcon,
+} from "react-share";
+
 const ACSSCORE = "560"
 const letters = /^[A-Za-z]*$/;
 const numbers = /^[+\d]?(?:[\d-.\s()]*)$/;
@@ -181,6 +202,27 @@ class OpenCourtPost extends Component {
             >
             </CardHeader>
           </CardContent>
+          <CardActions>
+
+          <FacebookShareButton url="google.com" quote="this is post id24's Quote" hashtag="#post24">
+            <FacebookIcon size={32} round={true} /> 
+            {/* <FacebookShareCount url={"google.com"} /> */}
+            <FacebookShareCount url={"google.com"}>
+              {shareCount => <span className="myShareCountWrapper">{shareCount}</span>}
+            </FacebookShareCount>
+          </FacebookShareButton>
+
+          <TwitterShareButton url="google.com" title="this is title of post 24" hashtag="#post24">
+            <TwitterIcon size={32} round={true} />
+          </TwitterShareButton>
+
+          <RedditShareButton url="google.com" title="this is title of post 24">
+            <RedditIcon size={32} round={true} />
+            <RedditShareCount url={"google.com"}>
+              {shareCount => <span className="myShareCountWrapper">{shareCount}</span>}
+            </RedditShareCount>
+          </RedditShareButton>
+          </CardActions>
         </Card>
     );
   }
