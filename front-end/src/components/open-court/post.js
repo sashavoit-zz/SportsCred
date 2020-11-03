@@ -8,7 +8,7 @@ import CommentIcon from '@material-ui/icons/Comment';
 import FacebookEmbeds from './facebookEmbeds';
 import TwitterEmbeds from './twitterEmbeds';
 import RedditEmbeds from './redditEmbeds';
-import InsEmbeds from './insEmbeds'; 
+import InsEmbeds from './insEmbeds';
 
 const userStyles = theme =>({
     root:{
@@ -39,11 +39,13 @@ function checkWebsite(url){
     const beforeCom = url.split(".com")[0];
     const lastIndex = beforeCom.split(/[./]+/).length-1;
     const web = beforeCom.split(/[./]+/)[lastIndex];
+    console.log("the web is "+ url.split('.com'))
     return web
 }
 
 
 export class Post extends React.Component{
+
     render(){
         const {postInfo} = this.props;
         // const classes = userStyles();
@@ -86,7 +88,7 @@ export class Post extends React.Component{
                                             'twitter':<TwitterEmbeds url = {url}/>,
                                             'reddit':<RedditEmbeds url = {url}/>,
                                             'instagram':<InsEmbeds url={url}/>
-                                        }[checkWebsite(url)]
+                                        }[checkWebsite(url[0])]
                                     }
                                 
                                 </CardContent>

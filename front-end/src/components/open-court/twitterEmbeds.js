@@ -12,15 +12,12 @@ export class TwitterEmbeds extends React.Component{
     
         script.src = "https://platform.twitter.com/widgets.js";
         script.async = true;
+        script.defer = true;
         script.charset = "utf-8";
-    
         document.body.appendChild(script);
         const requestOptions = {
             mode:"cors",
             method: "GET",
-            // body: JSON.stringify({
-            //     url:this.props.url
-            // }),
             headers: {
                 "Content-Type": "application/json",
                 "origin":"",
@@ -35,9 +32,8 @@ export class TwitterEmbeds extends React.Component{
     }
     render(){
         return(
-            <div id="wrapper">
+            <div>
                 <div dangerouslySetInnerHTML={{__html: this.state.embedHtml}}></div>
-             
             </div>
         )
     }
