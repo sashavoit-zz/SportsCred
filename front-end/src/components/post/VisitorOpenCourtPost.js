@@ -207,9 +207,9 @@ class OpenCourtPost extends Component {
 
           <FacebookShareButton url={this.state.url} quote={this.state.title} hashtag="#SportCred">
             <FacebookIcon size={32} round={true} /> 
-            <FacebookShareCount url={this.state.url}>
+            {/* <FacebookShareCount url={this.state.url}>
               {shareCount => <span>{shareCount}</span>}
-            </FacebookShareCount>
+            </FacebookShareCount> */}
           </FacebookShareButton>
 
           <TwitterShareButton url={this.state.url} title={this.state.title} hashtag="#SportCred">
@@ -218,9 +218,9 @@ class OpenCourtPost extends Component {
 
           <RedditShareButton url={this.state.url} title={this.state.title}>
             <RedditIcon size={32} round={true} />
-            <RedditShareCount url={this.state.url}>
+            {/* <RedditShareCount url={this.state.url}>
               {shareCount => <span>{shareCount}</span>}
-            </RedditShareCount>
+            </RedditShareCount> */}
           </RedditShareButton>
           </CardActions>
         </Card>
