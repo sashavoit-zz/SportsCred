@@ -32,11 +32,11 @@ const useStyles = makeStyles({
     },
   },
   cardTitle: {
-    minWidth: "2rem",
+    minWidth: "13rem",
     minHeight: "1rem",
     maxHeight: "1rem",
     position: "relative",
-    left: "50%",
+    left: "40%",
     paddingTop: "2vh",
     paddingBottom: "2vh",
   },
@@ -77,7 +77,14 @@ const useStyles = makeStyles({
 });
 
 function PredictionsCard(props) {
-    console.log(props.predictions)
+    // {date: "2020-11-30"
+    // game_id: 0
+    // team1_init: "UTA"
+    // team1_name: "Utah Jazz"
+    // team2_init: "NOP"
+    // team2_name: "New Orleans Pelicans"
+    // winner: "UTA"}
+    const { data } = props
   // TODO: urls can be either sent from props or api call can be made here
   const mockImageUrl1 =
     "https://img.theculturetrip.com/wp-content/uploads/2017/03/toronto-skyline.jpg";
@@ -96,30 +103,29 @@ function PredictionsCard(props) {
   };
 
   return (
-    <Card className={classes.root}>
-      <Grid container spacing={0}>
+      <Grid container spacing={0} className={classes.root} >
         <Grid item xs={12} sm={6}>
           <section
             className={classes.backgroundLeft}
-            onClick={() => handleClick("left")}
+            onClick={() => handleClick(data.team1_init)}
           >
             <section className={classes.teamLeft}>
               <div className={classes.cardTitle}>
                 <Typography
-                  variant="h3"
+                  variant="h4"
                   style={{
                     fontFamily: "emoji",
                     textAlign: "center",
                     opacity: 0.8,
                   }}
                 >
-                  Game 3
+                  {data.team1_init} vs {data.team2_init}
                 </Typography>
                 <Typography
                   variant="h6"
                   style={{ textAlign: "center", opacity: 0.8 }}
                 >
-                  Oct 9, 2019
+                  {data.date}
                   <Fade in={pick} timeout={550}>
                     <Chip
                       variant="outlined"
@@ -137,7 +143,7 @@ function PredictionsCard(props) {
         <Grid item xs={12} sm={6}>
           <section
             className={classes.backgroundRight}
-            onClick={() => handleClick("right")}
+            onClick={() => handleClick(data.team2_init)}
           >
             <section className={classes.teamRight}>
               <div className={classes.cardTitle}></div>
@@ -146,7 +152,7 @@ function PredictionsCard(props) {
           </section>
         </Grid>
       </Grid>
-    </Card>
+
   );
 }
 
