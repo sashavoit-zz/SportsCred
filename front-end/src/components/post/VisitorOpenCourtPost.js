@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 //errmsg
-import { Collapse, IconButton } from "@material-ui/core";
+import {Collapse, IconButton} from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -38,6 +38,8 @@ import {
   RedditIcon,
   TwitterIcon,
 } from "react-share";
+
+import MetaTags from 'react-meta-tags';
 
 const ACSSCORE = "560"
 const letters = /^[A-Za-z]*$/;
@@ -123,7 +125,7 @@ const styles = theme => ({
   },
   submitButton: {
     marginTop: "20px",
-    marginBottom: "20px",
+    marginBottom:"20px",
     color: "white",
     backgroundColor: "#0066cc",
   },
@@ -142,17 +144,16 @@ class OpenCourtPost extends Component {
     log(props)
     this.state = {
       //url: window.location.href
-      url: "https://cmsweb.utsc.utoronto.ca/cscc01f20/index.html"
+      url: "google.com"
     }
   }
 
   componentDidMount() {
-    const user_url = '/post/' + this.props.param;
+    const user_url = '/postVisitor/' + this.props.match.params.post;
     const user_request = new Request(user_url, {
       method: 'GET',
       headers: {
         'Accept': 'application/json, text/plain, */*',
-        'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
       }
     });
     fetch(user_request)
@@ -187,18 +188,25 @@ class OpenCourtPost extends Component {
     const { classes } = this.props;
 
     return (
-      <Card className={classes.root}>
-        <CardContent className={classes.content}>
-          <CardHeader
-            title={this.state.title + " <- this is titile of post"}
-            subheader={this.state.content + " <- this is content of the post"}
-          >
-          </CardHeader>
-        </CardContent>
-        <CardActions>
+        <Card className={classes.root}>
+          <MetaTags>
+            {/* <title>Page 1</title> */}
+            {/* og support both Facebook and Twitter https://github.com/joshbuchea/HEAD#social */}
+            <meta property="og:title" content={this.state.title} />
+            <meta property="og:description" content={this.state.content} />
+            <meta property="og:image" content="https://1.bp.blogspot.com/--20nIeI7uF0/Uuu0BbwgpnI/AAAAAAAABXg/nUimVCMeOVg/s1600/parquet-per-palestre-parquet-sportivo+%284%29.jpg" />
+          </MetaTags>
+          <CardContent className={classes.content}>
+            <CardHeader
+              title={this.state.title + " <- this is titile of post"}
+              subheader={this.state.content + " <- this is content of the post"}
+            >
+            </CardHeader>
+          </CardContent>
+          <CardActions>
 
           <FacebookShareButton url={this.state.url} quote={this.state.title} hashtag="#SportCred">
-            <FacebookIcon size={32} round={true} />
+            <FacebookIcon size={32} round={true} /> 
             <FacebookShareCount url={this.state.url}>
               {shareCount => <span>{shareCount}</span>}
             </FacebookShareCount>
@@ -214,8 +222,8 @@ class OpenCourtPost extends Component {
               {shareCount => <span>{shareCount}</span>}
             </RedditShareCount>
           </RedditShareButton>
-        </CardActions>
-      </Card>
+          </CardActions>
+        </Card>
     );
   }
 }

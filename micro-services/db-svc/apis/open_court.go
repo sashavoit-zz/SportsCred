@@ -53,6 +53,23 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 		c.JSON(200, result)
 	}))
 
+	app.GET("/postVisitor/:id", func(c *gin.Context){
+		id := c.Param("id");
+		log.Println("000001")
+		log.Println(id)
+		result, err := queries.LoadPost(driver, id)
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		} else if result == nil {
+			c.String(404, "Not found")
+			return
+		}
+		log.Println("0000001")
+		log.Println(result)
+		c.JSON(200, result)
+	})
+
 	//add a new post
 	app.POST("/addPost/:hash", CheckAuthToken(func(c *gin.Context, _ string) {
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
