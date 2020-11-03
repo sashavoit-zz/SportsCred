@@ -18,16 +18,8 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 	const timeout = 3 * time.Hour
 	const regularUpd = 5*time.Second
 
-	app.GET("/picks/dailyPicks", CheckAuthToken(func(c *gin.Context, _ string){
-		jsonData, err := ioutil.ReadAll(c.Request.Body)
-		type Data struct {
-			Email string `json:"email"`
-		}
-		var data Data
-		json.Unmarshal(jsonData, &data)
-		//fmt.Print(data.Email)
-
-		result, err := queries.GetDailyPicks(driver, data.Email)
+	app.GET("/picks/dailyPicks", CheckAuthToken(func(c *gin.Context, email string){
+		result, err := queries.GetDailyPicks(driver, email)
 		if err != nil {
 			c.String(500, "Internal server error")
 			return
@@ -39,15 +31,8 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 		c.JSON(200, result)
 	}))
 
-	app.GET("/picks/ifMadePrediction", CheckAuthToken(func(c *gin.Context, _ string){
-		jsonData, err := ioutil.ReadAll(c.Request.Body)
-		type Data struct {
-			Email string `json:"email"`
-		}
-		var data Data
-		json.Unmarshal(jsonData, &data)
-
-		result, err := queries.IfMadePrediction(driver, data.Email)
+	app.GET("/picks/ifMadePrediction", CheckAuthToken(func(c *gin.Context, email string){
+		result, err := queries.IfMadePrediction(driver, email)
 		if err != nil {
 			fmt.Print(err)
 			c.String(500, "Internal server error")
@@ -58,17 +43,16 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 
 	}))
 
-	app.POST("/picks/newPrediction", CheckAuthToken(func(c *gin.Context, _ string){
+	app.POST("/picks/newPrediction", CheckAuthToken(func(c *gin.Context, email string){
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		type Data struct {
-			Email string `json:"email"`
 			GameId int `json:"game_id"`
 			Winner string `json:"winner"`
 		}
 		var data Data
 		json.Unmarshal(jsonData, &data)
 
-		_, err = queries.AddNewPrediction(driver, data.Email, data.GameId, data.Winner)
+		_, err = queries.AddNewPrediction(driver, email, data.GameId, data.Winner)
 		if err != nil {
 			c.String(500, "Internal server error")
 			return
@@ -85,15 +69,8 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 	}))
 
 
-	app.GET("/picks/newResults", CheckAuthToken(func(c *gin.Context, _ string){
-		jsonData, err := ioutil.ReadAll(c.Request.Body)
-		type Data struct {
-			Email string `json:"email"`
-		}
-		var data Data
-		json.Unmarshal(jsonData, &data)
-
-		result, err := queries.GetNewResults(driver, data.Email)
+	app.GET("/picks/newResults", CheckAuthToken(func(c *gin.Context, email string){
+		result, err := queries.GetNewResults(driver, email)
 		if err != nil {
 			c.String(500, "Internal server error")
 			return
@@ -101,30 +78,30 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 		if result == nil || reflect.ValueOf(result).IsNil() {
 
 			//Waiting for new relevant data to appear
-			channels[data.Email] = make(chan int)
+			channels[email] = make(chan int)
 			go func(){
 				time.Sleep(timeout)
 				timer<-0
 			}()
 			for {
 				select {
-				case <- channels[data.Email]:
-					result, err := queries.GetNewResults(driver, data.Email)
+				case <- channels[email]:
+					result, err := queries.GetNewResults(driver, email)
 					if err != nil {
 						c.String(500, "Internal server error")
 						return
 					}
 					c.JSON(200, result)
-					close(channels[data.Email])
+					close(channels[email])
 					return
 				case <- timer:
-					result, err := queries.GetNewResults(driver, data.Email)
+					result, err := queries.GetNewResults(driver, email)
 					if err != nil {
 						c.String(500, "Internal server error")
 						return
 					}
 					c.JSON(200, result)
-					close(channels[data.Email])
+					close(channels[email])
 					return
 				}
 			}
@@ -186,7 +163,7 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 
 	//TODO remove after the demo
 	//Running this for the sprint 2 demo
-	demoScript(driver);
+	demoScript(driver)
 }
 
 //TODO remove after the demo
