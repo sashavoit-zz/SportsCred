@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Typography, CircularProgress, makeStyles } from "@material-ui/core";
-import { ArrowLeftIcon, ArrowRightIcon } from '@material-ui/icons';
+import { ArrowLeft, ArrowRight } from "@material-ui/icons";
 import {
   CarouselProvider,
   Slider,
@@ -15,21 +15,34 @@ import PredictionsCard from "./PredictionsCard";
 const useStyles = makeStyles({
   buttonBack: {
     position: "absolute",
-     top: "50%",
-     left: "0",
-    transform: "translateY(-50%)",
-    // "&:disabled": {
-    //     display: "none"
-    // }
-  },
-  buttonNext: {
-    position: "absolute",
-     top: "50%",
-     right: "0",
+    top: "50%",
+    left: "-20px",
+    borderRadius: "100%",
+    height: "40px",
+    width: "40px",
+    border: "none",
+    padding: "1px 1px 0 0",
     transform: "translateY(-50%)",
     "&:disabled": {
         display: "none"
-    }
+    },
+    outline: "none",
+
+  },
+  buttonNext: {
+    position: "absolute",
+    top: "50%",
+    right: "-20px",
+    borderRadius: "100%",
+    height: "40px",
+    width: "40px",
+    border: "none",
+    padding: "1px 0 0 0",
+    transform: "translateY(-50%)",
+    "&:disabled": {
+        display: "none"
+    },
+    outline: "none",
   },
 });
 
@@ -40,7 +53,7 @@ function Predictions(props) {
   useEffect(() => {
     (async () =>
       await new Promise(() =>
-        setTimeout(() => setData(mockApiResponse), 2000)
+        setTimeout(() => setData([ ...mockApiResponse, ...mockApiResponse, ...mockApiResponse, ]), 2000)
       ))(); // hold up function for a sec before updating state
   });
 
@@ -52,7 +65,7 @@ function Predictions(props) {
           naturalSlideWidth={345}
           naturalSlideHeight={480}
           totalSlides={data.length}
-          visibleSlides={3}
+          visibleSlides={2.9}
           style={{ position: "relative" }}
         >
           <Slider>
@@ -62,13 +75,16 @@ function Predictions(props) {
               </Slide>
             ))}
           </Slider>
-          <ButtonBack className={classes.buttonBack}><ArrowRightIcon/></ButtonBack>
-          <ButtonNext className={classes.buttonNext}><ArrowLeftIcon/></ButtonNext>
+          <ButtonBack className={classes.buttonBack}>
+            <ArrowLeft fontSize="large" />
+          </ButtonBack>
+          <ButtonNext className={classes.buttonNext}>
+            <ArrowRight fontSize="large" />
+          </ButtonNext>
         </CarouselProvider>
       ) : (
         <CircularProgress
           size="4rem"
-          color="default"
           style={{ position: "fixed", top: "50%", left: "50%" }}
         />
       )}
