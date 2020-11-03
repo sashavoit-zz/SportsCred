@@ -135,6 +135,17 @@ function SideBar(props) {
         </ListItem>
 
         <ListItem
+            button
+            key={"Picks & Predictions"}
+            onClick={() => history.push("/predictions")}
+        >
+          <ListItemIcon>
+            <SportsBasketballIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Predictions" />
+        </ListItem>
+
+        <ListItem
           button
           key={"OpenCourt"}
           onClick={() => history.push("/profile")}
