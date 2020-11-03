@@ -24,6 +24,7 @@ const theme = createMuiTheme({
 
 // TODO: make better routing
 function App() {
+  let jwt = localStorage.getItem("Token");
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -32,13 +33,13 @@ function App() {
           {/* public routes */}
           <Route exact path="/signup" component={SignUp} />
           <Route exact path="/login" component={LogIn} />
-          <Route exact path="/the-zone/:post" component={VisitorOpenCourtPost} />
+          {!jwt && <Route exact path="/the-zone/:post" component={VisitorOpenCourtPost} />}
           {/* private routes */}
           <PrivateRoute exact path="/searchuser" component={SearchUser}/>
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/trivia" component={Trivia} />
           <PrivateRoute exact path="/the-zone" component={openCourt}/>
-          <PrivateRoute exact path="/the-zone/:post" component={OpenCourtPost} />
+          {!!jwt && <PrivateRoute exact path="/the-zone/:post" component={OpenCourtPost} />}
           {/* Add new paths heres */}
           <Route path="/" component={() => <Redirect to="/the-zone"/>} />
         </Switch>
