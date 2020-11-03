@@ -5,6 +5,10 @@ import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import ShareIcon from '@material-ui/icons/Share';
 import { withStyles } from "@material-ui/core/styles";
 import CommentIcon from '@material-ui/icons/Comment';
+import FacebookEmbeds from './facebookEmbeds';
+import TwitterEmbeds from './twitterEmbeds';
+import RedditEmbeds from './redditEmbeds';
+import InsEmbeds from './insEmbeds'; 
 
 const userStyles = theme =>({
     root:{
@@ -27,24 +31,19 @@ const userStyles = theme =>({
     },
     url:{
         color:"#757ce8",
-        hover:{
-            color:"green"
-        }
     },
 
 
 });
+function checkWebsite(url){
+    const beforeCom = url.split(".com")[0];
+    const lastIndex = beforeCom.split(/[./]+/).length-1;
+    const web = beforeCom.split(/[./]+/)[lastIndex];
+    return web
+}
+
 
 export class Post extends React.Component{
-    componentDidMount () {
-        const script = document.createElement("script");
-    
-        script.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2";
-        script.async = true;
-        script.defer = true;
-    
-        document.body.appendChild(script);
-    }
     render(){
         const {postInfo} = this.props;
         // const classes = userStyles();
@@ -54,38 +53,46 @@ export class Post extends React.Component{
             <div>
                 <Card className={classes.root}>
                     <CardHeader
-                        //avatar={
-                        //    <Avatar src ={postInfo.AuthorProfile}/>
-                        //}
+                        avatar={
+                           <Avatar src ={postInfo.AuthorProfile}/>
+                        }
                         title={postInfo.firstName + " " + postInfo.lastName}
                         subheader = {postInfo.time}
                     >
                     </CardHeader> 
                     <CardContent>
                         {url == null
-                        ?<Typography variant ="body1" color="textSecondary">
+                        ?<Typography variant ="body1" color="textSecondary" style={{ wordWrap: "break-word" }}>
                             {postInfo.content}
                         </Typography>
-                        :<div>
-                            <Typography variant ="body1" color="textSecondary">
-                                {postInfo.content.split(url)}
+                        :<Typography variant ="body1" color="textSecondary">
+                            <Typography style={{ wordWrap: "break-word" }}>
+                                {postInfo.content.split(url)[0]}
+                            <Typography>
                                 <Link href={url} className = {classes.url}>
-                                {url} 
+                                    {url} 
                                 </Link>
-                                <Card className = {classes.card}>
-                                    <CardActionArea >
-                                    <CardContent className = {classes.embeds}>
-                                    <div class="fb-post" 
-                                        data-href={url}
-                                        href = {url}
-                                        data-width="500">
-                                    </div>
-                                    </CardContent>
-                                    </CardActionArea>
-                                    </Card>
                             </Typography>
-                         
-                        </div>
+                            <Typography>
+                                {postInfo.content.split(url)[1]}
+                            </Typography>
+                        </Typography>
+                            <Card className = {classes.card}>
+                                <CardActionArea >
+                                <CardContent className = {classes.embeds}>
+                                    {
+                                        {
+                                            'facebook':<FacebookEmbeds url={url}/>,
+                                            'twitter':<TwitterEmbeds url = {url}/>,
+                                            'reddit':<RedditEmbeds url = {url}/>,
+                                            'instagram':<InsEmbeds url={url}/>
+                                        }[checkWebsite(url)]
+                                    }
+                                
+                                </CardContent>
+                                </CardActionArea>
+                                </Card>
+                        </Typography>
                         }
                     </CardContent>
                     <CardActions disableSpacing>
