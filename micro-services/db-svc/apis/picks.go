@@ -11,11 +11,12 @@ import (
 	"time"
 )
 
-
 func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 
 	channels := make(map[string]chan int)
+	timer := make(chan int)
 	const timeout = 3 * time.Hour
+	const regularUpd = 5*time.Second
 
 	app.GET("/picks/dailyPicks", CheckAuthToken(func(c *gin.Context, _ string){
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
@@ -73,6 +74,13 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 			return
 		}
 
+		//TODO remove after the demo
+		//Setting a timer for the purpose of the demo
+		go func(){
+			time.Sleep(regularUpd)
+			timer<-0
+		}()
+
 		c.JSON(200, nil)
 	}))
 
@@ -94,7 +102,6 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 
 			//Waiting for new relevant data to appear
 			channels[data.Email] = make(chan int)
-			timer := make(chan int)
 			go func(){
 				time.Sleep(timeout)
 				timer<-0
@@ -111,7 +118,12 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 					close(channels[data.Email])
 					return
 				case <- timer:
-					c.JSON(408, nil)
+					result, err := queries.GetNewResults(driver, data.Email)
+					if err != nil {
+						c.String(500, "Internal server error")
+						return
+					}
+					c.JSON(200, result)
 					close(channels[data.Email])
 					return
 				}
@@ -133,7 +145,7 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 		var data Data
 		json.Unmarshal(jsonData, &data)
 
-		result, err := queries.AddGame(driver, data.Team1Init, data.Team1Name, data.Team2Init, data.Team2Name, data.Date)
+		result, err := queries.AddGame(driver, data.Team1Init, data.Team1Name, data.Team2Init, data.Team2Name, data.Date, "")
 
 		if err != nil {
 			c.String(500, "Internal server error")
@@ -171,4 +183,21 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 
 		c.JSON(200, nil)
 	}))
+
+	//TODO remove after the demo
+	//Running this for the sprint 2 demo
+	demoScript(driver);
+}
+
+//TODO remove after the demo
+func demoScript(driver neo4j.Driver){
+
+	queries.ClearGamesInDB(driver)
+
+	queries.AddGame(driver, "UTA", "Utah Jazz", "NOP", "New Orleans Pelicans", "2020-11-30", "UTA");
+	queries.AddGame(driver, "LAC", "Los Angeles Clippers", "LAL", "Los Angeles Lakers", "2020-11-30", "LAL");
+	queries.AddGame(driver, "ORL", "Orlando Magic", "BKN", "Brooklyn Nets", "2020-11-30", "ORL");
+	queries.AddGame(driver, "MEM", "Memphis Grizzlies", "POR", "Portland Trailblazers", "2020-11-30", "POR");
+	queries.AddGame(driver, "PHX", "Phoenix Suns", "WAS", "Washington Wizards", "2020-11-30", "PHX");
+
 }
