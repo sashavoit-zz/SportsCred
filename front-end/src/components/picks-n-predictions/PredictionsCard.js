@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Grid, makeStyles, Typography, Chip } from "@material-ui/core";
+import { Card, Grid, makeStyles, Typography, Chip, Fade } from "@material-ui/core";
 
 // TODO: clean up css - have another json and then spread the contents here, just update nessecary bits
 const useStyles = makeStyles({
@@ -77,6 +77,7 @@ const useStyles = makeStyles({
 });
 
 function PredictionsCard(props) {
+    console.log(props.predictions)
   // TODO: urls can be either sent from props or api call can be made here
   const mockImageUrl1 =
     "https://img.theculturetrip.com/wp-content/uploads/2017/03/toronto-skyline.jpg";
@@ -91,7 +92,7 @@ function PredictionsCard(props) {
   const [pick, setPick] = useState(null);
   const handleClick = (side) => {
     setPick(side);
-    // TODO: send api req
+    // TODO: api call for updating pick
   };
 
   return (
@@ -119,9 +120,15 @@ function PredictionsCard(props) {
                   style={{ textAlign: "center", opacity: 0.8 }}
                 >
                   Oct 9, 2019
-                  <Chip variant="outlined" onDelete={() => console.log('something')} label="Some Team" /> {/* TODO: Update Label here + conditional rendering for only when side is defined */}
+                  <Fade in={pick} timeout={550}>
+                    <Chip
+                      variant="outlined"
+                      onDelete={() => setPick(null)}
+                      label={`${pick} predicted`}
+                    />
+                  </Fade>
+                  {/* TODO: Update Label here + conditional rendering for only when side is defined */}
                 </Typography>
-               
               </div>
               <img src={teamLogo1} className={classes.teamImageLeft}></img>
             </section>
