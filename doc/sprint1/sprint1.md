@@ -1,3 +1,5 @@
+## Meeting goal
+
 During Sprint 1 Planning Meeting we identified Sprint 1 goal, selected the user stories to be completed, estimated each one using Fibonacci scale and assigned tasks to team members.
 
 ## Sprint 1 goal
@@ -51,3 +53,7 @@ After distributing workload, each team member has 8 to 13 pts to accomplish. The
 Ben, Sasha, Song, Wisam, Yiffy and Anand were present in the meeting during tutorial. 
 Kevin warned the team members 24 hour in advance that he wouldn't be able to attend because of an emergency on his end.
 All decisions made during the Sprint 1 Planning Meeting were discussed with Kevin afterwards and approved by him.
+
+## Spikes
+
+No spikes in this sprint
