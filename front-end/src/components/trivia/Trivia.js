@@ -155,6 +155,9 @@ function Trivia(props) {
     // ATTENTION THERE MAY BE UNDEFINED BEHAVIOUR
     //
     // get new question and show on site (consumer REST api)
+
+    addQuestionsToDb();
+
     getQuestion();
     if (document.getElementById("questionLabel").innerHTML == "") {
         addQuestionsToUser(localStorage.getItem("User"));

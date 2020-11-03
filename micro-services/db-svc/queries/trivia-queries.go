@@ -15,7 +15,7 @@ func AddQuestion(driver neo4j.Driver, question string, option1 string, option2 s
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (n:Question {question:$question, option1:$option1, option2:$option2, option3:$option3, answer:$answer})", // or MERGE
+			"MERGE (n:Question {question:$question, option1:$option1, option2:$option2, option3:$option3, answer:$answer})", // or MERGE
 			map[string]interface{}{"question": question, "option1": option1, "option2": option2, "option3": option3, "answer": answer})
 		if err != nil {
 			return nil, err
