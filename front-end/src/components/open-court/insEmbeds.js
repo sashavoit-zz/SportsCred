@@ -26,7 +26,6 @@ export class InsEmbeds extends React.Component{
     render(){
         return(
             <div>
-                {console.log("ins embedHtml"+this.state.embedHtml)}
             <div dangerouslySetInnerHTML={{__html: this.state.embedHtml}} />
             </div>
         )
