@@ -1,7 +1,9 @@
 package apis
 
 import (
+	"fmt"
 	"io/ioutil"
+	"net/http"
 	"strconv"
 	"strings"
 
@@ -10,6 +12,234 @@ import (
 )
 
 var neo4jDriver2 neo4j.Driver // used in all db related funcs
+
+func getQuestionWithID(questionID string) (string, error) {
+
+	// session set up
+	session, err := neo4jDriver2.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return "", err
+	}
+	defer session.Close()
+
+	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run(
+			"MATCH (n:Question { id:$questionID }) return n.question",
+			map[string]interface{}{"questionID": questionID})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+
+		return nil, result.Err()
+	})
+	if validation != nil {
+		return validation.(string), nil
+	}
+
+	return "", nil
+}
+
+func postAnswerToDB(email string, questionID string, answer string) (string, error) {
+
+	// session set up
+	session, err := neo4jDriver2.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return "", err
+	}
+	defer session.Close()
+
+	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run(
+			"MATCH (u:User),(q:Question) WHERE u.email = $email AND q.id = $questionID CREATE (u)-[a:ANSWER { answer:$answer }]->(q) RETURN a.answer",
+			map[string]interface{}{"email": email, "questionID": questionID, "answer": answer})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+
+		return nil, result.Err()
+	})
+	if validation != nil {
+		return validation.(string), nil
+	}
+	return "", nil
+}
+
+func postAnswer(c *gin.Context) {
+
+	type Answer struct {
+		Email      string
+		QuestionID string
+		Answer     string
+	}
+	var json Answer
+
+	// check json and populate it if its iight
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	answer, err := postAnswerToDB(json.Email, json.QuestionID, json.Answer)
+
+	// everything worked!
+	if answer == "" {
+		c.JSON(http.StatusNotImplemented, gin.H{"answer": answer})
+	} else if err == nil {
+		c.JSON(http.StatusOK, gin.H{"answer": answer})
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+}
+
+func getQuestion(c *gin.Context) {
+
+	type QuestionID struct {
+		QuestionID string
+	}
+	var json QuestionID
+
+	// check json and populate it if its iight
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	question, err := getQuestionWithID(json.QuestionID)
+
+	// everything worked!
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"question": question})
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+}
+
+func getUserAnswer(email string, questionID string) (string, error) {
+
+	// session set up
+	session, err := neo4jDriver2.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return "", err
+	}
+	defer session.Close()
+
+	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run(
+			"MATCH (:User { email: $email })-[ANSWER]->(:Question {id:$questionID}) RETURN ANSWER.answer",
+			map[string]interface{}{"email": email, "questionID": questionID})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+
+		return nil, result.Err()
+	})
+	if validation != nil {
+		return validation.(string), nil
+	}
+
+	return "", nil
+}
+
+func getAnswer(c *gin.Context) {
+
+	type Answer struct {
+		Email      string
+		QuestionID string
+	}
+	var json Answer
+
+	// check json and populate it if its iight
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	answer, err := getUserAnswer(json.Email, json.QuestionID)
+
+	// everything worked!
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"answer": answer})
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+}
+
+func getRandomUserAnswers(questionID string) ([3]string, error) {
+	var answers [3]string
+
+	// session set up
+	session, err := neo4jDriver2.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return answers, err
+	}
+	defer session.Close()
+
+	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run(
+			"MATCH (:User)-[ANSWER]->(:Question {id:'fanalyst0'}) RETURN ANSWER.answer, rand() as r ORDER BY r LIMIT 3",
+			map[string]interface{}{"questionID": questionID})
+		if err != nil {
+			return nil, err
+		}
+
+		i := 0
+		for result.Next() {
+			if i < 3 {
+				var answer = result.Record().GetByIndex(0)
+				if w, ok := answer.(string); ok {
+					answers[i] = w
+				}
+				i++
+			}
+		}
+
+		return answers, result.Err()
+	})
+	if validation != nil {
+		return validation.([3]string), nil
+	}
+
+	return answers, nil
+}
+
+func getAnswers(c *gin.Context) {
+
+	type Answer struct {
+		QuestionID string
+	}
+	var json Answer
+
+	// check json and populate it if its iight
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	answers, err := getRandomUserAnswers(json.QuestionID)
+
+	// everything worked!
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"answer0": answers[0], "answer1": answers[1], "answer2": answers[2]})
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+}
 
 func setQuestionDBConstraint() (bool, error) {
 	session, err := neo4jDriver2.Session(neo4j.AccessModeWrite)
@@ -106,6 +336,68 @@ func setUpQuestions() {
 
 }
 
+func checkAnswerExists(email string, questionID string) (bool, error) {
+	// session set up
+	session, err := neo4jDriver1.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return false, err
+	}
+	defer session.Close()
+
+	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run(
+			"MATCH  (u:User {email: $email}), (q:Question {id:$questionID}) RETURN EXISTS( (u)-[:ANSWER]-(q) )",
+			map[string]interface{}{"email": email, "questionID": questionID})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+
+		return nil, result.Err()
+	})
+
+	if validation != nil {
+		res := validation.(bool)
+		return res, nil
+	}
+
+	return false, nil
+}
+
+func checkAnswer(c *gin.Context) {
+
+	type Answer struct {
+		Email      string
+		QuestionID string
+	}
+	var json Answer
+
+	// check json and populate it if its iight
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	fmt.Println(json.Email)
+	fmt.Println(json.QuestionID)
+
+	// verify user in DB
+	if result, err := checkAnswerExists(json.Email, json.QuestionID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()}) // db error
+		return
+	} else if result {
+		c.JSON(http.StatusNotAcceptable, gin.H{"status": "answer already exists"}) // user or pass dont match
+		return
+	}
+
+	// everything worked!
+	c.JSON(http.StatusOK, gin.H{"status": "can answer"})
+}
+
 // SetUpDebate  sets up debate
 func SetUpDebate(server *gin.Engine, driver neo4j.Driver) {
 	neo4jDriver2 = driver
@@ -114,5 +406,11 @@ func SetUpDebate(server *gin.Engine, driver neo4j.Driver) {
 
 	setQuestionDBConstraint()
 	setUpQuestions()
+
 	// endpoints
+	server.POST("/question", getQuestion)
+	server.POST("/answer", postAnswer)
+	server.POST("/answerExists", checkAnswer)
+	server.POST("/getAnswer", getAnswer)
+	server.POST("/getAnswers", getAnswers)
 }

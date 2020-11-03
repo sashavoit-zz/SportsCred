@@ -1,16 +1,24 @@
 import React from "react";
 import SideBar from "../SideBar/SideBar";
-import { CircularProgress, Box, Typography, Card, CardContent, CardActions, Button, TextField, Grid } from "@material-ui/core";
+import { CircularProgress, Box, Typography, Card, CardContent, CardActions, Button, TextField, } from "@material-ui/core";
 import pfp1 from '../../assets/images/pfp1.png';
+import { question, answer, doesAnswerExist } from "../../service/ApiCalls";
 
-function goToAnalysis() {
-  window.location.href = '../analysis';
+async function shouldRedirect(email, questionID) {
+  var result = await doesAnswerExist(email, questionID);
+  if(result) {
+    window.location.href = '../analysis';
+  }
 }
 
 export class Debate extends React.Component{
 
   constructor(props) {
     super(props);
+
+    var dateOfMonth = new Date().getDate() % 10;
+    shouldRedirect(this.props.user.email, "fanalyst" + dateOfMonth.toString());
+
     var timeNext = new Date()
     timeNext.setDate(timeNext.getDate() + 1)
     timeNext.setHours(0, 0 ,0, 0)
@@ -20,9 +28,28 @@ export class Debate extends React.Component{
     this.state = {
       percentTime: (timeNext - new Date())/864000
     };
+    this.state = { questionOfTheDay: "" };
+
+    this.state = {value: ''};
+    this.handleChange = this.handleChange.bind(this);
+    this.state = { emailLoaded: false };
   }
 
-  componentDidMount() {
+  async goToAnalysis(email, answer1) {
+    var dateOfMonth = new Date().getDate() % 10;
+    await answer(email, "fanalyst" + dateOfMonth.toString(), answer1);
+    window.location.href = '../analysis';
+  }  
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+  
+  async componentDidMount() {
+    var dateOfMonth = new Date().getDate() % 10;
+    const question1 = await question("fanalyst" + dateOfMonth.toString())
+    this.setState({ questionOfTheDay: await question1 });
+    
     this.intervalID = setInterval(
       () => this.tick(),
       1000
@@ -31,6 +58,15 @@ export class Debate extends React.Component{
   componentWillUnmount() {
     clearInterval(this.intervalID);
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.user.email !== this.props.user.email) {
+      this.setState({emailLoaded: true});
+      var dateOfMonth = new Date().getDate() % 10;
+      shouldRedirect(this.props.user.email, "fanalyst" + dateOfMonth.toString());
+    }
+  }
+
   tick() {
     var timeNext = new Date()
     timeNext.setDate(timeNext.getDate() + 1)
@@ -44,6 +80,10 @@ export class Debate extends React.Component{
   }
 
   render(){
+    let email = this.props.user.email;
+    if (!this.state.emailLoaded) {
+      return <div />
+    }
       return(
           <div>
           <SideBar page="Debate & Analysis"/>
@@ -53,7 +93,7 @@ export class Debate extends React.Component{
                   Question of the Day
                 </Typography>
                 <Typography variant="h4" component="h2">
-                  Who is the greatest of all time?
+                  {this.state.questionOfTheDay}
                 </Typography>
                 <br></br>
                 <Box display="flex">
@@ -68,14 +108,16 @@ export class Debate extends React.Component{
                         rows={4}
                         variant="outlined"
                         fullWidth="true"
-                      />
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                     />
                   </Box>
                 </Box>
               </CardContent>
               <Box display="flex" justifyContent="flex-end" m={1}>
                 <CardActions>
                   <Button variant="contained" color="primary"
-                    onClick={goToAnalysis}
+                    onClick={(event) => this.goToAnalysis(email, this.state.value)}
                   > Debate</Button>
                 </CardActions>
               </Box>
