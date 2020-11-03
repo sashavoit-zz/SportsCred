@@ -26,6 +26,7 @@ import {
   FacebookShareButton,
   RedditShareButton,
   TwitterShareButton,
+  TumblrShareButton,
 } from "react-share";
 
 import {
@@ -37,6 +38,7 @@ import {
   FacebookIcon,
   RedditIcon,
   TwitterIcon,
+  TumblrIcon,
 } from "react-share";
 
 import MetaTags from 'react-meta-tags';
@@ -165,18 +167,12 @@ class OpenCourtPost extends Component {
         }
       })
       .then(data => {
-        // success get post object in data
-        log("okhteethetheht--")
-        log(data)
-        // const name_tag = document.querySelector("#username");
-        // name_tag.textContent = data.FirstName + " " + data.LastName;
         this.setState({
           title: data.Title,
           content: data.Content,
           likes: data.Likes,
           dislikes: data.Dislikes
         })
-        //render_reports(data);
       })
       .catch((error) => {
         console.log(error)
@@ -198,8 +194,8 @@ class OpenCourtPost extends Component {
           </MetaTags>
           <CardContent className={classes.content}>
             <CardHeader
-              title={this.state.title + " <- this is titile of post"}
-              subheader={this.state.content + " <- this is content of the post"}
+              title={this.state.title}
+              subheader={this.state.content}
             >
             </CardHeader>
           </CardContent>
@@ -207,9 +203,6 @@ class OpenCourtPost extends Component {
 
           <FacebookShareButton url={this.state.url} quote={this.state.title} hashtag="#SportCred">
             <FacebookIcon size={32} round={true} /> 
-            {/* <FacebookShareCount url={this.state.url}>
-              {shareCount => <span>{shareCount}</span>}
-            </FacebookShareCount> */}
           </FacebookShareButton>
 
           <TwitterShareButton url={this.state.url} title={this.state.title} hashtag="#SportCred">
@@ -218,10 +211,11 @@ class OpenCourtPost extends Component {
 
           <RedditShareButton url={this.state.url} title={this.state.title}>
             <RedditIcon size={32} round={true} />
-            {/* <RedditShareCount url={this.state.url}>
-              {shareCount => <span>{shareCount}</span>}
-            </RedditShareCount> */}
           </RedditShareButton>
+
+          <TumblrShareButton url={this.state.url} title={this.state.title} tags={["SportCred"]}>
+            <TumblrIcon size={32} round={true} />
+          </TumblrShareButton>
           </CardActions>
         </Card>
     );
