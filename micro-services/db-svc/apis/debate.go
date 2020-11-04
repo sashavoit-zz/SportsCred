@@ -124,35 +124,45 @@ func getQuestion(c *gin.Context) {
 	}
 }
 
-func getUserAnswer(email string, questionID string) (string, error) {
+func getUserAnswer(email string, questionID string) ([2]string, error) {
+	var answer [2]string
 
 	// session set up
 	session, err := neo4jDriver2.Session(neo4j.AccessModeWrite)
 	if err != nil {
-		return "", err
+		return answer, err
 	}
 	defer session.Close()
 
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"MATCH (:User { email: $email })-[ANSWER]->(:Question {id:$questionID}) RETURN ANSWER.answer",
+			"MATCH (u:User { email:$email })-[ANSWER]->(:Question {id:$questionID}) RETURN ANSWER.answer, COALESCE(u.firstName,'') + ' ' + COALESCE(u.lastName,'') LIMIT 1",
 			map[string]interface{}{"email": email, "questionID": questionID})
 		if err != nil {
 			return nil, err
 		}
 
 		if result.Next() {
-			return result.Record().GetByIndex(0), nil
+			var userAnswer = result.Record().GetByIndex(0)
+			if w, ok := userAnswer.(string); ok {
+				answer[0] = w
+			}
+			var userName = result.Record().GetByIndex(1)
+			if w, ok := userName.(string); ok {
+				answer[1] = w
+			}
+
+			return answer, nil
 		}
 
 		return nil, result.Err()
 	})
 	if validation != nil {
-		return validation.(string), nil
+		return validation.([2]string), nil
 	}
 
-	return "", nil
+	return answer, nil
 }
 
 func getAnswer(c *gin.Context) {
@@ -173,14 +183,14 @@ func getAnswer(c *gin.Context) {
 
 	// everything worked!
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"answer": answer})
+		c.JSON(http.StatusOK, gin.H{"answer": answer[0], "name": answer[1]})
 	} else {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 }
 
-func getRandomUserAnswers(questionID string) ([3]string, error) {
-	var answers [3]string
+func getRandomUserAnswers(questionID string) ([9]string, error) {
+	var answers [9]string
 
 	// session set up
 	session, err := neo4jDriver2.Session(neo4j.AccessModeWrite)
@@ -192,7 +202,7 @@ func getRandomUserAnswers(questionID string) ([3]string, error) {
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"MATCH (:User)-[ANSWER]->(:Question {id:'fanalyst0'}) RETURN ANSWER.answer, rand() as r ORDER BY r LIMIT 3",
+			"MATCH (u: User)-[ANSWER]->(:Question {id:'fanalyst3'}) RETURN ANSWER.answer, COALESCE(u.firstName ,'') + ' ' + COALESCE(u.lastName ,''), u.email, rand() as r ORDER BY r LIMIT 3",
 			map[string]interface{}{"questionID": questionID})
 		if err != nil {
 			return nil, err
@@ -201,9 +211,11 @@ func getRandomUserAnswers(questionID string) ([3]string, error) {
 		i := 0
 		for result.Next() {
 			if i < 3 {
-				var answer = result.Record().GetByIndex(0)
-				if w, ok := answer.(string); ok {
-					answers[i] = w
+				for j := 0; j < 3; j++ {
+					var answer = result.Record().GetByIndex(j)
+					if w, ok := answer.(string); ok {
+						answers[3*i+j] = w
+					}
 				}
 				i++
 			}
@@ -212,7 +224,7 @@ func getRandomUserAnswers(questionID string) ([3]string, error) {
 		return answers, result.Err()
 	})
 	if validation != nil {
-		return validation.([3]string), nil
+		return validation.([9]string), nil
 	}
 
 	return answers, nil
@@ -235,7 +247,7 @@ func getAnswers(c *gin.Context) {
 
 	// everything worked!
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"answer0": answers[0], "answer1": answers[1], "answer2": answers[2]})
+		c.JSON(http.StatusOK, gin.H{"answer0": answers[0], "name0": answers[1], "email0": answers[2], "answer1": answers[3], "name1": answers[4], "email1": answers[5], "answer2": answers[6], "name2": answers[7], "email2": answers[8]})
 	} else {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}

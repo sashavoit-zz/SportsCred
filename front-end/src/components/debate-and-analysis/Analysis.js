@@ -91,9 +91,20 @@ export class Analysis extends React.Component{
       percentTime: (timeNext - new Date())/864000
     };
     this.state = { userAnswer: "" };
+    this.state = { userName: "" };
+
     this.state = { answer0: ""};
+    this.state = { name0: ""};
+    this.state = { email0: ""};
+
     this.state = { answer1: ""};
+    this.state = { name1: ""};
+    this.state = { email1: ""};
+
     this.state = { answer2: ""};
+    this.state = { name2: ""};
+    this.state = { email2: ""};
+
     this.state = { questionOfTheDay: "" };
   }
 
@@ -111,12 +122,22 @@ export class Analysis extends React.Component{
     if (prevProps.user.email !== this.props.user.email) {
       var dateOfMonth = new Date().getDate() % 10;
       const answer = await getUserAnswer(this.props.user.email, "fanalyst" + dateOfMonth.toString())
-      this.setState({ userAnswer: await answer });
+      this.setState({ userAnswer: await answer[0] });
+      this.setState({ userName: await answer[1] });
 
       const answers = await getRandomAnswers("fanalyst" + dateOfMonth.toString())
       this.setState({ answer0: await answers[0] });
-      this.setState({ answer1: await answers[1] });
-      this.setState({ answer2: await answers[2] });
+      this.setState({ name0: await answers[1] });
+      this.setState({ email0: await answers[2] });
+
+      this.setState({ answer1: await answers[3] });
+      this.setState({ name1: await answers[4] });
+      this.setState({ email1: await answers[5] });
+
+      this.setState({ answer2: await answers[6] });
+      this.setState({ name2: await answers[7] });
+      this.setState({ email2: await answers[8] });
+
     }
   }
   componentWillUnmount() {
@@ -170,6 +191,9 @@ export class Analysis extends React.Component{
                     <img src={pfp3} width="50" height="50"/>
                   </Box>
                   <Box p={1} flexGrow={1}>
+                  <Typography color="textSecondary" gutterBottom variant="h6">
+                      {this.state.name0}
+                    </Typography>
                     <Typography color="textSecondary" gutterBottom>
                       {this.state.answer0}
                     </Typography>
@@ -209,6 +233,9 @@ export class Analysis extends React.Component{
                     <img src={pfp2} width="50" height="50"/>
                   </Box>
                   <Box p={1} flexGrow={1}>
+                    <Typography color="textSecondary" gutterBottom variant="h6" >
+                      {this.state.name1}
+                    </Typography>
                     <Typography color="textSecondary" gutterBottom>
                       {this.state.answer1}
                     </Typography>
@@ -245,8 +272,11 @@ export class Analysis extends React.Component{
                     <img src={pfp4} width="50" height="50"/>
                   </Box>
                   <Box p={1} flexGrow={1}>
+                    <Typography color="textSecondary" gutterBottom variant="h6" >
+                      {this.state.name2}
+                    </Typography>
                     <Typography color="textSecondary" gutterBottom>
-                      {this.state.answer2}
+                    {this.state.answer2}
                     </Typography>
                   </Box>
                   <Box>
@@ -276,7 +306,6 @@ export class Analysis extends React.Component{
               </CardContent>
             </Card>
             <br></br>
-            <br></br>
             <Typography color="textSecondary" gutterBottom hidden={this.state.userAnswer==""}>
               Your Post
             </Typography>
@@ -288,6 +317,9 @@ export class Analysis extends React.Component{
                     <img src={pfp1} width="50" height="50"/>
                   </Box>
                   <Box p={1} flexGrow={1}>
+                    <Typography color="textSecondary" gutterBottom variant="h6" >
+                      {this.state.userName}
+                    </Typography>
                     <Typography color="textSecondary" gutterBottom>
                       {this.state.userAnswer}
                     </Typography>

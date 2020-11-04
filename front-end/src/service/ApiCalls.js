@@ -126,7 +126,7 @@ const getUserAnswer = async (email, questionID) => {
     throw "err";
   } else {
     let body = await res.json();
-    return [body.answer];
+    return [body.answer, body.name];
   }
 };
 
@@ -146,7 +146,7 @@ const getRandomAnswers = async (questionID) => {
     throw "err";
   } else {
     let body = await res.json();
-    return [body.answer0, body.answer1, body.answer2];
+    return [body.answer0, body.name0, body.email0, body.answer1, body.name1, body.email1, body.answer2, body.name2, body.email2];
   }
 };
 
