@@ -150,10 +150,7 @@ function Trivia(props) {
     setProgress((prevProgress) => (prevProgress = 0));
     answer = "no";
     nextQuestion = 1;
-
-    //
-    // ATTENTION THERE MAY BE UNDEFINED BEHAVIOUR
-    //
+    
     // get new question and show on site (consumer REST api)
 
     addQuestionsToDb();
