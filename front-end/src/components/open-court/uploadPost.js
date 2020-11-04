@@ -2,6 +2,8 @@ import React from "react";
 import {withStyles} from "@material-ui/core/styles";
 import {TextField, Button, Avatar, Container, Grid, Typography} from '@material-ui/core'
 import FaceIcon from '@material-ui/icons/Face';
+import Feed from './feed';
+import post from "./post";
 function addPost(content, author, postTime) {
     const response = fetch("/addPost/hashasdasd", {
         mode: 'cors',
@@ -30,7 +32,8 @@ const styles = theme =>({
          },
       },
       container:{
-          margin:'auto',
+          marginLeft:'auto',
+          marginTop:'60px',
           width:'60vw'
       },
       grid:{
@@ -52,39 +55,18 @@ const styles = theme =>({
 });
 
 
-
 export class UploadPost extends React.Component{
+
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             uploadInput:"",
             errorText:"",
-            firstName:"",
-            lastName:""
         }
     }
-    // componentDidMount(){
-    //     console.log("in the componentDidMount");
-    //     console.log("the email is "+this.props.user.email);
-    //     const requestOptions = {
-    //         method: "GET",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Token": localStorage.getItem("Token"),
-    //           },
-    //     };
-    //     fetch("/getUserName/"+this.props.user.email,requestOptionss)
-    //         .then(response => response.json())
-    //         .then((data) => {
-    //             this.setState({
-    //                     firstName:data.firstName,
-    //                     lastName:data.lastName
-    //             })
-    //         })
-    //         .catch(err => console.log(err))
-    // }
+    
     render(){
-        const {user} = this.props;
+        const {user,firstName,lastName} = this.props;
         const {classes} = this.props;
         const handleInput=(field)=>{
             const value = field.value;
@@ -103,6 +85,7 @@ export class UploadPost extends React.Component{
                 const date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
                 addPost(this.state.uploadInput,user.email,date)
                 reset()
+                refreshPosts()
             }
         }
         const reset = () =>{
@@ -110,6 +93,9 @@ export class UploadPost extends React.Component{
                 uploadInput:"",
                 errorText:""
             })
+        }
+        const refreshPosts = () =>{
+            window.location.reload(false)
         }
         const handleInputEmpty = ()=>{
            this.setState({
@@ -123,9 +109,9 @@ export class UploadPost extends React.Component{
                 <div>
                     <Grid className = {classes.grid} container spacing={1}>
                         <Grid item >
-                            {/* <Avatar className={classes.avatar} alt="user profile"/> */}
-                            <FaceIcon className={classes.avatar} fontSize='large'/>
-                            <Typography>{user.email}</Typography>                        
+                            <Avatar  alt="user profile"/>
+                            {/* <FaceIcon className={classes.avatar} fontSize='large'/> */}
+                            <Typography align='center'>{firstName+" "+lastName}</Typography>                        
                         </Grid>
                         <Grid item xs>
                             <TextField 

@@ -60,9 +60,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 			c.String(400, "Bad Request")
 			//c.JSON(400, gin.H{"message":"pong",})
 		}
-		c.JSON(200, gin.H{
-			"Note": "Post added successfully",
-		})
+		c.JSON(200, result)
 	}))
 
 	app.GET("/getUserName/:email", CheckAuthToken(func(c *gin.Context, _ string) {

@@ -1,8 +1,6 @@
 package queries
 
 import (
-	"fmt"
-
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
 
@@ -39,29 +37,35 @@ func LoadAllPosts(driver neo4j.Driver) (interface{}, error) {
 }
 
 // add post in the database
-func AddPost(driver neo4j.Driver, content string, email string, likes int, dislikes int, postTime string) (string, error) {
+func AddPost(driver neo4j.Driver, content string, email string, likes int, dislikes int, postTime string) (interface{}, error) {
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer session.Close()
+
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
 			"CREATE (n:Post {content:$content, email:$email, likes:$likes, dislikes:$dislikes, postTime:$postTime})\n"+
 				"SET n.postId = id(n)\n"+
 				"WITH n \n"+
 				"MATCH(u:User{email:$email})\n"+
-				"MERGE (u)-[r:CREATED]->(n)", // or MERGE
+				"MERGE (u)-[r:CREATED]->(n)\n"+
+				"RETURN {userProfile: n.userProfile, postId: toString(n.postId), content: n.content, time: n.time, likes: toString(n.likes), dislikes: toString(n.dislikes)} as post", // or MERGE
 			map[string]interface{}{"content": content, "email": email, "likes": likes, "dislikes": dislikes, "postTime": postTime})
 		if err != nil {
 			return nil, err
 		}
+
 		if result.Next() {
-			return result.Record().GetByIndex(0), nil
+			value, _ := result.Record().Get("post")
+			return value, nil
+		} else {
+			return nil, nil
 		}
-		return nil, result.Err()
 	})
-	return fmt.Sprintf("%v", result), nil
+
+	return result, nil
 }
 
 func GetUserNameByEmail(driver neo4j.Driver, email string) (interface{}, error) {

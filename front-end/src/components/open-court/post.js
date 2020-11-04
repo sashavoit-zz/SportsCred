@@ -39,7 +39,6 @@ function checkWebsite(url){
     const beforeCom = url.split(".com")[0];
     const lastIndex = beforeCom.split(/[./]+/).length-1;
     const web = beforeCom.split(/[./]+/)[lastIndex];
-    console.log("the web is "+ url.split('.com'))
     return web
 }
 
