@@ -62,6 +62,7 @@ export class UploadPost extends React.Component{
             firstName:"",
             lastName:""
         }
+
     }
     // componentDidMount(){
     //     console.log("in the componentDidMount");
@@ -86,6 +87,8 @@ export class UploadPost extends React.Component{
     render(){
         const {user} = this.props;
         const {classes} = this.props;
+        console.log("render of upload post");
+        console.log(user.email);
         const handleInput=(field)=>{
             const value = field.value;
             const name = field.name;

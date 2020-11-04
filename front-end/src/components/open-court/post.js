@@ -5,6 +5,7 @@ import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import ShareIcon from '@material-ui/icons/Share';
 import { withStyles } from "@material-ui/core/styles";
 import CommentIcon from '@material-ui/icons/Comment';
+import Rate from "./like";
 
 const userStyles = theme =>({
     root:{
@@ -17,7 +18,15 @@ const userStyles = theme =>({
 });
 
 export class Post extends React.Component{
+    constructor(props) {
+        super(props);
+        console.log("post contrtruct");
+        console.log(props);
+    }
+
     render(){
+        const {userId} = this.props;
+        console.log(userId);
         const {postInfo} = this.props;
         // const classes = userStyles();
         const {classes} = this.props;
@@ -38,14 +47,15 @@ export class Post extends React.Component{
                         </Typography>
                     </CardContent>
                     <CardActions disableSpacing>
-                        <IconButton>
+                        <Rate likes={postInfo.likes} dislikes={postInfo.dislikes} id={postInfo.postId} user={userId}></Rate>
+                        {/* <IconButton>
                             <ThumbUpAltIcon/>
                             <Typography color="textSecondary">{postInfo.likes}</Typography>
-                        </IconButton>
-                        <IconButton>
+                        </IconButton> */}
+                        {/* <IconButton>
                             <ThumbDownAltIcon/>
                             <Typography color="textSecondary">{postInfo.dislikes}</Typography>
-                        </IconButton>
+                        </IconButton> */}
                         <IconButton>
                             {/**TODO: onlick to reply the post */}
                             <CommentIcon/>

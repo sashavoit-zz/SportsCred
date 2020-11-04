@@ -24,7 +24,7 @@ export class openCourt extends React.Component{
             <div>
             <SideBar page="Open Court"/>
             <UploadPost user={this.props.user}/>
-            <Feed />
+            <Feed user={this.props.user} />
             </div>
         );
     }

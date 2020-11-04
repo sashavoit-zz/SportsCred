@@ -19,6 +19,8 @@ export class feed extends React.Component{
         this.state = {
             posts: []
         };
+        console.log("feed constructor")
+        console.log(props);
     }
 
     componentDidMount(){
@@ -37,12 +39,16 @@ export class feed extends React.Component{
 
     render(){
         const {classes} = this.props;
+        const {user} = this.props;
+        console.log("render of feed");
+        console.log(user);
         return(
             <div className =  {classes.root}>
                 {this.state.posts.map(post =>
                     <Post
                         key={uid(post)}
                         postInfo={post}
+                        userId={user.email}
                     />
                 )}
             </div>

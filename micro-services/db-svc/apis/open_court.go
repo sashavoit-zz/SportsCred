@@ -4,7 +4,6 @@ import (
 	"db-svc/queries"
 	"encoding/json"
 	"io/ioutil"
-
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
@@ -22,6 +21,34 @@ type PostsUserRelationship struct {
 }
 
 func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
+
+	app.PUT("/posts/:userid/like/:postid", func(c *gin.Context){
+		email := c.Param("userid")
+		postid := c.Param("postid")
+		result, err := queries.RatePost(driver, email, postid, "like")
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		} else if result == false {
+			c.String(404, "Not found")
+			return
+		}
+		c.JSON(200, result)
+	})
+
+	app.PUT("/posts/:userid/dislike/:postid", func(c *gin.Context){
+		email := c.Param("userid")
+		postid := c.Param("postid")
+		result, err := queries.RatePost(driver, email, postid, "dislike")
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		} else if result == false {
+			c.String(404, "Not found")
+			return
+		}
+		c.JSON(200, result)
+	})
 
 	app.GET("/allPosts", CheckAuthToken(func(c *gin.Context, _ string) {
 		result, err := queries.LoadAllPosts(driver)
