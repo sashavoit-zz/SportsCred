@@ -6,6 +6,13 @@ import ShareIcon from '@material-ui/icons/Share';
 import { withStyles } from "@material-ui/core/styles";
 import CommentIcon from '@material-ui/icons/Comment';
 import Rate from "./like";
+import {TextField} from '@material-ui/core'
+import Comment from "./comment";
+import { uid } from 'react-uid';
+
+const REPLIES = '/postReply/'
+
+
 
 const userStyles = theme =>({
     root:{
@@ -22,7 +29,51 @@ export class Post extends React.Component{
         super(props);
         console.log("post contrtruct");
         console.log(props);
+        this.state = {
+            uploadInput:"",
+            errorText:"",
+            firstName:"",
+            lastName:"",
+            replies: []
+        }
     }
+
+    addComment = async (content, author, commentTime) => {
+        const response = fetch('/reply/'+this.props.postInfo.postId+"/hashasdasd", {
+            mode: 'cors',
+            method: 'POST',
+            body: JSON.stringify({
+                "content":content,
+                "email": author,
+                "likes":0,
+                "dislikes":0,
+                "commentTime":commentTime
+            }),
+            headers: {
+                "Content-Type": "application/json",
+                "Token": localStorage.getItem("Token"),
+              },
+        });
+    }
+
+    componentDidMount(){
+        this.refresh();
+    }
+
+    refresh = () => {
+                const requestOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Token": localStorage.getItem("Token"),
+            },
+        };
+        fetch(REPLIES+this.props.postInfo.postId, requestOptions)
+            .then(response => response.json())
+            .then((data) => (this.setState({replies: data})))
+            .catch(err => console.log(err))
+    }
+    
 
     render(){
         const {userId} = this.props;
@@ -30,6 +81,38 @@ export class Post extends React.Component{
         const {postInfo} = this.props;
         // const classes = userStyles();
         const {classes} = this.props;
+
+        const handleInput=(field)=>{
+            const value = field.value;
+            const name = field.name;
+            this.setState({
+                [name]:value
+            })
+        }
+        const handleSubmit = () =>{
+            if(this.state.uploadInput.length === 0){
+                /*handling if user uploading post with empty content, will occur error message*/
+                handleInputEmpty();
+            }
+            else{
+                const today = new Date();
+                const date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+                this.addComment(this.state.uploadInput,userId,date)
+                reset()
+            }
+        }
+        const reset = () =>{
+            this.setState({
+                uploadInput:"",
+                errorText:""
+            }, () => {this.refresh();})
+        }
+        const handleInputEmpty = ()=>{
+           this.setState({
+               errorText:"Could not upload comment with empty content"
+           })
+        }
+
         return (
             <div>
                 <Card className={classes.root}>
@@ -47,16 +130,22 @@ export class Post extends React.Component{
                         </Typography>
                     </CardContent>
                     <CardActions disableSpacing>
-                        <Rate likes={postInfo.likes} dislikes={postInfo.dislikes} id={postInfo.postId} user={userId}></Rate>
-                        {/* <IconButton>
-                            <ThumbUpAltIcon/>
-                            <Typography color="textSecondary">{postInfo.likes}</Typography>
-                        </IconButton> */}
-                        {/* <IconButton>
-                            <ThumbDownAltIcon/>
-                            <Typography color="textSecondary">{postInfo.dislikes}</Typography>
-                        </IconButton> */}
-                        <IconButton>
+                        <Rate type={"posts"} likes={postInfo.likes} dislikes={postInfo.dislikes} id={postInfo.postId} user={userId}></Rate>
+                        <TextField
+                                error ={this.state.errorText.length === 0 ? false : true }
+                                placeholder="Leave a reply"
+                                id = "standard-multiline-static"
+                                multiline
+                                onChange={e => handleInput(e.target)}
+                                InputProps={
+                                    {className: classes.input}
+                                }
+                                helperText={this.state.errorText}
+                                name = "uploadInput"
+                                rows={2}
+                                rowsMax={4}
+                        />
+                        <IconButton onClick={e=>handleSubmit()}>
                             {/**TODO: onlick to reply the post */}
                             <CommentIcon/>
                         </IconButton>
@@ -65,6 +154,17 @@ export class Post extends React.Component{
                             <ShareIcon/>
                         </IconButton>
                     </CardActions>
+                    
+                    <div className={classes.root} style={{"marginLeft":"25px","marginTop":"10px"}}>
+                        {this.state.replies.map(reply =>
+                            <Comment   
+                                key={uid(reply)}
+                                userId={userId}
+                                postInfo={reply}
+                            />
+                        )}
+                    </div>
+                    
                 </Card>
             </div>
         )
@@ -72,3 +172,22 @@ export class Post extends React.Component{
 
 }
 export default withStyles(userStyles)(Post);
+
+
+// render(){
+//     const {classes} = this.props;
+//     const {user} = this.props;
+//     console.log("render of feed");
+//     console.log(user);
+//     return(
+//         <div className =  {classes.root}>
+//             {this.state.posts.map(post =>
+//                 <Post
+//                     key={uid(post)}
+//                     postInfo={post}
+//                     userId={user.email}
+//                 />
+//             )}
+//         </div>
+//     );
+// }

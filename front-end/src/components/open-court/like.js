@@ -6,7 +6,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import { withStyles } from "@material-ui/core/styles";
 import CommentIcon from '@material-ui/icons/Comment';
 
-const url = 'http://localhost:3001/posts/';
+const url = 'http://localhost:3001/';
 
 class Rate extends React.Component {
     constructor(props) {
@@ -62,7 +62,7 @@ class Rate extends React.Component {
     }
     //posts/userid/like/postid
     reqLike = async () => {
-        var likeurl = url+this.props.user+'/like/'+this.props.id;
+        var likeurl = url+'posts/'+this.props.user+'/like/'+this.props.id;
         const req = new Request(likeurl, {
             method:'PUT'
         });
@@ -70,7 +70,7 @@ class Rate extends React.Component {
     }
     //posts/userid/dislike/postid
     reqDislike = async () => {
-        var dislikeurl = url+this.props.user+'/dislike/'+this.props.id;
+        var dislikeurl = url+'posts/'+this.props.user+'/dislike/'+this.props.id;
         const req = new Request(dislikeurl, {
             method:'PUT'
         });

@@ -15,6 +15,13 @@ type Post struct {
 	Dislikes int
 	PostTime string
 }
+type Comment struct {
+	Content  string
+	Email    string
+	Likes    int
+	Dislikes int
+	CommentTime string
+}
 type PostsUserRelationship struct {
 	User    string
 	Content string
@@ -90,6 +97,50 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 		c.JSON(200, gin.H{
 			"Note": "Post added successfully",
 		})
+	}))
+
+
+	app.POST("/reply/:postid/:hash", CheckAuthToken(func(c *gin.Context, _ string) {
+		postid := c.Param("postid")
+		jsonData, err := ioutil.ReadAll(c.Request.Body)
+		if err != nil {
+			//handling error
+		}
+		var comment Comment
+		json.Unmarshal(jsonData, &comment)
+		content := comment.Content
+		email := comment.Email
+		likes := comment.Likes
+		dislikes := comment.Dislikes
+		commentTime := comment.CommentTime
+		//add the user to the database
+		result, err := queries.AddReply(driver, content, email, likes, dislikes, commentTime, postid)
+
+		if err != nil {
+			// 500 failed add user
+			c.String(500, "Internal Error")
+		} else if result == "" {
+			// 400 bad request (not exist or wrong password)
+			c.String(400, "Bad Request")
+			//c.JSON(400, gin.H{"message":"pong",})
+		}
+		c.JSON(200, gin.H{
+			"Note": "Post added successfully",
+		})
+	}))
+
+	app.GET("/postReply/:postid", CheckAuthToken(func(c *gin.Context, _ string) {
+		postid := c.Param("postid")
+		result, err := queries.LoadPostReply(driver, postid)
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		} else if result == nil {
+			c.String(404, "Not found")
+			return
+		}
+
+		c.JSON(200, result)
 	}))
 
 	app.GET("/getUserName/:email", CheckAuthToken(func(c *gin.Context, _ string) {

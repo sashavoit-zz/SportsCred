@@ -66,6 +66,79 @@ func AddPost(driver neo4j.Driver, content string, email string, likes int, disli
 	return fmt.Sprintf("%v", result), nil
 }
 
+
+
+func AddReply(driver neo4j.Driver, content string, email string, likes int, dislikes int, commentTime string, postid string) (string, error) {
+	id, err := strconv.Atoi(postid);
+	if err != nil {
+		return "", err
+	}
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return "", err
+	}
+	defer session.Close()
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"CREATE (n:Comment {content:$content, email:$email, likes:$likes, dislikes:$dislikes, commentTime:$commentTime})\n"+
+				"SET n.commentId = id(n)\n"+
+				"WITH n \n"+
+				"MATCH(p:Post)\n"+
+				"WHERE id(p)=$postid\n"+
+				"MERGE (n)-[r:REPLY]->(p)", // or MERGE
+			map[string]interface{}{"content": content, "email": email, "likes": likes, "dislikes": dislikes, "commentTime": commentTime,"postid":id})
+		if err != nil {
+			return nil, err
+		}
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+		return nil, result.Err()
+	})
+	return fmt.Sprintf("%v", result), nil
+}
+
+func LoadPostReply(driver neo4j.Driver, postid string) (interface{}, error) {
+	id, err := strconv.Atoi(postid);
+	if err != nil {
+		return "", err
+	}
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return nil, err
+	}
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"MATCH (c:Comment)-[r:REPLY]->(p:Post)\n"+
+			"WHERE id(p)=$postid\n"+
+			"CALL { \n"+
+			"WITH p \n"+
+			"MATCH(u:User {email: p.email}) \n"+
+			"RETURN u.firstName as userFirstName, u.lastName as userLastName \n"+
+			"} \n"+
+			"RETURN collect({firstName: userFirstName, lastName: userLastName, userProfile: p.userProfile, commentId: toString(c.commentId), content: c.content, time: c.time, likes: toString(c.likes), dislikes: toString(c.dislikes)}) as replies",
+			map[string]interface{}{"postid":id})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			value, _ := result.Record().Get("replies")
+			return value, nil
+		} else {
+			return nil, nil
+		}
+	})
+
+	return result, nil
+}
+
+
+
+
+
 func GetUserNameByEmail(driver neo4j.Driver, email string) (interface{}, error) {
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
