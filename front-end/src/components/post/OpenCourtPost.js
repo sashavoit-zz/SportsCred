@@ -30,21 +30,7 @@ import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 // import ShareIcon from '@material-ui/icons/Share';
 import CommentIcon from '@material-ui/icons/Comment';
 
-import {
-  EmailShareButton,
-  FacebookShareButton,
-  RedditShareButton,
-  TwitterShareButton,
-  TumblrShareButton,
-} from "react-share";
-
-
-import {
-  FacebookIcon,
-  RedditIcon,
-  TwitterIcon,
-  TumblrIcon,
-} from "react-share";
+import { Link } from 'react-router-dom'
 
 
 const log = console.log
@@ -239,7 +225,9 @@ class OpenCourtPost extends Component {
               <Box className={classes.postInfo} display='inline'>
                 @user_name - Nov 1
               </Box>
-              <LaunchIcon className={classes.launchIcon}></LaunchIcon>
+              {/* <Link to={"/the-zone/" + postInfo.postId}>  */}
+                <LaunchIcon className={classes.launchIcon}></LaunchIcon>
+              {/* </Link> */}
             </div>
             <div className={classes.cardBody}>
               {this.state.content}
@@ -263,40 +251,10 @@ class OpenCourtPost extends Component {
                 <ShareMenu 
                   data={[this.state.url, this.state.content, "#SportCred"]} 
                 />
-                {/* <ShareIcon /> */}
               </IconButton>
             </CardActions>
           </CardContent>
         </Card>
-
-
-        {/* <Card className={classes.root}>
-          <CardContent className={classes.content}>
-            <CardHeader
-              title={this.state.content}
-              subheader={this.state.content}
-            >
-            </CardHeader>
-          </CardContent>
-          <CardActions>
-
-            <FacebookShareButton url={this.state.url} quote={this.state.content} hashtag="#SportCred">
-              <FacebookIcon size={32} round={true} />
-            </FacebookShareButton>
-
-            <TwitterShareButton url={this.state.url} title={this.state.content} hashtag="#SportCred">
-              <TwitterIcon size={32} round={true} />
-            </TwitterShareButton>
-
-            <RedditShareButton url={this.state.url} title={this.state.content}>
-              <RedditIcon size={32} round={true} />
-            </RedditShareButton>
-
-            <TumblrShareButton url={this.state.url} title={this.state.content} tags={["SportCred"]}>
-              <TumblrIcon size={32} round={true} />
-            </TumblrShareButton>
-          </CardActions>
-        </Card> */}
       </div>
     );
   }
