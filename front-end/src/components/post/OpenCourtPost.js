@@ -169,7 +169,6 @@ class OpenCourtPost extends Component {
         // const name_tag = document.querySelector("#username");
         // name_tag.textContent = data.FirstName + " " + data.LastName;
         this.setState({
-          title: data.Title,
           content: data.Content,
           likes: data.Likes,
           dislikes: data.Dislikes
@@ -189,26 +188,26 @@ class OpenCourtPost extends Component {
       <Card className={classes.root}>
         <CardContent className={classes.content}>
           <CardHeader
-            title={this.state.title}
+            title={this.state.content}
             subheader={this.state.content}
           >
           </CardHeader>
         </CardContent>
         <CardActions>
 
-          <FacebookShareButton url={this.state.url} quote={this.state.title} hashtag="#SportCred">
+          <FacebookShareButton url={this.state.url} quote={this.state.content} hashtag="#SportCred">
             <FacebookIcon size={32} round={true} />
           </FacebookShareButton>
 
-          <TwitterShareButton url={this.state.url} title={this.state.title} hashtag="#SportCred">
+          <TwitterShareButton url={this.state.url} title={this.state.content} hashtag="#SportCred">
             <TwitterIcon size={32} round={true} />
           </TwitterShareButton>
 
-          <RedditShareButton url={this.state.url} title={this.state.title}>
+          <RedditShareButton url={this.state.url} title={this.state.content}>
             <RedditIcon size={32} round={true} />
           </RedditShareButton>
 
-          <TumblrShareButton url={this.state.url} title={this.state.title} tags={["SportCred"]}>
+          <TumblrShareButton url={this.state.url} title={this.state.content} tags={["SportCred"]}>
             <TumblrIcon size={32} round={true} />
           </TumblrShareButton>
         </CardActions>

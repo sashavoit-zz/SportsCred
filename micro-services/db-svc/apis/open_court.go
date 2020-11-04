@@ -38,7 +38,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 
 	app.GET("/post/:id", CheckAuthToken(func(c *gin.Context, _ string) {
 		id := c.Param("id");
-		log.Println("000000")
+		log.Println("000001")
 		log.Println(id)
 		result, err := queries.LoadPost(driver, id)
 		if err != nil {
@@ -55,7 +55,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 
 	app.GET("/postVisitor/:id", func(c *gin.Context){
 		id := c.Param("id");
-		log.Println("000001")
+		log.Println("000002")
 		log.Println(id)
 		result, err := queries.LoadPost(driver, id)
 		if err != nil {
@@ -65,7 +65,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 			c.String(404, "Not found")
 			return
 		}
-		log.Println("0000001")
+		log.Println("0000002")
 		log.Println(result)
 		c.JSON(200, result)
 	})

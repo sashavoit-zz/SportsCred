@@ -48,7 +48,7 @@ func LoadPost(driver neo4j.Driver, postId string) (interface{}, error) {
 	log.Println(postId)
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH (p:Post {postId: toInteger($postId)}) RETURN 'this is title in open-court-queries.go', p.content, toString(p.dislikes), toString(p.likes)",
+			"MATCH (p:Post {postId: toInteger($postId)}) RETURN p.content, toString(p.dislikes), toString(p.likes)",
 			map[string]interface{}{"postId":postId})
 		log.Println(err)
 		if err != nil {
@@ -62,7 +62,6 @@ func LoadPost(driver neo4j.Driver, postId string) (interface{}, error) {
 			// log.Println(result.Record())
 			// log.Println(result.Record().GetByIndex(0).(string))
 			type Post struct{
-				Title string
 				Content string
 				Dislikes string
 				Likes string
@@ -71,7 +70,6 @@ func LoadPost(driver neo4j.Driver, postId string) (interface{}, error) {
 				record.GetByIndex(0).(string),
 				record.GetByIndex(1).(string),
 				record.GetByIndex(2).(string),
-				record.GetByIndex(3).(string),
 			}
 			log.Println("010000")
 			log.Println(post)
