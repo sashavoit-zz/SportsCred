@@ -24,10 +24,9 @@ const useStyles = makeStyles({
     padding: "1px 1px 0 0",
     transform: "translateY(-50%)",
     "&:disabled": {
-        display: "none"
+      display: "none",
     },
     outline: "none",
-
   },
   buttonNext: {
     position: "absolute",
@@ -40,7 +39,7 @@ const useStyles = makeStyles({
     padding: "1px 0 0 0",
     transform: "translateY(-50%)",
     "&:disabled": {
-        display: "none"
+      display: "none",
     },
     outline: "none",
   },
@@ -50,12 +49,26 @@ function Predictions(props) {
   const [data, setData] = useState(null);
   const classes = useStyles();
 
-  useEffect(() => {
-    (async () =>
-      await new Promise(() =>
-        setTimeout(() => setData([ ...mockApiResponse, ...mockApiResponse, ...mockApiResponse, ]), 2000)
-      ))(); // hold up function for a sec before updating state
-  });
+  useEffect(() => { // TODO: move async func to services
+    (async () => {
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Token: localStorage.getItem("Token"),
+        },
+      };
+
+      let res = await fetch("/picks/dailyPicks", requestOptions);
+      
+      if (res.status !== 200) {
+        console.log('oops')
+      } else {
+        let body = await res.json();
+        setData(body);
+      }
+    })();
+  }, []);
 
   return (
     <>
@@ -91,26 +104,5 @@ function Predictions(props) {
     </>
   );
 }
-
-var mockApiResponse = [
-  {
-    date: "2020-11-30",
-    game_id: 0,
-    team1_init: "UTA",
-    team1_name: "Utah Jazz",
-    team2_init: "NOP",
-    team2_name: "New Orleans Pelicans",
-    winner: "UTA",
-  },
-  {
-    date: "2020-11-30",
-    game_id: 1,
-    team1_init: "LAC",
-    team1_name: "Los Angeles Clippers",
-    team2_init: "LAL",
-    team2_name: "Los Angeles Lakers",
-    winner: "LAL",
-  },
-];
 
 export default Predictions;
