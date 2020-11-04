@@ -5,6 +5,8 @@ import SideBar from "../SideBar/SideBar";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
+import ShareMenu from './ShareMenu';
+
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -12,14 +14,21 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 //errmsg
-import { Collapse, IconButton } from "@material-ui/core";
+import { Collapse, Hidden, IconButton, Box, Divider} from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 
 // import { useParams } from "react-router";
 
 import FaceIcon from '@material-ui/icons/Face';
+import LaunchIcon from '@material-ui/icons/Launch';
 import { CardHeader } from '@material-ui/core';
+
+
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
+// import ShareIcon from '@material-ui/icons/Share';
+import CommentIcon from '@material-ui/icons/Comment';
 
 import {
   EmailShareButton,
@@ -29,10 +38,6 @@ import {
   TumblrShareButton,
 } from "react-share";
 
-import {
-  FacebookShareCount,
-  RedditShareCount,
-} from "react-share";
 
 import {
   FacebookIcon,
@@ -91,9 +96,6 @@ const styles = theme => ({
     //display: "inline-block",
     textAlign: "center",
   },
-  userIcon: {
-    fontSize: "100px",
-  },
   blueText: {
     color: "#0099ff",
     fontSize: "16px"
@@ -131,6 +133,47 @@ const styles = theme => ({
     marginBottom: "20px",
     color: "white",
     backgroundColor: "#333333",
+  },
+  cardArea: {
+    marginTop: "60px",
+  },
+  cardRoot: {
+    overflow: "hidden",
+    backgroundColor: "#00000060"
+  },
+  userIcon: {
+    float:"left",
+    fontSize: "60px",
+    margin:"12px"
+
+  },
+  launchIcon:{
+    float: "right",
+    //fontSize: "60px",
+  },
+  cardContent: {
+    overflow: "hidden",
+    paddingLeft: "0",
+    "&:last-child": {
+      paddingBottom: 0
+    }
+  },
+  cardAction:{
+    paddingLeft: "0",
+  },
+  cardName:{
+    fontSize: "15px"
+  },
+  postInfo: {
+    color: "#737373",
+  },
+  cardBody:{
+    fontSize:"15px",
+  },
+  iconButton:{
+    padding: "0",
+    marginRight: "15%",
+    //frontSize: "15"
   },
 });
 
@@ -185,33 +228,76 @@ class OpenCourtPost extends Component {
     const { classes } = this.props;
 
     return (
-      <Card className={classes.root}>
-        <CardContent className={classes.content}>
-          <CardHeader
-            title={this.state.content}
-            subheader={this.state.content}
-          >
-          </CardHeader>
-        </CardContent>
-        <CardActions>
+      <div className={classes.cardArea}>
+        <Card className={classes.cardRoot} variant="outlined">
+          <FaceIcon className={classes.userIcon}></FaceIcon>
+          <CardContent className={classes.cardContent}>
+            <div className={classes.cardName}>
+              <Box style={{ fontWeight: "bold" }} display='inline'>
+                {this.state.content + "   "}
+              </Box>
+              <Box className={classes.postInfo} display='inline'>
+                @user_name - Nov 1
+              </Box>
+              <LaunchIcon className={classes.launchIcon}></LaunchIcon>
+            </div>
+            <div className={classes.cardBody}>
+              {this.state.content}
+            </div>
+            <Divider></Divider>
+            <CardActions className={classes.cardAction} disableSpacing>
+              <IconButton className={classes.iconButton}>
+                <ThumbUpAltIcon />
+                {/* <Typography color="textSecondary">{postInfo.likes}</Typography> */}
+              </IconButton>
+              <IconButton className={classes.iconButton}>
+                <ThumbDownAltIcon />
+                {/* <Typography color="textSecondary">{postInfo.dislikes}</Typography> */}
+              </IconButton>
+              <IconButton className={classes.iconButton}>
+                {/**TODO: onlick to reply the post */}
+                <CommentIcon />
+              </IconButton>
+              <IconButton className={classes.iconButton}>
+                {/**TODO: onlick to reply the post */}
+                <ShareMenu 
+                  data={[this.state.url, this.state.content, "#SportCred"]} 
+                />
+                {/* <ShareIcon /> */}
+              </IconButton>
+            </CardActions>
+          </CardContent>
+        </Card>
 
-          <FacebookShareButton url={this.state.url} quote={this.state.content} hashtag="#SportCred">
-            <FacebookIcon size={32} round={true} />
-          </FacebookShareButton>
 
-          <TwitterShareButton url={this.state.url} title={this.state.content} hashtag="#SportCred">
-            <TwitterIcon size={32} round={true} />
-          </TwitterShareButton>
+        {/* <Card className={classes.root}>
+          <CardContent className={classes.content}>
+            <CardHeader
+              title={this.state.content}
+              subheader={this.state.content}
+            >
+            </CardHeader>
+          </CardContent>
+          <CardActions>
 
-          <RedditShareButton url={this.state.url} title={this.state.content}>
-            <RedditIcon size={32} round={true} />
-          </RedditShareButton>
+            <FacebookShareButton url={this.state.url} quote={this.state.content} hashtag="#SportCred">
+              <FacebookIcon size={32} round={true} />
+            </FacebookShareButton>
 
-          <TumblrShareButton url={this.state.url} title={this.state.content} tags={["SportCred"]}>
-            <TumblrIcon size={32} round={true} />
-          </TumblrShareButton>
-        </CardActions>
-      </Card>
+            <TwitterShareButton url={this.state.url} title={this.state.content} hashtag="#SportCred">
+              <TwitterIcon size={32} round={true} />
+            </TwitterShareButton>
+
+            <RedditShareButton url={this.state.url} title={this.state.content}>
+              <RedditIcon size={32} round={true} />
+            </RedditShareButton>
+
+            <TumblrShareButton url={this.state.url} title={this.state.content} tags={["SportCred"]}>
+              <TumblrIcon size={32} round={true} />
+            </TumblrShareButton>
+          </CardActions>
+        </Card> */}
+      </div>
     );
   }
 }
