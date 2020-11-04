@@ -79,6 +79,7 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 
 			//Waiting for new relevant data to appear
 			channels[email] = make(chan int)
+			defer close(channels[email])
 			go func(){
 				time.Sleep(timeout)
 				timer<-0
@@ -101,7 +102,6 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 						return
 					}
 					c.JSON(200, result)
-					close(channels[email])
 					return
 				}
 			}

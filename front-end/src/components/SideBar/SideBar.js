@@ -19,6 +19,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import SportsBasketballIcon from "@material-ui/icons/SportsBasketball";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import NotifBar from "./NotifBar";
 
 const drawerWidth = 200;
 
@@ -178,6 +179,7 @@ function SideBar(props) {
             >
               <AccountCircle />
             </IconButton>
+            <NotifBar/>
           </div>
         </Toolbar>
       </AppBar>
