@@ -6,17 +6,14 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
 import ShareMenu from './ShareMenu';
+import PostComment from './PostComment';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
+
 //errmsg
 import { Collapse, Hidden, IconButton, Box, Divider} from "@material-ui/core";
-import Alert from '@material-ui/lab/Alert';
-import CloseIcon from '@material-ui/icons/Close';
 
 // import { useParams } from "react-router";
 
@@ -27,10 +24,9 @@ import { CardHeader } from '@material-ui/core';
 
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
-// import ShareIcon from '@material-ui/icons/Share';
 import CommentIcon from '@material-ui/icons/Comment';
 
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 
 const log = console.log
@@ -158,7 +154,7 @@ const styles = theme => ({
   },
   iconButton:{
     padding: "0",
-    marginRight: "15%",
+    marginRight: "20%",
     //frontSize: "15"
   },
 });
@@ -255,6 +251,7 @@ class OpenCourtPost extends Component {
             </CardActions>
           </CardContent>
         </Card>
+        {/* <PostComment /> */}
       </div>
     );
   }
