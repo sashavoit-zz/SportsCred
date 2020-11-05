@@ -5,7 +5,6 @@ import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import ShareIcon from '@material-ui/icons/Share';
 import { withStyles } from "@material-ui/core/styles";
 import CommentIcon from '@material-ui/icons/Comment';
-<<<<<<< HEAD
 import Rate from "./like";
 import {TextField} from '@material-ui/core'
 import Comment from "./comment";
@@ -14,10 +13,8 @@ import { uid } from 'react-uid';
 const REPLIES = '/postReply/'
 
 
-=======
 //import { useH } from "react-router-dom/cjs/react-router-dom.min";
 import { Link } from 'react-router-dom'
->>>>>>> CSGAN-15
 
 const userStyles = theme =>({
     root:{
@@ -87,12 +84,8 @@ export class Post extends React.Component{
     
 
     render(){
-<<<<<<< HEAD
         const {userId} = this.props;
         console.log(userId);
-=======
-        //let history = useH();
->>>>>>> CSGAN-15
         const {postInfo} = this.props;
         // const classes = userStyles();
         console.log(postInfo)

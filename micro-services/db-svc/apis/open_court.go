@@ -4,10 +4,7 @@ import (
 	"db-svc/queries"
 	"encoding/json"
 	"io/ioutil"
-<<<<<<< HEAD
-=======
 	"log"
->>>>>>> CSGAN-15
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )

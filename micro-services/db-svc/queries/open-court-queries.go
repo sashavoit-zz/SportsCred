@@ -2,11 +2,8 @@ package queries
 
 import (
 	"fmt"
-<<<<<<< HEAD
 	"strconv"
-=======
 	"log"
->>>>>>> CSGAN-15
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"strings"
     "syscall"
