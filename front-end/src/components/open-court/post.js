@@ -116,8 +116,11 @@ const styles = theme => ({
         backgroundColor: "#333333",
     },
     cardArea: {
+        maxWidth: "600px",
         marginTop: "60px",
-        maxWidth: "600px"
+        marginLeft: "auto",
+        marginRight: "auto",
+        width: "60vw",
     },
     card:{
         width:'60%',
