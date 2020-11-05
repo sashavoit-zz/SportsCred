@@ -26,6 +26,8 @@ import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import CommentIcon from '@material-ui/icons/Comment';
 
+import {Button, Form} from 'semantic-ui-react'
+
 import { Link } from 'react-router-dom';
 
 
@@ -173,8 +175,29 @@ class OpenCourtPost extends Component {
     // log(props)
     this.state = {
       //url: window.location.href
-      url: "google.com"
+      url: "google.com",
+      inputMode: false,
     }
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault()
+    const replyText = event.target.firstChild.firstChild.value
+    log(replyText)
+    // const form_cond = (!this.state.firstName.match(letters) ||
+    //   this.state.firstName === "" ||
+    //   !this.state.lastName.match(letters) ||
+    //   this.state.lastName === "" ||
+    //   !this.state.phone.match(numbers) ||
+    //   this.state.phone === "");
+    // if (form_cond) {
+    //   this.handleShowErrmsg(event);
+    // } else {
+    //   const data = { ...this.state, ...this.props.user }
+    //   console.log("form submit:", data)
+    //   post_profile(data);
+    //   this.handleBackProfile(event);
+    // }
   }
 
   componentDidMount() {
@@ -203,7 +226,7 @@ class OpenCourtPost extends Component {
         this.setState({
           content: data.Content,
           likes: data.Likes,
-          dislikes: data.Dislikes
+          dislikes: data.Dislikes,
         })
         //render_reports(data);
       })
@@ -215,7 +238,48 @@ class OpenCourtPost extends Component {
 
   render() {
     const { classes } = this.props;
-
+    const COMMENT = [
+      {
+        "commentId": "11",
+        "content": "I'm very interested in this motherboard. Do you know if it'd work in a Intel LGA775 CPU socket?",
+        "dislikes": "0",
+        "firstName": "Christian",
+        "lastName": "Rocha",
+        "likes": "0",
+        "time": "2 days ago",
+        "userProfile": null
+      },
+      {
+        "commentId": "10",
+        "content": "No, it wont",
+        "dislikes": "0",
+        "firstName": "Fu",
+        "lastName": "Elliot",
+        "likes": "0",
+        "time": "1 day ago",
+        "userProfile": null
+      },
+      {
+        "commentId": "9",
+        "content": "hello!",
+        "dislikes": "0",
+        "firstName": "kevin",
+        "lastName": "z",
+        "likes": "0",
+        "time": "1 day ago",
+        "userProfile": null
+      },
+      {
+        "commentId": "5",
+        "content": "bruh",
+        "dislikes": "0",
+        "firstName": "kevin",
+        "lastName": "z",
+        "likes": "0",
+        "time": "now",
+        "userProfile": null
+      }
+    ]
     return (
       <div className={classes.cardArea}>
         <Card className={classes.cardRoot} variant="outlined">
@@ -245,21 +309,30 @@ class OpenCourtPost extends Component {
                 <ThumbDownAltIcon />
                 {/* <Typography color="textSecondary">{postInfo.dislikes}</Typography> */}
               </IconButton>
-              <IconButton className={classes.iconButton}>
+              <IconButton className={classes.iconButton} onClick={()=>{this.setState({inputMode:!this.state.inputMode})}} >
                 {/**TODO: onlick to reply the post */}
                 <CommentIcon />
               </IconButton>
               <IconButton className={classes.iconButton}>
                 {/**TODO: onlick to reply the post */}
                 <ShareMenu 
-                  data={[this.state.url, this.state.content, "#SportCred"]} 
+                  data={[this.state.url, this.state.content, "#SportCred"]} //url, content, and hashtag
                 />
               </IconButton>
             </CardActions>
             <Divider className={classes.commentDivider}></Divider>
             <PostComment
-              data = {"a json {postInZone: false, comments:{}}"}
+              data={COMMENT}
             />
+            {this.state.inputMode ? 
+              <Form id="fm" onSubmit={this.handleSubmit} reply style={{ marginTop: "15px" }}>
+                <Form.TextArea
+                  placeholder="Add reply to this post"
+                />
+                <Button content='Add Reply' type="submit" labelPosition='left' icon='edit' primary />
+              </Form> : null
+            }
+            
           </CardContent>
         </Card>
         
