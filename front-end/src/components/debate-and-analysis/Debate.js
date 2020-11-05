@@ -81,9 +81,6 @@ export class Debate extends React.Component{
 
   render(){
     let email = this.props.user.email;
-    if (!this.state.emailLoaded) {
-      return <div />
-    }
       return(
           <div>
           <SideBar page="Debate & Analysis"/>
