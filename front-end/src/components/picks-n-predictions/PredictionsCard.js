@@ -12,6 +12,7 @@ import {
 const useStyles = makeStyles({
   root: {
     marginTop: 30,
+    marginRight: 30,
     maxWidth: 345,
   },
   teamRight: {
