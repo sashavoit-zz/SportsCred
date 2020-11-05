@@ -9,6 +9,7 @@ import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
 import Notifications from "@material-ui/icons/Notifications";
 import IconButton from "@material-ui/core/IconButton";
+import Badge from '@material-ui/core/Badge';
 import {CardActions,Card, CardHeader,CardContent, Typography} from '@material-ui/core';
 
 
@@ -18,24 +19,26 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         marginRight: theme.spacing(2),
+        maxHeight: 50
     },
 }));
 
 export default function NotifBar() {
 
-    const mockState = [{team1_init: "SOMETHING",
-        team2_init: "SOMETHING ELSE",
-        date: "djfhkdsj",
-        correct: "false"}]
-
     const classes = useStyles();
     const [upding, setUpding] = React.useState(false);
+    const [invisible, setInvisible] = React.useState(true);
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
-    const [notifs, setNotifs] = React.useState({upds: mockState});
+    const [notifs, setNotifs] = React.useState({upds: []});
+
+    const handleBadgeVisibility = () => {
+        setInvisible(!invisible);
+    };
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
+        setInvisible(true)
     };
 
     const handleClose = (event) => {
@@ -76,12 +79,13 @@ export default function NotifBar() {
             .then(response => response.json())
             .then(data => {
                 if (data != null) {
-                    setNotifs({upds: data})
+                    setNotifs(prevState => ({upds: data.concat(prevState.upds)}))
                 }
                 console.log(data)
                 console.log(notifs)
             })
             .then(() => setUpding(false))
+            .then(() => setInvisible(false))
     }
 
     function handleListKeyDown(event) {
@@ -103,9 +107,15 @@ export default function NotifBar() {
                     aria-haspopup="true"
                     onClick={handleToggle}
                 >
-                    <Notifications/>
+                    <Badge color="secondary" variant="dot" invisible={invisible}>
+                        <Notifications/>
+                    </Badge>
                 </IconButton>
-                <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                <Popper open={open}
+                        anchorEl={anchorRef.current}
+                        role={undefined}
+                        transition
+                        disablePortal>
                     {({ TransitionProps, placement }) => (
                         <Grow
                             {...TransitionProps}
@@ -118,14 +128,16 @@ export default function NotifBar() {
                                             <MenuItem>
                                                 <Card>
                                                     <CardContent>
-                                                        <Typography variant ="body1" color="textSecondary">
-                                                            Your prediction is {upd.correct.toString()}, {upd.team1_init}, {upd.team2_init}, {upd.date}
+                                                        <Typography variant="h8" component="h8">
+                                                            {upd.team1_init} vs. {upd.team2_init}
+                                                        </Typography>
+                                                        <Typography variant="body2" color="textSecondary" component="p">
+                                                            Your prediction was {upd.correct ? "correct" : "incorrect"}
                                                         </Typography>
                                                     </CardContent>
                                                 </Card>
                                             </MenuItem>
                                         )}
-
                                     </MenuList>
                                 </ClickAwayListener>
                             </Paper>
