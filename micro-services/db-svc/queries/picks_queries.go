@@ -31,7 +31,7 @@ func GetDailyPicks(driver neo4j.Driver, email string) (interface{}, error){
 				   "WITH closestGame, u\n" +
 				   "MATCH(g: Game)\n" +
 				   "WHERE g.date = closestGame.date AND NOT (u)-[:PREDICTED]->(g)\n" +
-				   "RETURN COLLECT({game_id: ID(g), team1_name: g.team1_name, team2_name: g.team2_name, team1_init: g.team1_init, team2_init: g.team2_init, date: toString(g.date), winner: g.winner}) AS games\n",
+				   "RETURN COLLECT({game_id: ID(g), team1_name: g.team1_name, team2_name: g.team2_name, team1_init: g.team1_init, team2_init: g.team2_init, date: toString(g.date), winner: g.winner, team1_logo: g.team1_logo, team2_logo: g.team2_logo, team1_city: g.team1_city, team2_city: g.team2_city}) AS games\n",
 			map[string]interface{}{"today": today, "email": email})
 		if err != nil {
 			panic(err)
@@ -199,7 +199,8 @@ func GetUsersThatPredicted(driver neo4j.Driver, gameId int) ([]string, error){
 	return emails, err
 }
 
-func AddGame(driver neo4j.Driver, team1Init string, team1Name string, team2Init string, team2Name string, date string, winner string) (interface{}, error){
+func AddGame(driver neo4j.Driver, team1Init string, team1Name string, team2Init string, team2Name string,
+	date string, winner string, team1Logo string, team2Logo string, team1City string, team2City string) (interface{}, error){
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
 		panic(err)
@@ -209,9 +210,10 @@ func AddGame(driver neo4j.Driver, team1Init string, team1Name string, team2Init 
 	if winner == "" {
 		result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 			result, err := transaction.Run(
-				"CREATE (g: Game {team1_init: $team1_init, team2_init: $team2_init, team1_name: $team1_name, team2_name: $team2_name, date: date($date)})\n" +
+				"CREATE (g: Game {team1_init: $team1_init, team2_init: $team2_init, team1_name: $team1_name, team2_name: $team2_name, date: date($date), team1_logo: $team1_logo, team2_logo: $team2_logo, team1_city: $team1_city, team2_city: $team2_city})\n" +
 					"RETURN ID(g) as id",
-				map[string]interface{}{"team1_init": team1Init, "team2_init": team2Init, "team1_name": team1Name,"team2_name": team2Name, "date": date})
+				map[string]interface{}{"team1_init": team1Init, "team2_init": team2Init, "team1_name": team1Name,
+					"team2_name": team2Name, "date": date, "team1_logo": team1Logo, "team2_logo": team2Logo, "team1_city": team1City, "team2_city" :team2City})
 			if err != nil {
 				return nil, err
 			}
@@ -227,9 +229,9 @@ func AddGame(driver neo4j.Driver, team1Init string, team1Name string, team2Init 
 	}else{
 		result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 			result, err := transaction.Run(
-				"CREATE (g: Game {team1_init: $team1_init, team2_init: $team2_init, team1_name: $team1_name, team2_name: $team2_name, date: date($date), winner: $winner})\n" +
+				"CREATE (g: Game {team1_init: $team1_init, team2_init: $team2_init, team1_name: $team1_name, team2_name: $team2_name, date: date($date), winner: $winner, team1_logo: $team1_logo, team2_logo: $team2_logo, team1_city: $team1_city, team2_city: $team2_city})\n" +
 					"RETURN ID(g) as id",
-				map[string]interface{}{"team1_init": team1Init, "team2_init": team2Init, "team1_name": team1Name,"team2_name": team2Name, "date": date, "winner": winner})
+				map[string]interface{}{"team1_init": team1Init, "team2_init": team2Init, "team1_name": team1Name,"team2_name": team2Name, "date": date, "winner": winner, "team1_logo": team1Logo, "team2_logo": team2Logo, "team1_city": team1City, "team2_city" :team2City})
 			if err != nil {
 				return nil, err
 			}
