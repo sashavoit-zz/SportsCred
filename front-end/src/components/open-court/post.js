@@ -5,6 +5,7 @@ import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import ShareIcon from '@material-ui/icons/Share';
 import { withStyles } from "@material-ui/core/styles";
 import CommentIcon from '@material-ui/icons/Comment';
+<<<<<<< HEAD
 import Rate from "./like";
 import {TextField} from '@material-ui/core'
 import Comment from "./comment";
@@ -13,6 +14,10 @@ import { uid } from 'react-uid';
 const REPLIES = '/postReply/'
 
 
+=======
+//import { useH } from "react-router-dom/cjs/react-router-dom.min";
+import { Link } from 'react-router-dom'
+>>>>>>> CSGAN-15
 
 const userStyles = theme =>({
     root:{
@@ -23,6 +28,10 @@ const userStyles = theme =>({
         marginRight:"auto"
     },
 });
+
+// handleOnSubmit = () => {
+//     this.props.history.push(`/dashboard`);
+// };
 
 export class Post extends React.Component{
     constructor(props) {
@@ -78,10 +87,15 @@ export class Post extends React.Component{
     
 
     render(){
+<<<<<<< HEAD
         const {userId} = this.props;
         console.log(userId);
+=======
+        //let history = useH();
+>>>>>>> CSGAN-15
         const {postInfo} = this.props;
         // const classes = userStyles();
+        console.log(postInfo)
         const {classes} = this.props;
 
         const handleInput=(field)=>{
@@ -120,14 +134,18 @@ export class Post extends React.Component{
         return (
             <div>
                 <Card className={classes.root}>
-                    <CardHeader
-                        //avatar={
-                        //    <Avatar src ={postInfo.AuthorProfile}/>
-                        //}
-                        title={postInfo.firstName + " " + postInfo.lastName}
-                        subheader = {postInfo.time}
-                    >
-                    </CardHeader> 
+                    <Link to={"/the-zone/" + postInfo.postId}> 
+                        <CardHeader
+                            //avatar={
+                            //    <Avatar src ={postInfo.AuthorProfile}/>
+                            //}
+                            //onClick={() => history.push("/the-zone/" + postInfo.postId)}
+                            title={postInfo.firstName + " " + postInfo.lastName}
+                            subheader = {postInfo.time}
+                            >
+                            
+                        </CardHeader>
+                    </Link>
                     <CardContent>
                         <Typography variant ="body1" color="textSecondary">
                             {postInfo.content}
