@@ -19,6 +19,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import SportsBasketballIcon from "@material-ui/icons/SportsBasketball";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import NotifBar from "./NotifBar";
 
 const drawerWidth = 200;
 
@@ -137,6 +138,17 @@ function SideBar(props) {
         </ListItem>
 
         <ListItem
+            button
+            key={"Picks & Predictions"}
+            onClick={() => history.push("/predictions")}
+        >
+          <ListItemIcon>
+            <SportsBasketballIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Predictions" />
+        </ListItem>
+
+        <ListItem
           button
           key={"OpenCourt"}
           onClick={() => history.push("/profile")}
@@ -169,6 +181,7 @@ function SideBar(props) {
             >
               <AccountCircle />
             </IconButton>
+            <NotifBar/>
           </div>
         </Toolbar>
       </AppBar>
