@@ -79,7 +79,7 @@ function Predictions(props) {
           naturalSlideWidth={345}
           naturalSlideHeight={480}
           totalSlides={data.length}
-          visibleSlides={2.9}
+          visibleSlides={2.8}
           style={{ position: "relative" }}
         >
           <Slider>

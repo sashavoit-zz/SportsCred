@@ -171,6 +171,7 @@ function SideBar(props) {
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
+            <NotifBar/>
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -181,7 +182,6 @@ function SideBar(props) {
             >
               <AccountCircle />
             </IconButton>
-            <NotifBar/>
           </div>
         </Toolbar>
       </AppBar>

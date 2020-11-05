@@ -62,7 +62,7 @@ const useStyles = makeStyles({
     width: "100%",
     minHeight: "30rem",
     maxHeight: "30rem",
-    backgroundImage: (props) => `url(${props.mockImageUrl1})`,
+    backgroundImage: (props) => `url(${props.imageUrl1})`,
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "50% 0",
@@ -71,7 +71,7 @@ const useStyles = makeStyles({
     width: "100%",
     minHeight: "30rem",
     maxHeight: "30rem",
-    backgroundImage: (props) => `url(${props.mockImageUrl2})`,
+    backgroundImage: (props) => `url(${props.imageUrl2})`,
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "50% 0",
@@ -80,16 +80,8 @@ const useStyles = makeStyles({
 
 function PredictionsCard(props) {
   const { data } = props;
-  // TODO: urls can be either sent from props or api call can be made here
-  const mockImageUrl1 =
-    "https://img.theculturetrip.com/wp-content/uploads/2017/03/toronto-skyline.jpg";
-  const mockImageUrl2 = "https://i.redd.it/wudu7o2o0xrz.jpg";
-  const teamLogo1 =
-    "https://ssl.gstatic.com/onebox/media/sports/logos/745IgW4NSvnRxg-W9oczmQ_96x96.png";
-  const teamLogo2 =
-    "https://ssl.gstatic.com/onebox/media/sports/logos/XD2v321N_-vk7paF53TkAg_96x96.png";
 
-  const classes = useStyles({ mockImageUrl1, mockImageUrl2 });
+  const classes = useStyles({ imageUrl1: data.team1_city, imageUrl2: data.team2_city });
 
   const [pick, setPick] = useState(null);
   const pickVal = useRef({ gameId: data.game_id, pick: null }); // need b/c we want useEffect to work w []
@@ -170,7 +162,7 @@ function PredictionsCard(props) {
                   {/* TODO: Update Label here + conditional rendering for only when side is defined */}
                 </Typography>
               </div>
-              <img src={teamLogo1} className={classes.teamImageLeft}></img>
+              <img src={data.team1_logo} className={classes.teamImageLeft}></img>
             </section>
           </section>
         </LazyLoad>
@@ -183,7 +175,7 @@ function PredictionsCard(props) {
           >
             <section className={classes.teamRight}>
               <div className={classes.cardTitle}></div>
-              <img src={teamLogo2} className={classes.teamImageRight}></img>
+              <img src={data.team2_logo} className={classes.teamImageRight}></img>
             </section>
           </section>
         </LazyLoad>
