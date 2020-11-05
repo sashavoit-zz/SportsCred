@@ -19,14 +19,23 @@ func LoadAllPosts(driver neo4j.Driver) (interface{}, error) {
 
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH(p: Post) \n"+
-				"CALL { \n"+
-				"WITH p \n"+
-				"MATCH(u:User {email: p.email}) \n"+
-				"RETURN u.firstName as userFirstName, u.lastName as userLastName \n"+
-				"} \n"+
-				"RETURN collect({firstName: userFirstName, lastName: userLastName, userProfile: p.userProfile, postId: toString(p.postId), content: p.content, time: p.postTime, likes: toString(p.likes), dislikes: toString(p.dislikes)}) as posts",
-			map[string]interface{}{})
+			"CALL{\n"+
+				"MATCH (p:Post)\n"+
+				"MATCH (u:User)-[:CREATED]->(p)\n"+
+				"RETURN u.firstName as firstname, u.lastName as lastname, p\n"+
+				"ORDER BY p.postTime DESC\n"+
+				"}\n"+
+				"RETURN collect({"+
+					"firstName: firstname,"+
+					"lastName: lastname,"+
+					"postId: toString(p.postId),"+
+					"content: p.content,"+
+					"time: p.postTime,"+
+					"likes: toString(p.likes),"+
+					"dislikes: toString(p.dislikes)"+
+				"})\n"+
+				"as posts",
+				map[string]interface{}{})
 		if err != nil {
 			return nil, err
 		}
@@ -56,7 +65,7 @@ func LoadPost(driver neo4j.Driver, postId string) (interface{}, error) {
 				"MATCH(u:User {email: p.email}) \n"+
 				"RETURN u.firstName as userFirstName, u.lastName as userLastName \n"+
 				"} \n"+
-				"RETURN collect({firstName: userFirstName, lastName: userLastName, userProfile: p.userProfile, postId: toString(p.postId), content: p.content, time: p.time, likes: toString(p.likes), dislikes: toString(p.dislikes)}) as posts",
+				"RETURN collect({firstName: userFirstName, lastName: userLastName, userProfile: p.userProfile, postId: toString(p.postId), content: p.content, time: toString(p.time), likes: toString(p.likes), dislikes: toString(p.dislikes)}) as posts",
 			map[string]interface{}{"postId": postId})
 		if err != nil {
 			return nil, err
@@ -121,8 +130,8 @@ func AddPost(driver neo4j.Driver, content string, email string, likes int, disli
 
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (n:Post {content:$content, email:$email, likes:$likes, dislikes:$dislikes, postTime:$postTime})\n"+
-				"SET n.postId = id(n)\n"+
+			"CREATE (n:Post {content:$content, email:$email, likes:$likes, dislikes:$dislikes})\n"+
+				"SET n.postId = id(n), n.postTime=datetime()\n"+
 				"WITH n \n"+
 				"MATCH(u:User{email:$email})\n"+
 				"MERGE (u)-[r:CREATED]->(n)\n"+
