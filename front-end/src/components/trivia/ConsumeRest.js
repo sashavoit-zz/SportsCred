@@ -3,7 +3,7 @@ async function getQuestion(user) {
 
     var responseBody;
 
-    const response = await fetch("http://localhost:3001/getQuestion/" + user +"/hashasdasd", {mode: 'cors'})
+    const response = await fetch("/getQuestion/" + user +"/hashasdasd", {mode: 'cors'})
     .then(response => {
         if (response.ok) {
             response.json().then(json => {
@@ -21,7 +21,7 @@ async function getQuestion(user) {
 
 async function removeQuestion(question, user) {
 
-    const response = await fetch("http://localhost:3001/deleteQuestionRelationship/hashasdasd", {
+    const response = await fetch("/deleteQuestionRelationship/hashasdasd", {
         mode: 'cors',
         method: 'POST',
         body: JSON.stringify({

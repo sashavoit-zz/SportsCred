@@ -189,7 +189,7 @@ function Trivia(props) {
 
   async function addQuestion(question, option1, option2, option3, answer) {
 
-    const response = await fetch("http://localhost:3001/addQuestion/hashasdasd", {
+    const response = await fetch("/addQuestion/hashasdasd", {
         mode: 'cors',
         method: 'POST',
         body: JSON.stringify({
@@ -226,7 +226,7 @@ function Trivia(props) {
       var responseBody = [1,2,3,4];
       responseBody = shuffle(responseBody);
 
-      var url = "http://localhost:3001/getQuestion/" + "maya" + "/hashasdasd";
+      var url = "/getQuestion/" + "maya" + "/hashasdasd";
       const response = await fetch(url, {
           mode: 'cors',
           headers: {
@@ -253,7 +253,7 @@ function Trivia(props) {
 
   async function removeQuestion(question) {
 
-    const response = await fetch("http://localhost:3001/deleteQuestionRelationship/hashasdasd", {
+    const response = await fetch("/deleteQuestionRelationship/hashasdasd", {
         mode: 'cors',
         method: 'POST',
         body: JSON.stringify({
