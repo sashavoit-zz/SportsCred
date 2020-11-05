@@ -118,10 +118,12 @@ const styles = theme => ({
   },
   cardArea: {
     marginTop: "60px",
+    maxWidth: "600px"
   },
   cardRoot: {
     overflow: "hidden",
-    backgroundColor: "#00000060"
+    backgroundColor: "#00000060",
+    paddingBottom:"15px"
   },
   userIcon: {
     float:"left",
@@ -151,12 +153,17 @@ const styles = theme => ({
   },
   cardBody:{
     fontSize:"15px",
+    marginTop: "15px",
+    marginBottom: "15px",
   },
   iconButton:{
     padding: "0",
     marginRight: "20%",
     //frontSize: "15"
   },
+  commentDivider:{
+    marginBottom:"15px"
+  }
 });
 
 class OpenCourtPost extends Component {
@@ -216,10 +223,10 @@ class OpenCourtPost extends Component {
           <CardContent className={classes.cardContent}>
             <div className={classes.cardName}>
               <Box style={{ fontWeight: "bold" }} display='inline'>
-                {this.state.content + "   "}
+                {"User Name" + "   "}
               </Box>
               <Box className={classes.postInfo} display='inline'>
-                @user_name - Nov 1
+                @user_email? - Nov 1
               </Box>
               {/* <Link to={"/the-zone/" + postInfo.postId}>  */}
                 <LaunchIcon className={classes.launchIcon}></LaunchIcon>
@@ -249,9 +256,13 @@ class OpenCourtPost extends Component {
                 />
               </IconButton>
             </CardActions>
+            <Divider className={classes.commentDivider}></Divider>
+            <PostComment
+              data = {"a json {postInZone: false, comments:{}}"}
+            />
           </CardContent>
         </Card>
-        {/* <PostComment /> */}
+        
       </div>
     );
   }
