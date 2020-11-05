@@ -19,6 +19,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import SportsBasketballIcon from "@material-ui/icons/SportsBasketball";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import NotifBar from "./NotifBar";
 
 const drawerWidth = 250;
 
@@ -46,6 +47,9 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
+    marginTop: theme.spacing(10),
+    marginLeft: theme.spacing(3),
+    marginRight: theme.spacing(3),
     padding: theme.spacing(3),
   },
   grow: {
@@ -134,6 +138,17 @@ function SideBar(props) {
         </ListItem>
 
         <ListItem
+            button
+            key={"Picks & Predictions"}
+            onClick={() => history.push("/predictions")}
+        >
+          <ListItemIcon>
+            <SportsBasketballIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Predictions" />
+        </ListItem>
+
+        <ListItem
           button
           key={"OpenCourt"}
           onClick={() => history.push("/profile")}
@@ -167,6 +182,7 @@ function SideBar(props) {
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
+            <NotifBar/>
             <IconButton
               edge="end"
               aria-label="account of current user"
