@@ -36,10 +36,10 @@ export class feed extends React.Component{
     }
 
     render(){
-        const {classes} = this.props;
+        const {classes} =this.props;
         return(
-            <div className =  {classes.root}>
-                {this.state.posts.map(post =>
+            <div className={classes.root}>
+                {this.state.posts?.map(post =>
                     <Post
                         key={uid(post)}
                         postInfo={post}

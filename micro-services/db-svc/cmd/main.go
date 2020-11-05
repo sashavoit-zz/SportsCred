@@ -36,6 +36,7 @@ func main() {
 	apis.SetUpAuth(app, driver)
 	apis.SetUpSignUp(app, driver)
 	apis.SetUpSearch(app, driver)
+	apis.SetUpPicks(app, driver)
 	apis.SetUpDebate(app, driver)
 
 	app.Run(":3001")
