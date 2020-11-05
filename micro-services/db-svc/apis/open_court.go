@@ -57,6 +57,26 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 		c.JSON(200, result)
 	})
 
+	app.GET("/posts/:postid/likes", func(c *gin.Context){
+		postid := c.Param("postid")
+		result, err := queries.GetLikes(driver, postid)
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		}
+		c.JSON(200, result)
+	})
+	app.GET("/posts/:postid/dislikes", func(c *gin.Context){
+		postid := c.Param("postid")
+		result, err := queries.GetDislikes(driver, postid)
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		}
+		c.JSON(200, result)
+	})
+
+
 	app.GET("/allPosts", CheckAuthToken(func(c *gin.Context, _ string) {
 		result, err := queries.LoadAllPosts(driver)
 		if err != nil {

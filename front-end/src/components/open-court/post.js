@@ -60,6 +60,8 @@ export class Post extends React.Component{
         this.refresh();
     }
 
+
+
     refresh = () => {
                 const requestOptions = {
             method: "GET",
@@ -112,6 +114,8 @@ export class Post extends React.Component{
                errorText:"Could not upload comment with empty content"
            })
         }
+        console.log("in post class");
+        console.log(postInfo.likes);
 
         return (
             <div>

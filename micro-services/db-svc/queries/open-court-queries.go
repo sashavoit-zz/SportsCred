@@ -188,17 +188,41 @@ func RatePost(driver neo4j.Driver, email string, postid string, operation string
 			query1 = ("MATCH (u:User{email:$email})-[r:LIKED]->(p:Post) \n"+
 			"WHERE id(p)=$postid \n"+
 			"DELETE r")
-			query2 = "RETURN NULL"
+			query2 = "MATCH (p:Post) WHERE id(p)=$postid SET p.likes = p.likes - 1"
 		} else{
 			//create like
 			query1 = ("MATCH (u:User{email:$email}), (p:Post) \n"+
 			"WHERE id(p)=$postid \n"+
-			"MERGE (u)-[r:LIKED]->(p)")
+			"MERGE (u)-[r:LIKED]->(p)\n"+
+			"SET p.likes = p.likes + 1")
 	
 			//delete a dislike if it exists
-			query2 = ("MATCH (u:User{email:$email})-[r:DISLIKED]->(p:Post) \n"+
-			"WHERE id(p)=$postid \n"+
-			"DELETE r")
+			// query2 = ("MATCH (u:User{email:$email})-[r:DISLIKED]->(p:Post) \n"+
+			// "WHERE id(p)=$postid \n"+
+			// "DELETE r")
+			// query2
+			// CALL{
+			// 	MATCH (u:User{email:'k@mail.com'})-[r:DISLIKED]->(p:Post)
+			// 	WHERE id(p)=1
+			// 	RETURN p.postId as id1
+			//    }
+			// MATCH (p:Post)<-[r:DISLIKED]-(u:User{email:'k@mail.com'}) WHERE id(p)=id1
+			// SET p.dislikes = p.dislikes - 1
+			// DELETE r
+			// RETURN id1
+
+			// MATCH (p:Post) WHERE id(p)=1 SET p.likes=0, p.dislikes=0
+
+			query2 = (
+			"CALL{\n"+
+				"MATCH (u:User{email:$email})-[r:DISLIKED]->(p:Post)\n"+
+				"WHERE id(p)=$postid\n"+
+				"RETURN p.postId as id1\n"+
+			   "}\n"+
+			"MATCH (p:Post)<-[r:DISLIKED]-(u:User{email:$email}) WHERE id(p)=id1\n"+
+			"SET p.dislikes = p.dislikes - 1\n"+
+			"DELETE r\n"+
+			"RETURN id1")
 		}
 
 	} else {
@@ -207,21 +231,32 @@ func RatePost(driver neo4j.Driver, email string, postid string, operation string
 		if rateerr != nil {
 			return ratingExists, rateerr
 		} else if ratingExists == true {
-			//delete like
+			//delete dislike
 			query1 = ("MATCH (u:User{email:$email})-[r:DISLIKED]->(p:Post) \n"+
 			"WHERE id(p)=$postid \n"+
 			"DELETE r")
-			query2 = "RETURN NULL"
+			query2 = "MATCH (p:Post) WHERE id(p)=$postid SET p.dislikes = p.dislikes - 1"
 		} else{
 			//create dislike
 			query1 = ("MATCH (u:User{email:$email}), (p:Post) \n"+
 			"WHERE id(p)=$postid \n"+
-			"MERGE (u)-[r:DISLIKED]->(p)")
+			"MERGE (u)-[r:DISLIKED]->(p)\n"+
+			"SET p.dislikes = p.dislikes + 1")
 	
 			//delete a like if it exists
-			query2 = ("MATCH (u:User{email:$email})-[r:LIKED]->(p:Post) \n"+
-			"WHERE id(p)=$postid \n"+
-			"DELETE r")
+			// query2 = ("MATCH (u:User{email:$email})-[r:LIKED]->(p:Post) \n"+
+			// "WHERE id(p)=$postid \n"+
+			// "DELETE r")
+			query2 = (
+				"CALL{\n"+
+					"MATCH (u:User{email:$email})-[r:LIKED]->(p:Post)\n"+
+					"WHERE id(p)=$postid\n"+
+					"RETURN p.postId as id1\n"+
+				   "}\n"+
+				"MATCH (p:Post)<-[r:LIKED]-(u:User{email:$email}) WHERE id(p)=id1\n"+
+				"SET p.likes = p.likes - 1\n"+
+				"DELETE r\n"+
+				"RETURN id1")
 		}
 	}
 
@@ -328,4 +363,57 @@ func CheckRating(driver neo4j.Driver, email string, postid int, query string) (b
 		return nil, result.Err()
 	})
 	return validation == true, nil
+}
+
+func GetLikes(driver neo4j.Driver, postid string) (interface{}, error){
+	id, err := strconv.Atoi(postid);
+	if err != nil {
+		return "", err
+	}
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return "", err
+	}
+	defer session.Close()
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run("MATCH (p:Post)\n"+
+			"WHERE id(p)=$postid\n"+
+			"RETURN p.likes",
+			map[string]interface{}{"postid":id})
+		if err != nil {
+			return nil, err
+		}
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+		return nil, result.Err()
+	})
+	return result, nil
+}
+func GetDislikes(driver neo4j.Driver, postid string) (interface{}, error){
+	id, err := strconv.Atoi(postid);
+	if err != nil {
+		return "", err
+	}
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return "", err
+	}
+	defer session.Close()
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run("MATCH (p:Post)\n"+
+			"WHERE id(p)=$postid\n"+
+			"RETURN p.dislikes",
+			map[string]interface{}{"postid":id})
+		if err != nil {
+			return nil, err
+		}
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+		return nil, result.Err()
+	})
+	return result, nil
 }
