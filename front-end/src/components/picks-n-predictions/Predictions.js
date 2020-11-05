@@ -69,7 +69,7 @@ function Predictions(props) {
       }
     })();
   }, []);
-
+  
   return (
     <>
       <Typography variant="h3">Picks and Predictions</Typography>
@@ -83,7 +83,7 @@ function Predictions(props) {
         >
           <Slider>
             {data.map((game, i) => (
-              <Slide index={i}>
+              <Slide index={i} key={i}>
                 <PredictionsCard data={game} />
               </Slide>
             ))}

@@ -1,5 +1,12 @@
-import React, { useState } from "react";
-import { Card, Grid, makeStyles, Typography, Chip, Fade } from "@material-ui/core";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Card,
+  Grid,
+  makeStyles,
+  Typography,
+  Chip,
+  Fade,
+} from "@material-ui/core";
 
 // TODO: clean up css - have another json and then spread the contents here, just update nessecary bits
 const useStyles = makeStyles({
@@ -77,14 +84,7 @@ const useStyles = makeStyles({
 });
 
 function PredictionsCard(props) {
-    // {date: "2020-11-30"
-    // game_id: 0
-    // team1_init: "UTA"
-    // team1_name: "Utah Jazz"
-    // team2_init: "NOP"
-    // team2_name: "New Orleans Pelicans"
-    // winner: "UTA"}
-    const { data } = props
+  const { data } = props;
   // TODO: urls can be either sent from props or api call can be made here
   const mockImageUrl1 =
     "https://img.theculturetrip.com/wp-content/uploads/2017/03/toronto-skyline.jpg";
@@ -97,62 +97,97 @@ function PredictionsCard(props) {
   const classes = useStyles({ mockImageUrl1, mockImageUrl2 });
 
   const [pick, setPick] = useState(null);
+  const pickVal = React.useRef({ gameId: data.game_id, pick: null }); // need b/c we want useEffect to work w []
+
+  const addNewPerdictions = async (gameId, prediction) => {
+    if (!prediction) { // picks not been made
+      return;
+    }
+
+    // TODO: move to services
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Token: localStorage.getItem("Token"),
+      },
+      body: JSON.stringify({
+        game_id: gameId,
+        winner: prediction,
+      }),
+    };
+
+    let res = await fetch("/picks/newPrediction", requestOptions);
+
+    if (res.status !== 200) {
+      // nothing for now
+    } else {
+      console.log("oops");
+    }
+  };
+
+  useEffect(() => {
+    pickVal.current = { ...pickVal.current, pick: pick };
+  }, [pick]);
+
+  useEffect(() => {
+    return () => addNewPerdictions(pickVal.current.gameId, pickVal.current.pick)
+  }, []);
+  
   const handleClick = (side) => {
     setPick(side);
-    // TODO: api call for updating pick
   };
 
   return (
-      <Grid container spacing={0} className={classes.root} >
-        <Grid item xs={12} sm={6}>
-          <section
-            className={classes.backgroundLeft}
-            onClick={() => handleClick(data.team1_init)}
-          >
-            <section className={classes.teamLeft}>
-              <div className={classes.cardTitle}>
-                <Typography
-                  variant="h4"
-                  style={{
-                    fontFamily: "emoji",
-                    textAlign: "center",
-                    opacity: 0.8,
-                  }}
-                >
-                  {data.team1_init} vs {data.team2_init}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  style={{ textAlign: "center", opacity: 0.8 }}
-                >
-                  {data.date}
-                  <Fade in={pick} timeout={550}>
-                    <Chip
-                      variant="outlined"
-                      onDelete={() => setPick(null)}
-                      label={`${pick} predicted`}
-                    />
-                  </Fade>
-                  {/* TODO: Update Label here + conditional rendering for only when side is defined */}
-                </Typography>
-              </div>
-              <img src={teamLogo1} className={classes.teamImageLeft}></img>
-            </section>
+    <Grid container spacing={0} className={classes.root}>
+      <Grid item xs={12} sm={6}>
+        <section
+          className={classes.backgroundLeft}
+          onClick={() => handleClick(data.team1_init)}
+        >
+          <section className={classes.teamLeft}>
+            <div className={classes.cardTitle}>
+              <Typography
+                variant="h4"
+                style={{
+                  fontFamily: "emoji",
+                  textAlign: "center",
+                  opacity: 0.8,
+                }}
+              >
+                {data.team1_init} vs {data.team2_init}
+              </Typography>
+              <Typography
+                variant="h6"
+                style={{ textAlign: "center", opacity: 0.8 }}
+              >
+                {data.date}
+                <Fade in={Boolean(pick)} timeout={550}>
+                  <Chip
+                    variant="outlined"
+                    onDelete={() => setPick(null)}
+                    label={`${pick} predicted`}
+                  />
+                </Fade>
+                {/* TODO: Update Label here + conditional rendering for only when side is defined */}
+              </Typography>
+            </div>
+            <img src={teamLogo1} className={classes.teamImageLeft}></img>
           </section>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <section
-            className={classes.backgroundRight}
-            onClick={() => handleClick(data.team2_init)}
-          >
-            <section className={classes.teamRight}>
-              <div className={classes.cardTitle}></div>
-              <img src={teamLogo2} className={classes.teamImageRight}></img>
-            </section>
-          </section>
-        </Grid>
+        </section>
       </Grid>
-
+      <Grid item xs={12} sm={6}>
+        <section
+          className={classes.backgroundRight}
+          onClick={() => handleClick(data.team2_init)}
+        >
+          <section className={classes.teamRight}>
+            <div className={classes.cardTitle}></div>
+            <img src={teamLogo2} className={classes.teamImageRight}></img>
+          </section>
+        </section>
+      </Grid>
+    </Grid>
   );
 }
 
