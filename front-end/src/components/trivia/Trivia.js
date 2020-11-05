@@ -23,12 +23,11 @@ const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
         position: 'absolute',
-        marginLeft: drawerWidth,
+        marginLeft: 0,
         marginTop: drawerHeight,
         display: 'none',
         width: '75%',
-        height: '80%',
-        overflowY: 'scroll'
+        height: '100%',
     },
     introPage: {
         flexGrow: 1,
