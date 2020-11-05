@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  Card,
-  Grid,
-  makeStyles,
-  Typography,
-  Chip,
-  Fade,
-} from "@material-ui/core";
+import { Grid, makeStyles, Typography, Chip, Fade } from "@material-ui/core";
+import LazyLoad from "react-lazyload";
 
 // TODO: clean up css - have another json and then spread the contents here, just update nessecary bits
 const useStyles = makeStyles({
@@ -98,10 +92,11 @@ function PredictionsCard(props) {
   const classes = useStyles({ mockImageUrl1, mockImageUrl2 });
 
   const [pick, setPick] = useState(null);
-  const pickVal = React.useRef({ gameId: data.game_id, pick: null }); // need b/c we want useEffect to work w []
+  const pickVal = useRef({ gameId: data.game_id, pick: null }); // need b/c we want useEffect to work w []
 
   const addNewPerdictions = async (gameId, prediction) => {
-    if (!prediction) { // picks not been made
+    if (!prediction) {
+      // picks not been made
       return;
     }
 
@@ -132,9 +127,10 @@ function PredictionsCard(props) {
   }, [pick]);
 
   useEffect(() => {
-    return () => addNewPerdictions(pickVal.current.gameId, pickVal.current.pick)
+    return () =>
+      addNewPerdictions(pickVal.current.gameId, pickVal.current.pick);
   }, []);
-  
+
   const handleClick = (side) => {
     setPick(side);
   };
@@ -142,51 +138,55 @@ function PredictionsCard(props) {
   return (
     <Grid container spacing={0} className={classes.root}>
       <Grid item xs={12} sm={6}>
-        <section
-          className={classes.backgroundLeft}
-          onClick={() => handleClick(data.team1_init)}
-        >
-          <section className={classes.teamLeft}>
-            <div className={classes.cardTitle}>
-              <Typography
-                variant="h4"
-                style={{
-                  fontFamily: "emoji",
-                  textAlign: "center",
-                  opacity: 0.8,
-                }}
-              >
-                {data.team1_init} vs {data.team2_init}
-              </Typography>
-              <Typography
-                variant="h6"
-                style={{ textAlign: "center", opacity: 0.8 }}
-              >
-                {data.date}
-                <Fade in={Boolean(pick)} timeout={550}>
-                  <Chip
-                    variant="outlined"
-                    onDelete={() => setPick(null)}
-                    label={`${pick} predicted`}
-                  />
-                </Fade>
-                {/* TODO: Update Label here + conditional rendering for only when side is defined */}
-              </Typography>
-            </div>
-            <img src={teamLogo1} className={classes.teamImageLeft}></img>
+        <LazyLoad height="30rem">
+          <section
+            className={classes.backgroundLeft}
+            onClick={() => handleClick(data.team1_init)}
+          >
+            <section className={classes.teamLeft}>
+              <div className={classes.cardTitle}>
+                <Typography
+                  variant="h4"
+                  style={{
+                    fontFamily: "emoji",
+                    textAlign: "center",
+                    opacity: 0.8,
+                  }}
+                >
+                  {data.team1_init} vs {data.team2_init}
+                </Typography>
+                <Typography
+                  variant="h6"
+                  style={{ textAlign: "center", opacity: 0.8 }}
+                >
+                  {data.date}
+                  <Fade in={Boolean(pick)} timeout={550}>
+                    <Chip
+                      variant="outlined"
+                      onDelete={() => setPick(null)}
+                      label={`${pick} predicted`}
+                    />
+                  </Fade>
+                  {/* TODO: Update Label here + conditional rendering for only when side is defined */}
+                </Typography>
+              </div>
+              <img src={teamLogo1} className={classes.teamImageLeft}></img>
+            </section>
           </section>
-        </section>
+        </LazyLoad>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <section
-          className={classes.backgroundRight}
-          onClick={() => handleClick(data.team2_init)}
-        >
-          <section className={classes.teamRight}>
-            <div className={classes.cardTitle}></div>
-            <img src={teamLogo2} className={classes.teamImageRight}></img>
+        <LazyLoad height="30rem">
+          <section
+            className={classes.backgroundRight}
+            onClick={() => handleClick(data.team2_init)}
+          >
+            <section className={classes.teamRight}>
+              <div className={classes.cardTitle}></div>
+              <img src={teamLogo2} className={classes.teamImageRight}></img>
+            </section>
           </section>
-        </section>
+        </LazyLoad>
       </Grid>
     </Grid>
   );
