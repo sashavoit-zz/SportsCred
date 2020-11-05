@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Comment } from 'semantic-ui-react'
-import 'semantic-ui-css/semantic.css'
+import './semantic.css'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
