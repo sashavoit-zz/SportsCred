@@ -20,6 +20,7 @@ const getAuthToken = async (username, password) => {
   } else {
     let body = await res.json();
     localStorage.setItem("Token", body.token); // TODO: make call for thisset token
+    localStorage.setItem("User", username);
     return body.token;
   }
 };
@@ -42,6 +43,111 @@ const doesEmailExist = async (email) => {
     return true;
   } else {
     throw "err";
+  }
+};
+
+const doesAnswerExist = async (email, questionID) => {
+  // send email to server
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      questionID,
+    }),
+  };
+
+  let res = await fetch("/answerExists", requestOptions);
+
+  if (res.status === 200) {
+    return false;
+  } else if (res.status === 406) {
+    return true;
+  } else {
+    throw "err";
+  }
+};
+
+const question = async (questionID) => {
+  // send email to server
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      questionID,
+    }),
+  };
+
+  let res = await fetch("/question", requestOptions);
+
+  if (res.status !== 200) {
+    throw "err";
+  } else {
+    let body = await res.json();
+    return body.question;
+  }
+};
+
+const answer = async (email, questionID, answer) => {
+  // send email to server
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      questionID,
+      answer,
+    }),
+  };
+
+  let res = await fetch("/answer", requestOptions);
+
+  if (res.status !== 200) {
+    throw "err";
+  } else {
+    let body = await res.json();
+    return body.question;
+  }
+};
+
+const getUserAnswer = async (email, questionID) => {
+  // send email to server
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      questionID,
+    }),
+  };
+
+  let res = await fetch("/getAnswer", requestOptions);
+
+  if (res.status !== 200) {
+    throw "err";
+  } else {
+    let body = await res.json();
+    return [body.answer, body.name];
+  }
+};
+
+const getRandomAnswers = async (questionID) => {
+  // send email to server
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      questionID,
+    }),
+  };
+
+  let res = await fetch("/getAnswers", requestOptions);
+
+  if (res.status !== 200) {
+    throw "err";
+  } else {
+    let body = await res.json();
+    return [body.answer0, body.name0, body.email0, body.answer1, body.name1, body.email1, body.answer2, body.name2, body.email2];
   }
 };
 
@@ -89,4 +195,4 @@ const getUser = async () => {
   }
 };
 
-export { getAuthToken, getUser, doesEmailExist, createUserAccount };
+export { getAuthToken, getUser, doesEmailExist, createUserAccount, question, answer, doesAnswerExist, getUserAnswer, getRandomAnswers };
