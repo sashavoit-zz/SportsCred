@@ -71,7 +71,7 @@ export class openCourt extends React.Component{
         return(
             <div>
             <UploadPost user={user} firstName={firstName} lastName={lastName} reload={this.checkonClick}/>
-            {this.state.posts.map(post =>
+            {this.state.posts.reverse().map(post =>
                     <Post
                         key={uid(post)}
                         postInfo={post}

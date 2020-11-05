@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {CardActions,Card, CardHeader,CardContent, Typography, IconButton,Avatar,Link, CardActionArea} from '@material-ui/core';
+import {CardActions,Card, CardHeader,CardContent, Typography, IconButton,Avatar, CardActionArea} from '@material-ui/core';
 import FacebookEmbeds from './facebookEmbeds';
 import TwitterEmbeds from './twitterEmbeds';
 import RedditEmbeds from './redditEmbeds';
@@ -25,7 +25,7 @@ import LaunchIcon from '@material-ui/icons/Launch';
 
 
 import { Button, Form } from 'semantic-ui-react'
-
+import { Link } from 'react-router-dom'
 
 const REPLIES = '/postReply/'
 
@@ -288,10 +288,11 @@ export class Post extends React.Component{
      }
 
     render(){
+        // console.log("this.props.param------------------")
+        // console.log(this.props)
         const { classes } = this.props;
         const {userId} = this.props;
         const {postInfo} = this.props;
-        // const classes = userStyles();
         const url = postInfo.content.match(/\bhttps?:\/\/\S+/gi)
         get_reply(this.props.postInfo.postId);
         return (
@@ -306,9 +307,13 @@ export class Post extends React.Component{
                             <Box className={classes.postInfo} display='inline'>
                                 {userId +"-"+ postInfo.time}
                             </Box>
-                            <Link to={"/the-zone/" + postInfo.postId}> 
-                                <LaunchIcon className={classes.launchIcon}></LaunchIcon>
-                            </Link>
+                            {!this.props.isSingle ?
+                                <Link to={"/the-zone/" + postInfo.postId}>
+                                    <LaunchIcon className={classes.launchIcon}></LaunchIcon>
+                                </Link>:
+                                null
+                            }
+                            
                         </div>
                         <div className={classes.cardBody}>
                         {url == null

@@ -57,6 +57,7 @@ export class OpenCourtPost extends React.Component {
             key={uid(post)}
             postInfo={post}
             userId={user.email}
+            isSingle={true}
           />
         )}
       </div>
