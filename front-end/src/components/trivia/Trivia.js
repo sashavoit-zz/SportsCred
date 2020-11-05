@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import SideBar from "../SideBar/SideBar";
 import { Button, Typography, Box, makeStyles, StylesProvider, Container, Grid, Paper, TextareaAutosize, CircularProgress } from "@material-ui/core";
+import { addQuestionRelationship, addQuestion, addQuestionsToUser, addQuestionsToDb } from "../../service/SignUpScript";
 
 const drawerWidth = 200;
 const drawerHeight = 64;
@@ -149,32 +150,21 @@ function Trivia(props) {
     setProgress((prevProgress) => (prevProgress = 0));
     answer = "no";
     nextQuestion = 1;
-
+    
     // get new question and show on site (consumer REST api)
+
+    addQuestionsToDb();
+
     getQuestion();
+    if (document.getElementById("questionLabel").innerHTML == "") {
+        addQuestionsToUser(localStorage.getItem("User"));
+        getQuestion();
+    } 
 
     pleaseWork.setCorrectReponse("hello?");
     console.log(pleaseWork.getCorrectResponse());
 
     document.getElementById('currentTime').innerHTML = "0";
-
-    //addQuestion("What course is this?", "CSCC37", "CSCB07", "CSCC69", "CSCC01");
-    // working
-    //   addQuestion("Who is the only other player other than Jamal Murray to score 50 on less than 24 field goal attempts?", "Lebron James", "Michael Jordan", "Kareem Abdul Jabbar", "Bob Cousy");
-    //   addQuestion("Who are the two players to have 25 point halves in a single playoff series?", "James Harden/Russel Westbrook", "Michael Jordan/Kobe Bryant", "Steph Curry/Lebron James", "Jamal Murray/Allen Iverson");
-    //   addQuestion("Who was the NBA’s first ever unanimous mvp?", "Michael Jordan", "Shaquille O’Neal", "LeBron James", "Steph Curry");
-    //   addQuestion("Who scored the NBA’s first ever three pointer and what year?", "Gary Payton", "Eric Musselman", "Don Nelson", "Chris Ford");
-    //   addQuestion("Who was the youngest player to score 10,000 points?", "Kobe Bryant", "Michael Jordan", "Kevin Durant", "LeBron James");
-    //   addQuestion("Who did the Los Angeles Lakers draft twice?", "Kobe Bryant", "Lonzo Ball", "Pau Gasol", "Elgin Baylor");
-    //   addQuestion("Who scored the most points in a single NBA game?", "Michael Jordan", "James Harden", "Kobe Bryant", "Wilt Chamberlain");
- 
-    // //   addQuestionRelationship("Who is the only other player other than Jamal Murray to score 50 on less than 24 field goal attempts?", "maya");
-    // //   addQuestionRelationship("Who are the two players to have 25 point halves in a single playoff series?", "maya");
-    //   addQuestionRelationship("Who was the NBA’s first ever unanimous mvp?", "ben");
-    //   addQuestionRelationship("Who scored the NBA’s first ever three pointer and what year?", "ben");
-    //   addQuestionRelationship("Who was the youngest player to score 10,000 points?", "ben");
-    //   addQuestionRelationship("Who did the Los Angeles Lakers draft twice?", "ben");
-    //   addQuestionRelationship("Who scored the most points in a single NBA game?", "ben");
   }
 
   //Shuffle array algorithm from the internet: https://github.com/coolaj86/knuth-shuffle
@@ -215,31 +205,33 @@ function Trivia(props) {
     });
   }
 
-async function addQuestionRelationship(question, user) {
+/* async function addQuestionRelationship(question, user) {
 
     const response = await fetch("http://localhost:3001/addQuestionRelationship/hashasdasd", {
         mode: 'cors',
         method: 'POST',
         body: JSON.stringify({
             "question": question,
-            "user": user
+            "user": "monkeybusiness5@gmail.com"
         }),
         headers: {
             'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
         }
     });
 
-}
+} */
 
   async function getQuestion() {
 
       var responseBody = [1,2,3,4];
       responseBody = shuffle(responseBody);
 
-      const response = await fetch("http://localhost:3001/getQuestion/ben/hashasdasd", {
+      var url = "http://localhost:3001/getQuestion/" + "maya" + "/hashasdasd";
+      const response = await fetch(url, {
           mode: 'cors',
           headers: {
-              'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+              'Token': localStorage.getItem("Token"), // move whole function to ApiCalls.js later
+              'User': localStorage.getItem("User")
           }
         })
       .then(response => {
@@ -265,7 +257,7 @@ async function addQuestionRelationship(question, user) {
         mode: 'cors',
         method: 'POST',
         body: JSON.stringify({
-            "user": "ben",
+            "user": localStorage.getItem("User"),
             "question": question
         }),
         headers: {
@@ -328,7 +320,7 @@ async function addQuestionRelationship(question, user) {
     }
   }
 
-  function nextQuestion() {
+ function nextQuestion() {
     getQuestion();
 
     document.getElementById("option1Label").style.backgroundColor = "#0099ff";
@@ -354,7 +346,7 @@ async function addQuestionRelationship(question, user) {
     document.getElementById('option3Label').addEventListener("click", function() {changeAnswer("option3")});
     document.getElementById('option4Label').addEventListener("click", function() {changeAnswer("option4")});
 
-    document.getElementById('nextButton').addEventListener('click', function() {nextQuestion()});
+    //document.getElementById('nextButton').addEventListener('click', function() {nextQuestion()});
 
     const timer = setInterval(() => {
       setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 5));
@@ -479,7 +471,7 @@ async function addQuestionRelationship(question, user) {
             </Grid>
             <Grid container spacing={3}>
                 <Grid id="nextButton" item xs={12} className={classes.nextButton}>
-                    <Button variant="contained" color="primary" size="large">
+                    <Button variant="contained" color="primary" size="large" onClick={nextQuestion}>
                         Next question
                     </Button>
                 </Grid>

@@ -20,6 +20,7 @@ const getAuthToken = async (username, password) => {
   } else {
     let body = await res.json();
     localStorage.setItem("Token", body.token); // TODO: make call for thisset token
+    localStorage.setItem("User", username);
     return body.token;
   }
 };
