@@ -2,8 +2,6 @@ import React from "react";
 import {withStyles} from "@material-ui/core/styles";
 import {TextField, Button, Avatar, Container, Grid, Typography} from '@material-ui/core'
 import FaceIcon from '@material-ui/icons/Face';
-import Feed from './feed';
-import post from "./post";
 function addPost(content, author, postTime) {
     const response = fetch("/addPost/hashasdasd", {
         mode: 'cors',
@@ -50,6 +48,9 @@ const styles = theme =>({
           float:"right",
           marginTop:`10px`,
           margin: theme.spacing(3, 0, 2),
+      },
+      center:{
+          margin:"auto"
       }
 
 });
@@ -63,10 +64,11 @@ export class UploadPost extends React.Component{
             uploadInput:"",
             errorText:"",
         }
+
     }
     
     render(){
-        const {user,firstName,lastName} = this.props;
+        const {user,firstName,lastName,component} = this.props;
         const {classes} = this.props;
         const handleInput=(field)=>{
             const value = field.value;
@@ -85,7 +87,7 @@ export class UploadPost extends React.Component{
                 const date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
                 addPost(this.state.uploadInput,user.email,date)
                 reset()
-                refreshPosts()
+                this.props.reload()
             }
         }
         const reset = () =>{
@@ -93,9 +95,6 @@ export class UploadPost extends React.Component{
                 uploadInput:"",
                 errorText:""
             })
-        }
-        const refreshPosts = () =>{
-            window.location.reload(false)
         }
         const handleInputEmpty = ()=>{
            this.setState({
@@ -109,9 +108,8 @@ export class UploadPost extends React.Component{
                 <div>
                     <Grid className = {classes.grid} container spacing={1}>
                         <Grid item >
-                            <Avatar  alt="user profile"/>
-                            {/* <FaceIcon className={classes.avatar} fontSize='large'/> */}
-                            <Typography align='center'>{firstName+" "+lastName}</Typography>                        
+                            <Avatar className = {classes.center} alt="user profile"/>
+                            <Typography className = {classes.center} >{firstName+" "+lastName}</Typography>                        
                         </Grid>
                         <Grid item xs>
                             <TextField 

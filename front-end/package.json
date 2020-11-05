@@ -14,9 +14,13 @@
     "date-fns": "^2.16.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-meta-tags": "^0.7.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.4",
-    "react-uid": "^2.3.0"
+    "react-share": "^4.3.1",
+    "react-uid": "^2.3.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

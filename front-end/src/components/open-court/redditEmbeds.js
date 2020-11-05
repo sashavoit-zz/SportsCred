@@ -34,10 +34,6 @@ export class RedditEmbeds extends React.Component{
         return(
             <div>
                 <div dangerouslySetInnerHTML={{__html: this.state.embedHtml}}></div>
-                {/* <blockquote class="reddit-card" >
-      <a href="https://www.reddit.com/r/AskReddit/comments/jn5wfc/the_average_human_brain_is_comparable_to_about_25/?ref_source=embed&amp;ref=share">The Average human brain is comparable to about 2.5 million gigabites. Your brain has reached near capacity. What do you delete to free up space?</a> from
-      <a href="https://www.reddit.com/r/AskReddit/">AskReddit</a>
-    </blockquote> */}
             </div>
         )
     }
