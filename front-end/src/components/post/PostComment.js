@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Checkbox, Comment } from 'semantic-ui-react'
+import { Comment } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.css'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -23,10 +23,9 @@ const styles = theme => ({
   
 });
 
-class CommentCollapsed extends Component {
+class PostComment extends Component {
   state = { 
     collapsed: true,
-    coll_message: "Expand"
   }
 
   handleCheckbox = (e) => {
@@ -34,7 +33,8 @@ class CommentCollapsed extends Component {
     if(this.state.collapsed){
       new_coll = "Collapse"
     }
-    this.setState({ collapsed: !this.state.collapsed, coll_message: new_coll})
+    e.target.text = new_coll
+    this.setState({ collapsed: !this.state.collapsed})
   }
   componentDidMount() {
     const { classes } = this.props;
@@ -53,7 +53,7 @@ class CommentCollapsed extends Component {
             <Comment.Text>{f_comm.content}</Comment.Text>
             <Comment.Actions>
               <a>Reply</a>
-              {this.props.data.length > 0 ? <a onClick={this.handleCheckbox} className={classes.collapseButton}>{this.state.coll_message}</a> : null}
+            {this.props.data.length > 0 ? <a onClick={this.handleCheckbox} className={classes.collapseButton}>Expand</a> : null}
               
             </Comment.Actions>
           </Comment.Content>
@@ -91,8 +91,8 @@ class CommentCollapsed extends Component {
   }
 }
 
-CommentCollapsed.propTypes = {
+PostComment.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(CommentCollapsed);
+export default withStyles(styles)(PostComment);

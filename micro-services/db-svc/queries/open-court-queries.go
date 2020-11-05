@@ -3,7 +3,7 @@ package queries
 import (
 	"fmt"
 	"strconv"
-	"log"
+	//"log"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"strings"
     "syscall"
@@ -40,20 +40,47 @@ func LoadAllPosts(driver neo4j.Driver) (interface{}, error) {
 
 	return result, nil
 }
-
 func LoadPost(driver neo4j.Driver, postId string) (interface{}, error) {
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
 		return nil, err
 	}
 	defer session.Close()
-	log.Println("0102000")
-	log.Println(postId)
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"MATCH(p: Post {postId: toInteger($postId)}) \n"+
+				"CALL { \n"+
+				"WITH p \n"+
+				"MATCH(u:User {email: p.email}) \n"+
+				"RETURN u.firstName as userFirstName, u.lastName as userLastName \n"+
+				"} \n"+
+				"RETURN collect({firstName: userFirstName, lastName: userLastName, userProfile: p.userProfile, postId: toString(p.postId), content: p.content, time: p.time, likes: toString(p.likes), dislikes: toString(p.dislikes)}) as posts",
+			map[string]interface{}{"postId":postId})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			value, _ := result.Record().Get("posts")
+			return value, nil
+		} else {
+			return nil, nil
+		}
+	})
+
+	return result, nil
+}
+func VisitorLoadPost(driver neo4j.Driver, postId string) (interface{}, error) {
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return nil, err
+	}
+	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
 			"MATCH (p:Post {postId: toInteger($postId)}) RETURN p.content, toString(p.dislikes), toString(p.likes)",
 			map[string]interface{}{"postId":postId})
-		log.Println(err)
 		if err != nil {
 			return nil, err
 		}
@@ -74,8 +101,6 @@ func LoadPost(driver neo4j.Driver, postId string) (interface{}, error) {
 				record.GetByIndex(1).(string),
 				record.GetByIndex(2).(string),
 			}
-			log.Println("010000")
-			log.Println(post)
 			return post, nil
 		} else {
 			return nil, nil

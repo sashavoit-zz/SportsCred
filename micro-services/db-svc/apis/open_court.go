@@ -87,14 +87,15 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 			c.String(404, "Not found")
 			return
 		}
-
+		log.Println("00000012")
+		log.Println(result)
 		c.JSON(200, result)
 	}))
 
 	app.GET("/post/:id", CheckAuthToken(func(c *gin.Context, _ string) {
 		id := c.Param("id");
-		log.Println("000001")
-		log.Println(id)
+		// log.Println("000001")
+		// log.Println(id)
 		result, err := queries.LoadPost(driver, id)
 		if err != nil {
 			c.String(500, "Internal server error")
@@ -112,7 +113,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 		id := c.Param("id");
 		log.Println("000002")
 		log.Println(id)
-		result, err := queries.LoadPost(driver, id)
+		result, err := queries.VisitorLoadPost(driver, id)
 		if err != nil {
 			c.String(500, "Internal server error")
 			return

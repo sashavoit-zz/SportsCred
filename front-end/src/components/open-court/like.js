@@ -140,18 +140,32 @@ class Rate extends React.Component {
 
     render(){
         return(
-            <div>
-            <IconButton onClick={this.handleLike}>
-                <ThumbUpAltIcon/>
-                <Typography color="textSecondary">{this.state.likes}</Typography>
-            </IconButton>
-            <IconButton onClick={this.handleDislike}>
-                <ThumbDownAltIcon/>
-                <Typography color="textSecondary">{this.state.dislikes}</Typography>
-            </IconButton>
+            <div style={{
+                //overflow: "hidden",
+                display: "flex",
+                padding: "0",
+                width: "50%"
+                //marginRight: "33%",
+            }} disableSpacing>
+                <IconButton onClick={this.handleLike} style={{
+                    padding: "0",
+                    //marginRight: "15px",
+                }}>
+                    <ThumbUpAltIcon/>
+                    <Typography color="textSecondary">{this.state.likes}</Typography>
+                </IconButton>
+                <IconButton onClick={this.handleDislike} style={{
+                    padding: "0",
+                    marginLeft:"55%"
+                    //marginRight: "20%",
+                }}>
+                    <ThumbDownAltIcon/>
+                    <Typography color="textSecondary">{this.state.dislikes}</Typography>
+                </IconButton>
             </div>
         )
     }
 }
 
 export default Rate;
+

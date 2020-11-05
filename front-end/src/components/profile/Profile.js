@@ -13,7 +13,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 //errmsg
-import {Collapse, IconButton} from "@material-ui/core";
+import { Collapse, IconButton } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -102,7 +102,7 @@ const styles = theme => ({
   },
   submitButton: {
     marginTop: "20px",
-    marginBottom:"20px",
+    marginBottom: "20px",
     color: "white",
     backgroundColor: "#0066cc",
   },
@@ -181,7 +181,7 @@ class Profile extends Component {
       });
     this.state = {
       edit: false,
-      errmsg:false
+      errmsg: false
     }
   }
 
@@ -207,14 +207,14 @@ class Profile extends Component {
   handleSubmit = (event) => {
     event.preventDefault()
     const form_cond = (!this.state.firstName.match(letters) ||
-                  this.state.firstName === "" || 
-                  !this.state.lastName.match(letters) || 
-                  this.state.lastName === "" || 
-                  !this.state.phone.match(numbers) || 
-                  this.state.phone === "");
-    if (form_cond){
+      this.state.firstName === "" ||
+      !this.state.lastName.match(letters) ||
+      this.state.lastName === "" ||
+      !this.state.phone.match(numbers) ||
+      this.state.phone === "");
+    if (form_cond) {
       this.handleShowErrmsg(event);
-    }else{
+    } else {
       const data = { ...this.state, ...this.props.user }
       console.log("form submit:", data)
       post_profile(data);
@@ -239,7 +239,7 @@ class Profile extends Component {
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
         <TextField className={classes.inputField} id="email" label={this.props.user.email} variant="filled" onChange={this.handleInputChange} disabled /><br />
         <TextField error={this.state.lastName === "" || !this.state.lastName.match(letters) ? true : false} className={classes.inputFieldShort} id="lastName" label="Last Name" value={this.state.lastName} variant="filled" onChange={this.handleInputChange} />
-        <TextField error={this.state.firstName === ""|| !this.state.firstName.match(letters)? true : false} className={classes.inputFieldShort} id="firstName" label="First Name" value={this.state.firstName} variant="filled" onChange={this.handleInputChange} /><br />
+        <TextField error={this.state.firstName === "" || !this.state.firstName.match(letters) ? true : false} className={classes.inputFieldShort} id="firstName" label="First Name" value={this.state.firstName} variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Help people discover your account by using the name you re <br />
           known by: either your full name, nickname, or business name
@@ -275,44 +275,44 @@ class Profile extends Component {
       )
 
     return (
-        <Card className={classes.root}>
-          <CardContent className={classes.content}>
-            <div className={classes.menu}>
+      <Card className={classes.root}>
+        <CardContent className={classes.content}>
+          <div className={classes.menu}>
 
-              {/* <OptionButton></OptionButton> */}
+            {/* <OptionButton></OptionButton> */}
 
             <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
-                Edit Profile
+              Edit Profile
               </Typography>
 
 
             <Typography className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
-                <PassDialog></PassDialog>
-              </Typography>
+              <PassDialog></PassDialog>
+            </Typography>
 
-            </div>
+          </div>
+          <div className={classes.profile}>
             <div className={classes.profile}>
-              <div className={classes.profile}>
-                <div className={classes.leftProfile}>
-                  <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
-                  <Typography id="username" onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
-                  </Typography>
-                </div>
-                <div className={classes.rightProfile}>
-                  <Typography variant="h5" component="h2">
-                    ACS Score: {ACSSCORE}
-                  </Typography>
-                  <div className={classes.blueText}>
-                    Update Profile Picture
+              <div className={classes.leftProfile}>
+                <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
+                <Typography id="username" onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
+                </Typography>
+              </div>
+              <div className={classes.rightProfile}>
+                <Typography variant="h5" component="h2">
+                  ACS Score: {ACSSCORE}
+                </Typography>
+                <div className={classes.blueText}>
+                  Update Profile Picture
                   </div>
-                </div>
               </div>
             </div>
-            <div className={classes.bottomProfile}>
-              {profileContent}
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          <div className={classes.bottomProfile}>
+            {profileContent}
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 }

@@ -139,11 +139,11 @@ const styles = theme => ({
   },
 });
 
-class OpenCourtPost extends Component {
+class VisitorOpenCourtPost extends Component {
   constructor(props) {
     super(props);
-    log("--------------------------999")
-    log(props)
+    // log("--------------------------999")
+    // log(props)
     this.state = {
       //url: window.location.href
       url: "google.com"
@@ -167,6 +167,8 @@ class OpenCourtPost extends Component {
         }
       })
       .then(data => {
+        log("--------------------------99229")
+        log(data)
         this.setState({
           content: data.Content,
           likes: data.Likes,
@@ -181,13 +183,14 @@ class OpenCourtPost extends Component {
 
   render() {
     const { classes } = this.props;
-
+    log("--------------------------99229")
+    log(this.state)
     return (
         <Card className={classes.root}>
           <MetaTags>
             {/* <title>Page 1</title> */}
             {/* og support both Facebook and Twitter https://github.com/joshbuchea/HEAD#social */}
-            <meta property="og:title" content={this.state.title} />
+            <meta property="og:title" content={"SportCred"} />
             <meta property="og:description" content={this.state.content} />
             <meta property="og:image" content="https://1.bp.blogspot.com/--20nIeI7uF0/Uuu0BbwgpnI/AAAAAAAABXg/nUimVCMeOVg/s1600/parquet-per-palestre-parquet-sportivo+%284%29.jpg" />
           </MetaTags>
@@ -221,8 +224,8 @@ class OpenCourtPost extends Component {
   }
 }
 
-OpenCourtPost.propTypes = {
+VisitorOpenCourtPost.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(OpenCourtPost);
+export default withStyles(styles)(VisitorOpenCourtPost);
