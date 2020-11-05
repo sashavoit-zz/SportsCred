@@ -25,7 +25,7 @@ func getQuestionWithID(questionID string) (string, error) {
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"MATCH (n:Question { id:$questionID }) return n.question",
+			"MATCH (n:Debate { id:$questionID }) return n.question",
 			map[string]interface{}{"questionID": questionID})
 		if err != nil {
 			return nil, err
@@ -56,7 +56,7 @@ func postAnswerToDB(email string, questionID string, answer string) (string, err
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"MATCH (u:User),(q:Question) WHERE u.email = $email AND q.id = $questionID CREATE (u)-[a:ANSWER { answer:$answer }]->(q) RETURN a.answer",
+			"MATCH (u:User),(q:Debate) WHERE u.email = $email AND q.id = $questionID CREATE (u)-[a:ANSWER { answer:$answer }]->(q) RETURN a.answer",
 			map[string]interface{}{"email": email, "questionID": questionID, "answer": answer})
 		if err != nil {
 			return nil, err
@@ -137,7 +137,7 @@ func getUserAnswer(email string, questionID string) ([2]string, error) {
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"MATCH (u:User { email:$email })-[ANSWER]->(:Question {id:$questionID}) RETURN ANSWER.answer, COALESCE(u.firstName,'') + ' ' + COALESCE(u.lastName,'') LIMIT 1",
+			"MATCH (u:User { email:$email })-[ANSWER]->(:Debate {id:$questionID}) RETURN ANSWER.answer, COALESCE(u.firstName,'') + ' ' + COALESCE(u.lastName,'') LIMIT 1",
 			map[string]interface{}{"email": email, "questionID": questionID})
 		if err != nil {
 			return nil, err
@@ -202,7 +202,7 @@ func getRandomUserAnswers(questionID string) ([9]string, error) {
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"MATCH (u: User)-[ANSWER]->(:Question {id:'fanalyst3'}) RETURN ANSWER.answer, COALESCE(u.firstName ,'') + ' ' + COALESCE(u.lastName ,''), u.email, rand() as r ORDER BY r LIMIT 3",
+			"MATCH (u: User)-[ANSWER]->(:Debate {id:$questionID}) RETURN ANSWER.answer, COALESCE(u.firstName ,'') + ' ' + COALESCE(u.lastName ,''), u.email, rand() as r ORDER BY r LIMIT 3",
 			map[string]interface{}{"questionID": questionID})
 		if err != nil {
 			return nil, err
@@ -262,7 +262,7 @@ func setQuestionDBConstraint() (bool, error) {
 
 	session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE CONSTRAINT ON (n:Question) ASSERT n.id IS UNIQUE",
+			"CREATE CONSTRAINT ON (n:Debate) ASSERT n.id IS UNIQUE",
 			map[string]interface{}{"message": "hello, world"})
 		if err != nil {
 			return nil, err
@@ -289,7 +289,7 @@ func setUpQuestionsInDB(questionID string, question string) (bool, error) {
 	session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"CREATE (n:Question { id:$questionID, question:$question }) return n",
+			"CREATE (n:Debate { id:$questionID, question:$question }) return n",
 			map[string]interface{}{"questionID": questionID, "question": question})
 		if err != nil {
 			return nil, err
@@ -359,7 +359,7 @@ func checkAnswerExists(email string, questionID string) (bool, error) {
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"MATCH  (u:User {email: $email}), (q:Question {id:$questionID}) RETURN EXISTS( (u)-[:ANSWER]-(q) )",
+			"MATCH  (u:User {email: $email}), (q:Debate {id:$questionID}) RETURN EXISTS( (u)-[:ANSWER]-(q) )",
 			map[string]interface{}{"email": email, "questionID": questionID})
 		if err != nil {
 			return nil, err

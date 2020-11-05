@@ -225,7 +225,6 @@ export class Analysis extends React.Component{
               </CardContent>
             </Card>
             <br></br>
-            <br></br>
             <Card hidden={this.state.answer1=="" || this.state.answer1==this.state.userAnswer}>
               <CardContent>
                 <Box display="flex">
@@ -263,7 +262,6 @@ export class Analysis extends React.Component{
                 </Box>
               </CardContent>
             </Card>
-            <br></br>
             <br></br>
             <Card hidden={this.state.answer2=="" || this.state.answer2==this.state.userAnswer}>
               <CardContent>
