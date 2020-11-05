@@ -11,8 +11,6 @@ import Notifications from "@material-ui/icons/Notifications";
 import IconButton from "@material-ui/core/IconButton";
 import {CardActions,Card, CardHeader,CardContent, Typography} from '@material-ui/core';
 
-import axios from 'axios';
-
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -48,14 +46,12 @@ export default function NotifBar() {
         setOpen(false);
     };
 
-    /*
     React.useEffect(() => {
         if (!upding){
             setUpding(true)
             updResults()
         }
-    }, [upding])
-    */
+    }, [upding])    
 
     React.useEffect(() => {
         if (prevOpen.current === true && open === false) {
@@ -85,7 +81,7 @@ export default function NotifBar() {
                 console.log(data)
                 console.log(notifs)
             })
-            .then(setUpding(false))
+            .then(() => setUpding(false))
     }
 
     function handleListKeyDown(event) {
