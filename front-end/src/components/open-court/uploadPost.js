@@ -109,7 +109,7 @@ export class UploadPost extends React.Component{
                     <Grid className = {classes.grid} container spacing={1}>
                         <Grid item >
                             <Avatar className = {classes.center} alt="user profile"/>
-                            <Typography className = {classes.center} >{firstName+" "+lastName}</Typography>                        
+                            <Typography align = 'center' className = {classes.center} >{firstName+" "+lastName}</Typography>                        
                         </Grid>
                         <Grid item xs>
                             <TextField 
