@@ -27,7 +27,7 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import { Button, Form } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 
-const REPLIES = '/postReply/'
+const log = console.log
 
 const styles = theme => ({
     root: {
@@ -179,6 +179,9 @@ const styles = theme => ({
         marginLeft: "25%",
         //frontSize: "15"
     },
+    contentDivider: {
+        marginTop: "15px"
+    },
     commentDivider: {
         marginBottom: "15px"
     }
@@ -191,32 +194,6 @@ function checkWebsite(url){
 }
 
 
-function get_reply(postId) {
-    const url = '/postReply/' + postId; //http://localhost:3001
-    const comment_request = new Request(url, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
-        }
-    });
-    fetch(comment_request)
-    .then(res => {
-        if (res.status === 200) {
-            return res.json();
-        } else {
-            console.log('could not get post comments');
-        }
-    })
-    .then(commts => {
-        // success get post object in data
-   
-        ReactDOM.render(<PostComment data={commts}/>, document.getElementById("comm_" + postId))
-    })
-    .catch((error) => {
-        console.log(error)
-    });
-}
 export class Post extends React.Component{
     constructor(props) {
         super(props);
@@ -227,11 +204,12 @@ export class Post extends React.Component{
             replies: [],
             url: "google.com",
             inputMode: false,
+            commtData: []
         }
     }
     
     addComment = async (content, author, commentTime) => {
-        const response = fetch('/reply/'+this.props.postInfo.postId+"/hashasdasd", {
+        fetch('/reply/'+this.props.postInfo.postId+"/hashasdasd", {
             mode: 'cors',
             method: 'POST',
             body: JSON.stringify({
@@ -245,26 +223,47 @@ export class Post extends React.Component{
                 "Content-Type": "application/json",
                 "Token": localStorage.getItem("Token"),
               },
+        }).then(res => {
+            if (res.status === 200) {
+                return res.json();
+            } else {
+                console.log('could not post comments');
+            }
+        })
+        .then(commts => {
+            this.refresh()
+        })
+        .catch((error) => {
+            console.log(error)
         });
     }
 
-
-    componentDidMount(){
-        this.refresh();
-    }
-
     refresh = () => {
-                const requestOptions = {
-            method: "GET",
+        //const postId
+        const url = '/postReply/' + this.props.postInfo.postId; //http://localhost:3001
+        const comment_request = new Request(url, {
+            method: 'GET',
             headers: {
-                "Content-Type": "application/json",
-                "Token": localStorage.getItem("Token"),
-            },
-        };
-        fetch(REPLIES+this.props.postInfo.postId, requestOptions)
-            .then(response => response.json())
-            .then((data) => (this.setState({replies: data})))
-            .catch(err => console.log(err))
+                'Accept': 'application/json, text/plain, */*',
+                'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+            }
+        });
+        fetch(comment_request)
+        .then(res => {
+            if (res.status === 200) {
+                return res.json();
+            } else {
+                console.log('could not get post comments');
+            }
+        })
+        .then(commts => {
+            log("comments-----")
+            log(commts)
+            this.setState({ commtData: commts })
+        })
+        .catch((error) => {
+            console.log(error)
+        });
     }
 
     handleSubmit = (event) => {
@@ -287,8 +286,20 @@ export class Post extends React.Component{
             }, () => { this.refresh(); })
             replyFiel.value = ""
             replyFiel.placeholder = "comment send."
+            log("befoer after")
+            log(this.state.commtData)
+            this.setState({commtData: this.state.commtData})
+            log(this.state.commtData)
         }
-     }
+    }
+
+    
+
+
+
+    componentDidMount() {
+        this.refresh();
+    }
 
     render(){
         // console.log("this.props.param------------------")
@@ -297,7 +308,8 @@ export class Post extends React.Component{
         const {userId} = this.props;
         const {postInfo} = this.props;
         const url = postInfo.content.match(/\bhttps?:\/\/\S+/gi)
-        get_reply(this.props.postInfo.postId);
+        //get_reply(this.props.postInfo.postId);
+        //this.refresh();
         return (
             <div className={classes.cardArea}>
                 <Card className={classes.cardRoot} variant="outlined">
@@ -347,7 +359,7 @@ export class Post extends React.Component{
                                 </Card>
                         </Typography>
                         }
-                        <Divider></Divider>
+                        <Divider className={classes.contentDivider}></Divider>
                         <CardActions className={classes.cardAction} disableSpacing>
                             <Rate type={"posts"} likes={postInfo.likes} dislikes={postInfo.dislikes} id={postInfo.postId} user={userId}></Rate>
                             <IconButton className={classes.iconButton} onClick={() => { this.setState({ inputMode: !this.state.inputMode }) }} >
@@ -362,7 +374,8 @@ export class Post extends React.Component{
                             </IconButton>
                         </CardActions>
                         <Divider className={classes.commentDivider}></Divider>
-                        <div id={"comm_"+postInfo.postId}></div>
+                        <div id={"comm"+postInfo.postId}></div>
+                        <PostComment data={this.state.commtData} />
                         {this.state.inputMode ?
                             <Form id="fm" onSubmit={this.handleSubmit} reply style={{ marginTop: "15px" }}>
                                 <Form.TextArea

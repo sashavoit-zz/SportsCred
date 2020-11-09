@@ -37,11 +37,18 @@ class PostComment extends Component {
     this.setState({ collapsed: !this.state.collapsed})
   }
   componentDidMount() {
+    
+  }
+  render() {
+    const { collapsed } = this.state
+
     const { classes } = this.props;
     this.first_commts = null
     this.commts = null
-    const f_comm = this.props.data.shift()
-    if(f_comm){
+    const data = this.props.data
+    const f_comm = data[0]
+    const r_comm = data.slice(1)
+    if (f_comm) {
       this.first_commts =
         <Comment>
           <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/christian.jpg' />
@@ -53,13 +60,13 @@ class PostComment extends Component {
             <Comment.Text>{f_comm.content}</Comment.Text>
             <Comment.Actions>
               <a>Reply</a>
-            {this.props.data.length > 0 ? <a onClick={this.handleCheckbox} className={classes.collapseButton}>Expand</a> : null}
-              
+            {r_comm.length > 0 ? <a onClick={this.handleCheckbox} className={classes.collapseButton}>Expand</a> : null}
+
             </Comment.Actions>
           </Comment.Content>
         </Comment>
 
-      this.commts = this.props.data.map((item) =>
+      this.commts = r_comm.map((item) =>
         <Comment>
           <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
           <Comment.Content>
@@ -75,9 +82,7 @@ class PostComment extends Component {
         </Comment>
       );
     }
-  }
-  render() {
-    const { collapsed } = this.state
+
     return (
       <div>
         <Comment.Group>
