@@ -30,7 +30,8 @@ const styles = theme =>({
          },
       },
       container:{
-          margin:'auto',
+          marginLeft:'auto',
+          marginTop:'60px',
           width:'60vw'
       },
       grid:{
@@ -47,44 +48,27 @@ const styles = theme =>({
           float:"right",
           marginTop:`10px`,
           margin: theme.spacing(3, 0, 2),
+      },
+      center:{
+          margin:"auto"
       }
 
 });
 
 
-
 export class UploadPost extends React.Component{
+
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             uploadInput:"",
             errorText:"",
-            firstName:"",
-            lastName:""
         }
+
     }
-    // componentDidMount(){
-    //     console.log("in the componentDidMount");
-    //     console.log("the email is "+this.props.user.email);
-    //     const requestOptions = {
-    //         method: "GET",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Token": localStorage.getItem("Token"),
-    //           },
-    //     };
-    //     fetch("/getUserName/"+this.props.user.email,requestOptionss)
-    //         .then(response => response.json())
-    //         .then((data) => {
-    //             this.setState({
-    //                     firstName:data.firstName,
-    //                     lastName:data.lastName
-    //             })
-    //         })
-    //         .catch(err => console.log(err))
-    // }
+    
     render(){
-        const {user} = this.props;
+        const {user,firstName,lastName,component} = this.props;
         const {classes} = this.props;
         const handleInput=(field)=>{
             const value = field.value;
@@ -103,6 +87,7 @@ export class UploadPost extends React.Component{
                 const date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
                 addPost(this.state.uploadInput,user.email,date)
                 reset()
+                this.props.reload()
             }
         }
         const reset = () =>{
@@ -123,9 +108,8 @@ export class UploadPost extends React.Component{
                 <div>
                     <Grid className = {classes.grid} container spacing={1}>
                         <Grid item >
-                            {/* <Avatar className={classes.avatar} alt="user profile"/> */}
-                            <FaceIcon className={classes.avatar} fontSize='large'/>
-                            <Typography>{user.email}</Typography>                        
+                            <Avatar className = {classes.center} alt="user profile"/>
+                            <Typography align = 'center' className = {classes.center} >{firstName+" "+lastName}</Typography>                        
                         </Grid>
                         <Grid item xs>
                             <TextField 

@@ -12,10 +12,15 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+//errmsg
+import { Collapse, IconButton } from "@material-ui/core";
+import Alert from '@material-ui/lab/Alert';
+import CloseIcon from '@material-ui/icons/Close';
 
 import FaceIcon from '@material-ui/icons/Face';
-const USERNAME = "Ben"
 const ACSSCORE = "560"
+const letters = /^[A-Za-z]*$/;
+const numbers = /^[+\d]?(?:[\d-.\s()]*)$/;
 
 const log = console.log
 const styles = theme => ({
@@ -97,11 +102,13 @@ const styles = theme => ({
   },
   submitButton: {
     marginTop: "20px",
+    marginBottom: "20px",
     color: "white",
     backgroundColor: "#0066cc",
   },
   cancleButton: {
     marginTop: "20px",
+    marginBottom: "20px",
     color: "white",
     backgroundColor: "#333333",
   },
@@ -136,43 +143,45 @@ function post_profile(input) {
     });
 }
 
-function get_user(email) {
-  const user_url = '/user/' + email;
-  console.log("-0-------------------");
-  console.log(user_url);
-  const user_request = new Request(user_url, {
-    method: 'get',
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
-    }
-  });
-  fetch(user_request)
-    .then(res => {
-      if (res.status === 200) {
-        return res.json();
-      } else {
-        console.log('could not get user');
-      }
-    })
-    .then(data => {
-      const name_tag = document.querySelector("#username");
-      name_tag.textContent = data.user;
-      //render_reports(data);
-    })
-    .catch((error) => {
-      console.log(error)
-    });
-}
-
-
 class Profile extends Component {
   constructor(props) {
     super(props);
-
-    get_user(this.props.user.email)
+    // get_user(this.props.user.email)
+    log("------user email passed in from props:")
+    log(this.props.user.email)
+    const user_url = '/user/' + this.props.user.email;
+    const user_request = new Request(user_url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+      }
+    });
+    fetch(user_request)
+      .then(res => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          console.log('could not get user');
+        }
+      })
+      .then(data => {
+        const name_tag = document.querySelector("#username");
+        name_tag.textContent = data.FirstName + " " + data.LastName;
+        this.setState({
+          firstName: data.FirstName,
+          lastName: data.LastName,
+          about: data.About,
+          phone: data.Phone
+        })
+        //render_reports(data);
+      })
+      .catch((error) => {
+        console.log(error)
+      });
     this.state = {
-      edit: false
+      edit: false,
+      errmsg: false
     }
   }
 
@@ -182,13 +191,35 @@ class Profile extends Component {
       edit: false
     })
   }
+  handleCloseErrmsg = (event) => {
+    event.preventDefault()
+    this.setState({
+      errmsg: false
+    })
+  }
+  handleShowErrmsg = (event) => {
+    event.preventDefault()
+    this.setState({
+      errmsg: true
+    })
+  }
 
   handleSubmit = (event) => {
     event.preventDefault()
-    const data = { ...this.state, ...this.props.user }
-    console.log("form submit:", data)
-    post_profile(data);
-    this.handleBackProfile(event);
+    const form_cond = (!this.state.firstName.match(letters) ||
+      this.state.firstName === "" ||
+      !this.state.lastName.match(letters) ||
+      this.state.lastName === "" ||
+      !this.state.phone.match(numbers) ||
+      this.state.phone === "");
+    if (form_cond) {
+      this.handleShowErrmsg(event);
+    } else {
+      const data = { ...this.state, ...this.props.user }
+      console.log("form submit:", data)
+      post_profile(data);
+      this.handleBackProfile(event);
+    }
   }
 
   handleInputChange = (event) => {
@@ -207,19 +238,36 @@ class Profile extends Component {
     const profileContent = this.state.edit ? (
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
         <TextField className={classes.inputField} id="email" label={this.props.user.email} variant="filled" onChange={this.handleInputChange} disabled /><br />
-        <TextField className={classes.inputFieldShort} id="lastName" label="Last Name" variant="filled" onChange={this.handleInputChange} />
-        <TextField className={classes.inputFieldShort} id="firstName" label="First Name" variant="filled" onChange={this.handleInputChange} /><br />
+        <TextField error={this.state.lastName === "" || !this.state.lastName.match(letters) ? true : false} className={classes.inputFieldShort} id="lastName" label="Last Name" value={this.state.lastName} variant="filled" onChange={this.handleInputChange} />
+        <TextField error={this.state.firstName === "" || !this.state.firstName.match(letters) ? true : false} className={classes.inputFieldShort} id="firstName" label="First Name" value={this.state.firstName} variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Help people discover your account by using the name you re <br />
           known by: either your full name, nickname, or business name
         </div>
-        <TextField className={classes.inputField} id="about" label="About" variant="filled" onChange={this.handleInputChange} /><br />
-        <TextField className={classes.inputField} id="phone" label="Phone Number" variant="filled" onChange={this.handleInputChange} /><br />
+        <TextField error={this.state.about === "" ? true : false} className={classes.inputField} id="about" label="About" value={this.state.about} variant="filled" onChange={this.handleInputChange} /><br />
+        <TextField error={this.state.phone === "" || !this.state.phone.match(numbers) ? true : false} className={classes.inputField} id="phone" label="Phone Number" value={this.state.phone} variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
           Personal Information (Email & Phone Number): <br />
           This wont be a part of your public profile.
         </div>
         <Button className={classes.submitButton} type="submit">Submit</Button> <Button className={classes.cancleButton} onClick={this.handleBackProfile} >Cancel</Button>
+        <Collapse in={this.state.errmsg}>
+          <Alert
+            variant="outlined" severity="error"
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={this.handleCloseErrmsg}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+          >
+            Please fill all the required fields
+            </Alert>
+        </Collapse>
       </form>
     ) : (
         <Tabs>
@@ -227,44 +275,44 @@ class Profile extends Component {
       )
 
     return (
-        <Card className={classes.root}>
-          <CardContent className={classes.content}>
-            <div className={classes.menu}>
+      <Card className={classes.root}>
+        <CardContent className={classes.content}>
+          <div className={classes.menu}>
 
-              {/* <OptionButton></OptionButton> */}
+            {/* <OptionButton></OptionButton> */}
 
             <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
-                Edit Profile
+              Edit Profile
               </Typography>
 
 
             <Typography className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
-                <PassDialog></PassDialog>
-              </Typography>
+              <PassDialog></PassDialog>
+            </Typography>
 
-            </div>
+          </div>
+          <div className={classes.profile}>
             <div className={classes.profile}>
-              <div className={classes.profile}>
-                <div className={classes.leftProfile}>
-                  <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
-                  <Typography id="username" onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
-                  </Typography>
-                </div>
-                <div className={classes.rightProfile}>
-                  <Typography variant="h5" component="h2">
-                    ACS Score: {ACSSCORE}
-                  </Typography>
-                  <div className={classes.blueText}>
-                    Update Profile Picture
+              <div className={classes.leftProfile}>
+                <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
+                <Typography id="username" onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
+                </Typography>
+              </div>
+              <div className={classes.rightProfile}>
+                <Typography variant="h5" component="h2">
+                  ACS Score: {ACSSCORE}
+                </Typography>
+                <div className={classes.blueText}>
+                  Update Profile Picture
                   </div>
-                </div>
               </div>
             </div>
-            <div className={classes.bottomProfile}>
-              {profileContent}
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          <div className={classes.bottomProfile}>
+            {profileContent}
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 }

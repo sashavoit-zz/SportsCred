@@ -14,6 +14,8 @@ import Profile from "../profile/Profile";
 import PrivateRoute from "../routes/PrivateRoute";
 import SideBar from "../SideBar/SideBar";
 import SearchUser from '../UserService/SearchUser';
+import OpenCourtPost from '../post/OpenCourtPost';
+import VisitorOpenCourtPost from '../post/VisitorOpenCourtPost'; // should only contains GET methods
 import Predictions from '../picks-n-predictions/Predictions'
 import Analysis from "../debate-and-analysis/Analysis";
 
@@ -25,6 +27,7 @@ const theme = createMuiTheme({
 
 // TODO: make better routing
 function App() {
+  let jwt = localStorage.getItem("Token");
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -33,11 +36,13 @@ function App() {
           {/* public routes */}
           <Route exact path="/signup" component={SignUp} />
           <Route exact path="/login" component={LogIn} />
+          {!jwt && <Route exact path="/the-zone/:post" component={VisitorOpenCourtPost} />}
           {/* private routes */}
           <PrivateRoute exact path="/searchuser" component={SearchUser}/>
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/trivia" component={Trivia} />
           <PrivateRoute exact path="/the-zone" component={openCourt}/>
+          {!!jwt && <PrivateRoute exact path="/the-zone/:post" component={OpenCourtPost} />}
           <PrivateRoute exact path="/predictions" component={Predictions}/>
           <PrivateRoute exact path="/debate" component={Debate}/>
           <PrivateRoute exact path="/analysis" component={Analysis}/>
