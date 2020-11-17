@@ -237,14 +237,17 @@ function Trivia(props) {
           if (response.ok) {
               response.json().then(json => {
                 question = json["question"];
-                document.getElementById("questionLabel").innerHTML = question;
                 
-                document.getElementById('option' + responseBody[0].toString() + 'Label').innerHTML = json["option1"];
-                document.getElementById('option' + responseBody[1].toString() + 'Label').innerHTML = json["option2"];
-                document.getElementById('option' + responseBody[2].toString() + 'Label').innerHTML = json["option3"];
-                document.getElementById('option' + responseBody[3].toString() + 'Label').innerHTML = json["answer"];
+                if (document.getElementById("questionLabel") != null) {
+                    document.getElementById("questionLabel").innerHTML = question;
                 
-                document.getElementById('lastGrid').innerHTML = json["answer"];
+                    document.getElementById('option' + responseBody[0].toString() + 'Label').innerHTML = json["option1"];
+                    document.getElementById('option' + responseBody[1].toString() + 'Label').innerHTML = json["option2"];
+                    document.getElementById('option' + responseBody[2].toString() + 'Label').innerHTML = json["option3"];
+                    document.getElementById('option' + responseBody[3].toString() + 'Label').innerHTML = json["answer"];
+                
+                    document.getElementById('lastGrid').innerHTML = json["answer"];
+                }
               })
           }
       });
