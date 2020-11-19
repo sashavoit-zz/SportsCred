@@ -245,7 +245,7 @@ function Trivia(props) {
                     document.getElementById('option' + responseBody[1].toString() + 'Label').innerHTML = json["option2"];
                     document.getElementById('option' + responseBody[2].toString() + 'Label').innerHTML = json["option3"];
                     document.getElementById('option' + responseBody[3].toString() + 'Label').innerHTML = json["answer"];
-                
+              
                     document.getElementById('lastGrid').innerHTML = json["answer"];
                 }
               })

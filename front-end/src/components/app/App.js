@@ -18,6 +18,7 @@ import OpenCourtPost from '../post/OpenCourtPost';
 import VisitorOpenCourtPost from '../post/VisitorOpenCourtPost'; // should only contains GET methods
 import Predictions from '../picks-n-predictions/Predictions'
 import Analysis from "../debate-and-analysis/Analysis";
+import Leaderboards from "../leaderboards/Leaderboards";
 
 const theme = createMuiTheme({
   palette: {
@@ -46,6 +47,7 @@ function App() {
           <PrivateRoute exact path="/predictions" component={Predictions}/>
           <PrivateRoute exact path="/debate" component={Debate}/>
           <PrivateRoute exact path="/analysis" component={Analysis}/>
+          <PrivateRoute exact path="/leaderboards" component={Leaderboards}/>
           {/* Add new paths heres */}
           <Route path="/" component={() => <Redirect to="/the-zone"/>} />
         </Switch>

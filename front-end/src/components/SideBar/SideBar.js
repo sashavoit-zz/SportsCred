@@ -169,6 +169,17 @@ function SideBar(props) {
           </ListItemIcon>
           <ListItemText primary="Debate & Analysis" />
         </ListItem>
+
+        <ListItem
+          button
+          key={"OpenCourt"}
+          onClick={() => history.push("/leaderboards")}
+        >
+          <ListItemIcon>
+            <SportsBasketballIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Leaderboards" />
+        </ListItem>
       </List>
     </div>
   );
