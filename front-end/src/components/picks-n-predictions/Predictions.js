@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Typography, CircularProgress, makeStyles } from "@material-ui/core";
+import {
+  Typography,
+  CircularProgress,
+  makeStyles,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Grid, 
+} from "@material-ui/core";
 import { ArrowLeft, ArrowRight } from "@material-ui/icons";
 import {
   CarouselProvider,
@@ -9,11 +18,27 @@ import {
   ButtonNext,
 } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
-import "./carousel.css"
+import "./carousel.css";
 
 import PredictionsCard from "./PredictionsCard";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+    "& label.Mui-focused": {
+      color: "#c2adba",
+    },
+    "& .MuiOutlinedInput-root": {
+      "&.Mui-focused fieldset": {
+        borderColor: "#c2adba",
+      },
+    },
+    "& .MuiOutlinedInput-input": {
+      padding: "14.5px 13px",
+    }
+  },
+  
   buttonBack: {
     position: "absolute",
     top: "50%",
@@ -44,14 +69,17 @@ const useStyles = makeStyles({
     },
     outline: "none",
   },
-});
+}));
 
 function Predictions(props) {
   const [data, setData] = useState(null);
+  const [conference, setConference] = useState("both")
   const classes = useStyles();
 
-  useEffect(() => { // TODO: move async func to services
+  useEffect(() => {
+    // TODO: move async func to services
     (async () => {
+      setData(null)
       const requestOptions = {
         method: "GET",
         headers: {
@@ -60,20 +88,44 @@ function Predictions(props) {
         },
       };
 
-      let res = await fetch("/picks/dailyPicks", requestOptions);
-      
+      let res = await fetch(`/picks/dailyPicks?conference=${conference}`, requestOptions);
+
       if (res.status !== 200) {
-        console.log('oops')
+        console.log("oops");
       } else {
         let body = await res.json();
         setData(body);
       }
     })();
-  }, []);
-  
+  }, [conference]);
+
   return (
     <>
-      <Typography variant="h3">Picks and Predictions</Typography>
+      <Grid 
+        justify="space-between"
+        container
+      >
+        <Grid item>
+          <Typography variant="h3">Picks and Predictions</Typography>
+        </Grid >
+        <Grid item>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="conference-picker">Conferences</InputLabel>
+            <Select
+              label="Conferences"
+              labelid="conference-picker"
+              id="conference-picker"
+              value={conference}
+              onChange={(event) => setConference(event.target.value)}
+            >
+              <MenuItem value={"both"}>Both</MenuItem>
+              <MenuItem value={"eastern"}>Eastern</MenuItem>
+              <MenuItem value={"western"}>Western</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+
       {data ? (
         <CarouselProvider
           naturalSlideWidth={345}

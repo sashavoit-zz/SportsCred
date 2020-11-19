@@ -45,7 +45,7 @@ const useStyles = makeStyles({
   teamImageLeft: {
     borderRadius: "50%",
     position: "relative",
-    top: "21rem",
+    top: "19.5rem",
     left: "1rem",
     filter: "opacity(0.8)",
     transition: "all 0.75s",
@@ -53,7 +53,7 @@ const useStyles = makeStyles({
   teamImageRight: {
     borderRadius: "50%",
     position: "relative",
-    top: "21rem",
+    top: "19.5rem",
     left: "4rem",
     opacity: 0.8,
     transition: "all 0.75s",
