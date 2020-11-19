@@ -158,7 +158,6 @@ export class Analysis extends React.Component{
   render(){
       return(
           <div>
-            <SideBar page="Debate & Analysis"/>
             <Typography color="textSecondary" gutterBottom>
               Question of the Day
             </Typography>

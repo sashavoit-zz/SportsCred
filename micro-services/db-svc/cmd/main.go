@@ -38,6 +38,7 @@ func main() {
 	apis.SetUpSearch(app, driver)
 	apis.SetUpPicks(app, driver)
 	apis.SetUpDebate(app, driver)
+	apis.SetUpNotifs(app, driver)
 	apis.SetUpLeaderboards(app, driver)
 
 	app.Run(":3001")

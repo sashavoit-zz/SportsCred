@@ -265,4 +265,41 @@ func ClearGamesInDB(driver neo4j.Driver){
 
 		return nil, nil
 	})
+
+	_, err = session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		_, err := transaction.Run(
+			"MATCH (n:Notification)\n" +
+				"DETACH DELETE(n)",
+			map[string]interface{}{})
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, nil
+	})
+}
+
+func GetGameById(driver neo4j.Driver, gameId int) (string, string, string, error){
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	result, err := session.Run("MATCH (g:Game)\n" +
+		   						"WHERE ID(g) = $gameId\n" +
+								"RETURN g.team1_init as team1_init, g.team2_init as team2_init, g.winner as winner",
+								map[string]interface{}{"gameId": gameId})
+	if err != nil {
+		panic(err)
+	}
+
+	if result.Next() {
+		team1_init, _ := result.Record().Get("team1_init")
+		team2_init, _ := result.Record().Get("team2_init")
+		winner, _ := result.Record().Get("winner")
+		return fmt.Sprintf("%v", team1_init), fmt.Sprintf("%v", team2_init), fmt.Sprintf("%v", winner), err
+	}
+
+	return "", "", "", err
 }

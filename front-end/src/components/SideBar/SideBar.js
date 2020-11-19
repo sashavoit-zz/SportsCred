@@ -19,7 +19,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import SportsBasketballIcon from "@material-ui/icons/SportsBasketball";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import NotifBar from "./NotifBar";
+import NotifBell from "./NotifBell";
 
 const drawerWidth = 250;
 
@@ -193,7 +193,7 @@ function SideBar(props) {
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <NotifBar/>
+            <NotifBell/>
             <IconButton
               edge="end"
               aria-label="account of current user"

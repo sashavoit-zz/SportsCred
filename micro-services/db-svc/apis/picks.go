@@ -7,16 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"io/ioutil"
-	"reflect"
 	"time"
 )
 
 func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 
-	channels := make(map[string]chan int)
-	timer := make(chan int)
-	const timeout = 3 * time.Hour
-	const regularUpd = 5*time.Second
+	const regularUpd = 5 * time.Second
 
 	app.GET("/picks/dailyPicks", CheckAuthToken(func(c *gin.Context, email string){
 		result, err := queries.GetDailyPicks(driver, email)
@@ -62,51 +58,27 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 		//Setting a timer for the purpose of the demo
 		go func(){
 			time.Sleep(regularUpd)
-			timer<-0
+			team1Init, team2Init, winner, err := queries.GetGameById(driver, data.GameId)
+			if err!=nil {
+				panic(err)
+			}
+
+			var isCorrect string
+			var notifType string
+
+			if winner == data.Winner{
+				isCorrect = "correct"
+				notifType = "success"
+			}else{
+				isCorrect = "incorrect"
+				notifType = "error"
+			}
+
+			SendNotif(email, team1Init + " vs. " + team2Init, "Your prediction is " + isCorrect, notifType)
+
 		}()
 
 		c.JSON(200, nil)
-	}))
-
-
-	app.GET("/picks/newResults", CheckAuthToken(func(c *gin.Context, email string){
-		result, err := queries.GetNewResults(driver, email)
-		if err != nil {
-			c.String(500, "Internal server error")
-			return
-		}
-		if result == nil || reflect.ValueOf(result).IsNil() {
-
-			//Waiting for new relevant data to appear
-			channels[email] = make(chan int)
-			defer close(channels[email])
-			go func(){
-				time.Sleep(timeout)
-				timer<-0
-			}()
-			for {
-				select {
-				case <- channels[email]:
-					result, err := queries.GetNewResults(driver, email)
-					if err != nil {
-						c.String(500, "Internal server error")
-						return
-					}
-					c.JSON(200, result)
-					close(channels[email])
-					return
-				case <- timer:
-					result, err := queries.GetNewResults(driver, email)
-					if err != nil {
-						c.String(500, "Internal server error")
-						return
-					}
-					c.JSON(200, result)
-					return
-				}
-			}
-		}
-		c.JSON(200, result)
 	}))
 
 	app.POST("/picks/addGame", CheckAuthToken(func(c *gin.Context, _ string){
@@ -137,6 +109,7 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 		c.JSON(200, result)
 	}))
 
+	/*
 	app.PATCH("/picks/updGameOutcome", CheckAuthToken(func(c *gin.Context, _ string){
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
 		type Data struct {
@@ -152,22 +125,9 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 			return
 		}
 
-		//Notifying channels that new data has been added
-		go func(){
-			emails, err := queries.GetUsersThatPredicted(driver, data.GameId)
-			if err!=nil{
-				return
-			}
-			for _, email := range emails{
-				channels[email] <- data.GameId
-			}
-		}()
-
 		c.JSON(200, nil)
 	}))
-
-	//TODO remove after the demo
-	//Running this for the sprint 2 demo
+	*/
 	demoScript(driver)
 }
 

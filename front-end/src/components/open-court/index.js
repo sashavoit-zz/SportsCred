@@ -3,7 +3,6 @@ import UploadPost from "./uploadPost"
 import Post from './post'
 import {uid} from "react-uid";
 
-
 const LOADPOSTS = '/allPosts'
 export class openCourt extends React.Component{
     constructor(props) {
