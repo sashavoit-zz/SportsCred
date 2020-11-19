@@ -2,8 +2,8 @@ import React from "react";
 import {withStyles} from "@material-ui/core/styles";
 import {TextField, Button, Avatar, Container, Grid, Typography} from '@material-ui/core'
 import FaceIcon from '@material-ui/icons/Face';
-function addPost(content, author, postTime) {
-    const response = fetch("/addPost/hashasdasd", {
+function addPost(content, author, postTime, component) {
+    const requestOptions = {
         mode: 'cors',
         method: 'POST',
         body: JSON.stringify({
@@ -17,7 +17,17 @@ function addPost(content, author, postTime) {
             "Content-Type": "application/json",
             "Token": localStorage.getItem("Token"),
           },
-    });
+    };
+    fetch("/addPost/hashasdasd", requestOptions)
+    .then(response => response.json())
+    .then((result) => {
+        const newList = []
+        const prevList = component.state.posts
+        const newPost = result[0]
+        newList.push(newPost)
+        newList.push(...prevList)
+        component.setState({posts:newList})
+      })
       }
 
 
@@ -63,12 +73,15 @@ export class UploadPost extends React.Component{
         this.state = {
             uploadInput:"",
             errorText:"",
+            profileLink:"",
+            newPost:null,
+    
         }
 
     }
-    
+
     render(){
-        const {user,firstName,lastName,component} = this.props;
+        const {user,firstName,lastName, profileLink, component} = this.props;
         const {classes} = this.props;
         const handleInput=(field)=>{
             const value = field.value;
@@ -85,9 +98,8 @@ export class UploadPost extends React.Component{
             else{
                 const today = new Date();
                 const date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
-                addPost(this.state.uploadInput,user.email,date)
+                addPost(this.state.uploadInput,user.email,date, component)
                 reset()
-                this.props.reload()
             }
         }
         const reset = () =>{
@@ -108,7 +120,7 @@ export class UploadPost extends React.Component{
                 <div>
                     <Grid className = {classes.grid} container spacing={1}>
                         <Grid item >
-                            <Avatar className = {classes.center} alt="user profile"/>
+                            <Avatar className = {classes.center} alt="user profile" src = {profileLink}/>
                             <Typography align = 'center' className = {classes.center} >{firstName+" "+lastName}</Typography>                        
                         </Grid>
                         <Grid item xs>

@@ -240,7 +240,7 @@ export class Post extends React.Component{
 
     refresh = () => {
         //const postId
-        const url = '/postReply/' + this.props.postInfo.postId; //http://localhost:3001
+        const url = '/postReply/' + this.props.postInfo.postId; 
         const comment_request = new Request(url, {
             method: 'GET',
             headers: {
@@ -302,25 +302,22 @@ export class Post extends React.Component{
     }
 
     render(){
-        // console.log("this.props.param------------------")
-        // console.log(this.props)
         const { classes } = this.props;
         const {userId} = this.props;
         const {postInfo} = this.props;
         const url = postInfo.content.match(/\bhttps?:\/\/\S+/gi)
-        //get_reply(this.props.postInfo.postId);
-        //this.refresh();
+    
         return (
             <div className={classes.cardArea}>
                 <Card className={classes.cardRoot} variant="outlined">
-                    <Avatar className={classes.userIcon} src ={postInfo.AuthorProfile}/>
+                    <Avatar className={classes.userIcon} src ={postInfo.profilePic}/>
                     <CardContent className={classes.cardContent}>
                         <div className={classes.cardName}>
                             <Box style={{ fontWeight: "bold" }} display='inline'>
                                 {postInfo.firstName + " " + postInfo.lastName + "   "}
                             </Box>
                             <Box className={classes.postInfo} display='inline'>
-                                {userId +"-"+ postInfo.time}
+                                {userId +"-"+ postInfo.time.split('T')[0]}
                             </Box>
                             {!this.props.isSingle ?
                                 <Link to={"/the-zone/" + postInfo.postId}>

@@ -6,18 +6,13 @@ import OptionButton from "./OptionButton";
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 //errmsg
-import { Collapse, IconButton } from "@material-ui/core";
+import { Collapse, IconButton,Avatar, Card, CardContent, Button, Typography, TextField} from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
+import UploadPicPopup from './UploadPicPopup'
+import {fetchUserProfilePic} from "../../service/ProfileService"
 
-import FaceIcon from '@material-ui/icons/Face';
 const ACSSCORE = "560"
 const letters = /^[A-Za-z]*$/;
 const numbers = /^[+\d]?(?:[\d-.\s()]*)$/;
@@ -112,7 +107,15 @@ const styles = theme => ({
     color: "white",
     backgroundColor: "#333333",
   },
+  profilePic:{
+    margin:"auto",
+    height:"100px",
+    width:"100px"
+  }
 });
+
+
+
 
 function post_profile(input) {
   log(input)
@@ -146,10 +149,17 @@ function post_profile(input) {
 class Profile extends Component {
   constructor(props) {
     super(props);
-    // get_user(this.props.user.email)
-    log("------user email passed in from props:")
-    log(this.props.user.email)
     const user_url = '/user/' + this.props.user.email;
+    this.state = {
+      edit: false,
+      errmsg: false,
+      openPopup:false, 
+      selectedFile: null,
+      profileLink:null,
+      uploaded:false
+    }
+
+
     const user_request = new Request(user_url, {
       method: 'GET',
       headers: {
@@ -177,12 +187,8 @@ class Profile extends Component {
         //render_reports(data);
       })
       .catch((error) => {
-        console.log(error)
       });
-    this.state = {
-      edit: false,
-      errmsg: false
-    }
+
   }
 
   handleBackProfile = (event) => {
@@ -216,7 +222,6 @@ class Profile extends Component {
       this.handleShowErrmsg(event);
     } else {
       const data = { ...this.state, ...this.props.user }
-      console.log("form submit:", data)
       post_profile(data);
       this.handleBackProfile(event);
     }
@@ -225,13 +230,19 @@ class Profile extends Component {
   handleInputChange = (event) => {
     event.preventDefault()
     this.setState({
-      //console.log(event.target.value)
-      // ["email"]: "ben@sportcred.com",
       [event.target.id]: event.target.value
     })
   }
-
-
+  componentDidMount(){
+      this.getUserProfilePic();
+      
+  }
+  
+   async getUserProfilePic(){
+    const result = await fetchUserProfilePic(this.props.user.email)
+    this.setState({profileLink: result})
+  }
+ 
   render() {
     const { classes } = this.props;
 
@@ -279,8 +290,6 @@ class Profile extends Component {
         <CardContent className={classes.content}>
           <div className={classes.menu}>
 
-            {/* <OptionButton></OptionButton> */}
-
             <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
               Edit Profile
               </Typography>
@@ -294,7 +303,13 @@ class Profile extends Component {
           <div className={classes.profile}>
             <div className={classes.profile}>
               <div className={classes.leftProfile}>
-                <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
+                <IconButton>
+                <Avatar
+                  className={classes.profilePic}
+                  src={this.state.profileLink}
+                  onClick={() => this.setState({ openPopup: true })}
+                />
+                </IconButton>
                 <Typography id="username" onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
                 </Typography>
               </div>
@@ -302,9 +317,14 @@ class Profile extends Component {
                 <Typography variant="h5" component="h2">
                   ACS Score: {ACSSCORE}
                 </Typography>
-                <div className={classes.blueText}>
-                  Update Profile Picture
-                  </div>
+                  <Button 
+                    color="primary"
+                    component="label"
+                    onClick={() => this.setState({ openPopup: true })}
+                  >
+                    Upload Profile Picture
+                    
+                  </Button>
               </div>
             </div>
           </div>
@@ -312,6 +332,13 @@ class Profile extends Component {
             {profileContent}
           </div>
         </CardContent>
+        <UploadPicPopup
+                profilePage = {this}
+                email = {this.props.user.email}
+                src = {this.state.profileLink}
+            >
+                
+            </UploadPicPopup>
       </Card>
     );
   }

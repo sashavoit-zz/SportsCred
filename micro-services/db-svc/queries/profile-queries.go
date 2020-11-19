@@ -2,11 +2,12 @@ package queries
 
 import (
 	"fmt"
-	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"log"
+
+	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
 
-func UpdateProfile(driver neo4j.Driver, firstName string, lastName string, email string, phone string, about string)(string, error){
+func UpdateProfile(driver neo4j.Driver, firstName string, lastName string, email string, phone string, about string) (string, error) {
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
 		return "", err
@@ -24,30 +25,30 @@ func UpdateProfile(driver neo4j.Driver, firstName string, lastName string, email
 		}
 		return nil, result.Err()
 	})
-	return fmt.Sprintf("%v",result), nil
+	return fmt.Sprintf("%v", result), nil
 }
 
-func GetUserByEmail(driver neo4j.Driver, email string)(interface{}, error){
+func GetUserByEmail(driver neo4j.Driver, email string) (interface{}, error) {
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
 		return nil, err
 	}
 	defer session.Close()
 
-	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error){
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
 			"MATCH (u:User {email: $email}) RETURN u.firstName, u.lastName, u.about, u.phone",
-			map[string]interface{}{"email":email})
+			map[string]interface{}{"email": email})
 		if err != nil {
 			return nil, err
 		}
 		if result.Next() {
 			record := result.Record()
-			type User struct{
+			type User struct {
 				FirstName string
-				LastName string
-				About string
-				Phone string
+				LastName  string
+				About     string
+				Phone     string
 			}
 			// firstName:= "firsN"
 			// lastName := "lastN"
@@ -74,13 +75,67 @@ func GetUserByEmail(driver neo4j.Driver, email string)(interface{}, error){
 			// log.Println(about)
 			// log.Println(phone)
 			// log.Println("333---")
-			
+
 			// log.Println(profile.Email)
 			// log.Println(profile.Phone)
 			// log.Println(profile.About)
 			return user, nil
 		}
 		return nil, result.Err()
+	})
+
+	return result, nil
+}
+func UploadProfilePic(driver neo4j.Driver, email string, link string) (interface{}, error) {
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return nil, err
+	}
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"MATCH(u: User{email:$email}) \n"+
+				"SET u += {profilePic:$link}\n"+
+				"RETURN {link:u.profilePic} as link",
+			map[string]interface{}{"email": email, "link": link})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			value, _ := result.Record().Get("link")
+			return value, nil
+		} else {
+			return nil, nil
+		}
+	})
+
+	return result, nil
+}
+
+func GetUserProfilePic(driver neo4j.Driver, email string) (interface{}, error) {
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return nil, err
+	}
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"MATCH(u: User{email:$email}) \n"+
+				"RETURN {link:u.profilePic} as link",
+			map[string]interface{}{"email": email})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			value, _ := result.Record().Get("link")
+			return value, nil
+		} else {
+			return nil, nil
+		}
 	})
 
 	return result, nil

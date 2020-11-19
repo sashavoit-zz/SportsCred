@@ -22,20 +22,21 @@ func LoadAllPosts(driver neo4j.Driver) (interface{}, error) {
 			"CALL{\n"+
 				"MATCH (p:Post)\n"+
 				"MATCH (u:User)-[:CREATED]->(p)\n"+
-				"RETURN u.firstName as firstname, u.lastName as lastname, p\n"+
+				"RETURN u.firstName as firstname, u.lastName as lastname, u.profilePic as profilePic, p\n"+
 				"ORDER BY p.postTime DESC\n"+
 				"}\n"+
 				"RETURN collect({"+
-					"firstName: firstname,"+
-					"lastName: lastname,"+
-					"postId: toString(p.postId),"+
-					"content: p.content,"+
-					"time: p.postTime,"+
-					"likes: toString(p.likes),"+
-					"dislikes: toString(p.dislikes)"+
+				"firstName: firstname,"+
+				"lastName: lastname,"+
+				"profilePic: profilePic,"+
+				"postId: toString(p.postId),"+
+				"content: p.content,"+
+				"time: p.postTime,"+
+				"likes: toString(p.likes),"+
+				"dislikes: toString(p.dislikes)"+
 				"})\n"+
 				"as posts",
-				map[string]interface{}{})
+			map[string]interface{}{})
 		if err != nil {
 			return nil, err
 		}
@@ -130,19 +131,33 @@ func AddPost(driver neo4j.Driver, content string, email string, likes int, disli
 
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (n:Post {content:$content, email:$email, likes:$likes, dislikes:$dislikes})\n"+
+			"CALL{\n"+
+				"CREATE (n:Post {content:$content, email:$email, likes:$likes, dislikes:$dislikes})\n"+
 				"SET n.postId = id(n), n.postTime=datetime()\n"+
 				"WITH n \n"+
 				"MATCH(u:User{email:$email})\n"+
 				"MERGE (u)-[r:CREATED]->(n)\n"+
-				"RETURN {userProfile: n.userProfile, postId: toString(n.postId), content: n.content, time: n.time, likes: toString(n.likes), dislikes: toString(n.dislikes)} as post", // or MERGE
+				"RETURN u.firstName as firstname, u.lastName as lastname, u.profilePic as profilePic, n\n"+
+				"ORDER BY n.postTime DESC\n"+
+				"}\n"+
+				"RETURN collect({"+
+				"firstName: firstname,"+
+				"lastName: lastname,"+
+				"profilePic: profilePic,"+
+				"postId: toString(n.postId),"+
+				"content: n.content,"+
+				"time: n.postTime,"+
+				"likes: toString(n.likes),"+
+				"dislikes: toString(n.dislikes)"+
+				"})\n"+
+				"as posts",
 			map[string]interface{}{"content": content, "email": email, "likes": likes, "dislikes": dislikes, "postTime": postTime})
 		if err != nil {
 			return nil, err
 		}
 
 		if result.Next() {
-			value, _ := result.Record().Get("post")
+			value, _ := result.Record().Get("posts")
 			return value, nil
 		} else {
 			return nil, nil

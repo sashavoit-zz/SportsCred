@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import UploadPost from "./uploadPost"
 import Post from './post'
 import {uid} from "react-uid";
+import {fetchUserProfilePic} from '../../service/ProfileService'
 
 const LOADPOSTS = '/allPosts'
 export class openCourt extends React.Component{
@@ -10,44 +11,24 @@ export class openCourt extends React.Component{
         this.state = {
             "firstName":"",
             "lastName":"",
-            reload:true,
-            posts: []
+            posts: [],
+            profileLink:"",
         };
         this.reloadPost = this.reloadPost.bind(this)
-        this.checkonClick = this.checkonClick.bind(this)
     }
     componentDidMount(){
         this.reloadPost()
+        
     }
     componentDidUpdate(prevProps, prevState){
         if(this.state.firstName.length == 0){
-            const requestOptions = {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Token": localStorage.getItem("Token"), 
-                },
-            };
-            fetch("/getUserName/"+this.props.user.email,requestOptions)
-                .then(response => response.json())
-                .then((data) => {
-                    this.setState({
-                            firstName:data.firstName,
-                            lastName:data.lastName
-                    })
-                })
-                .catch(err => console.log(err))     
-        }
-        if(prevState.reload !== this.state.reload){
-            this.reloadPost()
+            this.getUserName()
+            this.getUserProfilePic()  
         }
 
     
     }
-    checkonClick(){
-        const reload = !this.state.reload
-        this.setState({reload:reload})
-    }
+    
     reloadPost() {
         const requestOptions = {
             method: "GET",
@@ -62,6 +43,29 @@ export class openCourt extends React.Component{
             .catch(err => console.log(err))
       }
 
+      async getUserProfilePic(){
+        const result = await fetchUserProfilePic(this.props.user.email)
+        this.setState({profileLink: result})
+      }
+    getUserName(){
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Token": localStorage.getItem("Token"), 
+            },
+        };
+        fetch("/getUserName/"+this.props.user.email,requestOptions)
+            .then(response => response.json())
+            .then((data) => {
+                this.setState({
+                        firstName:data.firstName,
+                        lastName:data.lastName
+                })
+            })
+            .catch(err => console.log(err))
+    }
+
 
     render(){
         const firstName =this.state.firstName;
@@ -69,7 +73,7 @@ export class openCourt extends React.Component{
         const {user} = this.props;
         return(
             <div>
-            <UploadPost user={user} firstName={firstName} lastName={lastName} reload={this.checkonClick}/>
+            <UploadPost user={user} firstName={firstName} lastName={lastName} profileLink={this.state.profileLink} component ={this}/>
             {this.state.posts.map(post =>
                     <Post
                         key={uid(post)}

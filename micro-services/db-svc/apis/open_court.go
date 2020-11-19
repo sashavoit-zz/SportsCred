@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
@@ -17,10 +18,10 @@ type Post struct {
 	PostTime string
 }
 type Comment struct {
-	Content  string
-	Email    string
-	Likes    int
-	Dislikes int
+	Content     string
+	Email       string
+	Likes       int
+	Dislikes    int
 	CommentTime string
 }
 type PostsUserRelationship struct {
@@ -30,7 +31,7 @@ type PostsUserRelationship struct {
 
 func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 
-	app.PUT("/posts/:userid/like/:postid", func(c *gin.Context){
+	app.PUT("/posts/:userid/like/:postid", func(c *gin.Context) {
 		email := c.Param("userid")
 		postid := c.Param("postid")
 		result, err := queries.RatePost(driver, email, postid, "like")
@@ -44,7 +45,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 		c.JSON(200, result)
 	})
 
-	app.PUT("/posts/:userid/dislike/:postid", func(c *gin.Context){
+	app.PUT("/posts/:userid/dislike/:postid", func(c *gin.Context) {
 		email := c.Param("userid")
 		postid := c.Param("postid")
 		result, err := queries.RatePost(driver, email, postid, "dislike")
@@ -58,7 +59,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 		c.JSON(200, result)
 	})
 
-	app.GET("/posts/:postid/likes", func(c *gin.Context){
+	app.GET("/posts/:postid/likes", func(c *gin.Context) {
 		postid := c.Param("postid")
 		result, err := queries.GetLikes(driver, postid)
 		if err != nil {
@@ -67,7 +68,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 		}
 		c.JSON(200, result)
 	})
-	app.GET("/posts/:postid/dislikes", func(c *gin.Context){
+	app.GET("/posts/:postid/dislikes", func(c *gin.Context) {
 		postid := c.Param("postid")
 		result, err := queries.GetDislikes(driver, postid)
 		if err != nil {
@@ -76,7 +77,6 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 		}
 		c.JSON(200, result)
 	})
-
 
 	app.GET("/allPosts", CheckAuthToken(func(c *gin.Context, _ string) {
 		result, err := queries.LoadAllPosts(driver)
@@ -93,7 +93,7 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 	}))
 
 	app.GET("/post/:id", CheckAuthToken(func(c *gin.Context, _ string) {
-		id := c.Param("id");
+		id := c.Param("id")
 		// log.Println("000001")
 		// log.Println(id)
 		result, err := queries.LoadPost(driver, id)
@@ -109,8 +109,8 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 		c.JSON(200, result)
 	}))
 
-	app.GET("/postVisitor/:id", func(c *gin.Context){
-		id := c.Param("id");
+	app.GET("/postVisitor/:id", func(c *gin.Context) {
+		id := c.Param("id")
 		log.Println("000002")
 		log.Println(id)
 		result, err := queries.VisitorLoadPost(driver, id)
@@ -139,20 +139,15 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 		likes := post.Likes
 		dislikes := post.Dislikes
 		postTime := post.PostTime
-		//add the user to the database
 		result, err := queries.AddPost(driver, content, email, likes, dislikes, postTime)
 
 		if err != nil {
-			// 500 failed add user
 			c.String(500, "Internal Error")
 		} else if result == "" {
-			// 400 bad request (not exist or wrong password)
 			c.String(400, "Bad Request")
-			//c.JSON(400, gin.H{"message":"pong",})
 		}
 		c.JSON(200, result)
 	}))
-
 
 	app.POST("/reply/:postid/:hash", CheckAuthToken(func(c *gin.Context, _ string) {
 		postid := c.Param("postid")
