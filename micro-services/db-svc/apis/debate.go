@@ -2,10 +2,8 @@ package apis
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
@@ -56,7 +54,7 @@ func postAnswerToDB(email string, questionID string, answer string) (string, err
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"MATCH (u:User),(q:Debate) WHERE u.email = $email AND q.id = $questionID CREATE (u)-[a:ANSWER { answer:$answer }]->(q) RETURN a.answer",
+			"MATCH (u:User {email:$email}), (d:Debate {id:$questionID}) CREATE (n:DebateAnswer {email:$email, questionID:$questionID, answer:$answer}) CREATE (n)-[q:DEBATEQUESTION]->(d) CREATE (n)-[p:POSTEDBY]->(u) return n.answer",
 			map[string]interface{}{"email": email, "questionID": questionID, "answer": answer})
 		if err != nil {
 			return nil, err
@@ -124,6 +122,175 @@ func getQuestion(c *gin.Context) {
 	}
 }
 
+func addRatingToDB(questionID string, posterEmail string, raterEmail string, rating int) (int64, error) {
+
+	// session set up
+	session, err := neo4jDriver2.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return 0, err
+	}
+	defer session.Close()
+
+	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run(
+			"MATCH (da: DebateAnswer {questionID:$questionID, email:$posterEmail}), (rater: User {email:$raterEmail}) MERGE (da)-[r: RATEDBY]->(rater) SET r.rating=$rating RETURN r.rating",
+			map[string]interface{}{"questionID": questionID, "posterEmail": posterEmail, "raterEmail": raterEmail, "rating": rating})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+
+		return nil, result.Err()
+	})
+	if validation != nil {
+		return validation.(int64), nil
+	}
+
+	return 0, nil
+}
+
+func addRating(c *gin.Context) {
+
+	type QuestionID struct {
+		QuestionID  string
+		PosterEmail string
+		RaterEmail  string
+		Rating      int
+	}
+	var json QuestionID
+
+	// check json and populate it if its iight
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	addRatingToDB(json.QuestionID, json.PosterEmail, json.RaterEmail, json.Rating)
+	rating, err := getRatingFromDB(json.QuestionID, json.PosterEmail)
+
+	// everything worked!
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"rating": rating})
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+}
+
+func getRatingFromDB(questionID string, posterEmail string) (float64, error) {
+
+	// session set up
+	session, err := neo4jDriver2.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return 0.0, err
+	}
+	defer session.Close()
+
+	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run(
+			"MATCH (da: DebateAnswer {questionID:$questionID, email:$posterEmail})-[r:RATEDBY]->(:User) RETURN avg(r.rating)",
+			map[string]interface{}{"questionID": questionID, "posterEmail": posterEmail})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+
+		return nil, result.Err()
+	})
+	if validation != nil {
+		return validation.(float64), nil
+	}
+
+	return 0.0, nil
+}
+
+func getRating(c *gin.Context) {
+
+	type QuestionID struct {
+		QuestionID  string
+		PosterEmail string
+	}
+	var json QuestionID
+
+	// check json and populate it if its iight
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	rating, err := getRatingFromDB(json.QuestionID, json.PosterEmail)
+
+	// everything worked!
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"rating": rating})
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+}
+
+func getUsersRatingFromDB(questionID string, posterEmail string, raterEmail string) (int64, error) {
+
+	// session set up
+	session, err := neo4jDriver2.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return 0, err
+	}
+	defer session.Close()
+
+	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run(
+			"MATCH (da: DebateAnswer {questionID:$questionID, email:$posterEmail})-[r:RATEDBY]->(:User {email:$raterEmail}) RETURN r.rating LIMIT 1",
+			map[string]interface{}{"questionID": questionID, "posterEmail": posterEmail, "raterEmail": raterEmail})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+
+		return nil, result.Err()
+	})
+	if validation != nil {
+		return validation.(int64), nil
+	}
+
+	return 0, nil
+}
+
+func getUsersRating(c *gin.Context) {
+
+	type QuestionID struct {
+		QuestionID  string
+		PosterEmail string
+		RaterEmail  string
+	}
+	var json QuestionID
+
+	// check json and populate it if its iight
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	rating, err := getUsersRatingFromDB(json.QuestionID, json.PosterEmail, json.RaterEmail)
+
+	// everything worked!
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"rating": rating})
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+}
+
 func getUserAnswer(email string, questionID string) ([2]string, error) {
 	var answer [2]string
 
@@ -137,7 +304,7 @@ func getUserAnswer(email string, questionID string) ([2]string, error) {
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"MATCH (u:User { email:$email })-[ANSWER]->(:Debate {id:$questionID}) RETURN ANSWER.answer, COALESCE(u.firstName,'') + ' ' + COALESCE(u.lastName,'') LIMIT 1",
+			"MATCH (u: User {email:$email}), (d:DebateAnswer {email:$email, questionID:$questionID}) RETURN d.answer, COALESCE(u.firstName,'') + ' ' + COALESCE(u.lastName,'') LIMIT 1",
 			map[string]interface{}{"email": email, "questionID": questionID})
 		if err != nil {
 			return nil, err
@@ -202,7 +369,7 @@ func getRandomUserAnswers(questionID string) ([9]string, error) {
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"MATCH (u: User)-[ANSWER]->(:Debate {id:$questionID}) RETURN ANSWER.answer, COALESCE(u.firstName ,'') + ' ' + COALESCE(u.lastName ,''), u.email, rand() as r ORDER BY r LIMIT 3",
+			"MATCH (b: DebateAnswer {questionID:$questionID})-[:POSTEDBY]->(u: User) RETURN b.answer, COALESCE(u.firstName ,'') + ' ' + COALESCE(u.lastName ,''), u.email, rand() as r ORDER BY r LIMIT 3",
 			map[string]interface{}{"questionID": questionID})
 		if err != nil {
 			return nil, err
@@ -301,45 +468,65 @@ func setUpQuestionsInDB(questionID string, question string) (bool, error) {
 }
 
 func setUpQuestions() {
-	var fanalystQuestions []string
-	var analystQuestions []string
-	var proanalystQuestions []string
-	var expertanalystQuestions []string
 
-	fanalystcontent, err := ioutil.ReadFile("../data/fanalystquestions.txt")
-	if err == nil {
-		fanalystQuestions = strings.Split(string(fanalystcontent), "\n")
-	}
+	fanalystQuestions := []string{"Who is the greatest of all time?",
+		"Is Dwight Howard a HOF’er",
+		"What should be the criteria for the HOF? Rings or accolades?",
+		"Is Carmelo Anthony a HOF’er?",
+		"Does Ja Morant win ROY if Zion plays a full season based on the numbers he put up in the games before and after the bubble?",
+		"Should college basketball players be paid?",
+		"Best team ever?",
+		"Who would you rather build around? Giannis Antetokounmpo or Ben Simmons?",
+		"Kyle Lowry or Russell Westbrook?",
+		"Should WNBA players be paid more?"}
 
 	for i, question := range fanalystQuestions {
 		var fanalystID = "fanalyst" + strconv.Itoa(i)
 		setUpQuestionsInDB(fanalystID, question)
 	}
 
-	analystcontent, err := ioutil.ReadFile("../data/analystquestions.txt")
-	if err == nil {
-		analystQuestions = strings.Split(string(analystcontent), "\n")
-	}
+	analystQuestions := []string{"Who is the greatest of all time?",
+		"In the modern era 1990-2020 who is the best coach? Phil Jackson or Gregg Popovich",
+		"Who’s A Better Point Guard: Kyrie, Steph, Westbrook or CP3?",
+		"Who was the real MVP Shaq or Kobe",
+		"What should be the criteria for the HOF? Rings or accolades?",
+		"Did Kobe Bryant deserve MVP in 2006-07 over Dirk?",
+		"Should college basketball players be paid?",
+		"Who was better of these two: Magic or Bird?",
+		"Is Chris Paul over or underrated?",
+		"Should WNBA players be paid more?"}
 
 	for i, question := range analystQuestions {
 		var analystID = "analyst" + strconv.Itoa(i)
 		setUpQuestionsInDB(analystID, question)
 	}
 
-	proanalystcontent, err := ioutil.ReadFile("../data/proanalystquestions.txt")
-	if err == nil {
-		proanalystQuestions = strings.Split(string(proanalystcontent), "\n")
-	}
+	proanalystQuestions := []string{"Who is the greatest of all time?",
+		"Who’s A Better Point Guard: Kyrie, Steph, Westbrook or CP3?",
+		"What should be the criteria for the HOF? Rings or accolades?",
+		"Did Kobe Bryant deserve MVP in 2006-07 over Dirk?",
+		"Who is the best Centre to ever play basketball?",
+		"Should college basketball players be paid?",
+		"Who was better of these two: Magic or Bird?",
+		"Most underrated player ever?",
+		"Most overrated player ever?",
+		"Are Lebron’s teammates really that bad or are they never credited?"}
 
 	for i, question := range proanalystQuestions {
 		var proanalystID = "proanalyst" + strconv.Itoa(i)
 		setUpQuestionsInDB(proanalystID, question)
 	}
 
-	expertanalystcontent, err := ioutil.ReadFile("../data/expertanalystquestions.txt")
-	if err == nil {
-		expertanalystQuestions = strings.Split(string(expertanalystcontent), "\n")
-	}
+	expertanalystQuestions := []string{"Who is the greatest of all time?",
+		"Who’s A Better Point Guard: Kyrie, Steph, Westbrook or CP3?",
+		"Which brand of basketball was better 1990-2005 or 2005-2020?",
+		"Is Carmelo Anthony a HOF’er?",
+		"Who was the real MVP Shaq or Kobe?",
+		"What should be the criteria for the HOF? Rings or accolades?",
+		"Who is the best Centre to ever play basketball?",
+		"Should college basketball players be paid?",
+		"Who was better of these two: Magic or Bird?",
+		"Most underrated player ever?"}
 
 	for i, question := range expertanalystQuestions {
 		var expertanalystID = "expertanalyst" + strconv.Itoa(i)
@@ -359,7 +546,7 @@ func checkAnswerExists(email string, questionID string) (bool, error) {
 	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		// quering db
 		result, err := transaction.Run(
-			"MATCH  (u:User {email: $email}), (q:Debate {id:$questionID}) RETURN EXISTS( (u)-[:ANSWER]-(q) )",
+			"MATCH (d:DebateAnswer {email:$email, questionID:$questionID}) RETURN d is not null",
 			map[string]interface{}{"email": email, "questionID": questionID})
 		if err != nil {
 			return nil, err
@@ -425,4 +612,7 @@ func SetUpDebate(server *gin.Engine, driver neo4j.Driver) {
 	server.POST("/answerExists", checkAnswer)
 	server.POST("/getAnswer", getAnswer)
 	server.POST("/getAnswers", getAnswers)
+	server.POST("/getRating", getRating)
+	server.POST("/addRating", addRating)
+	server.POST("/getUsersRating", getUsersRating)
 }

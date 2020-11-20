@@ -1,13 +1,7 @@
 import React from "react";
-import SideBar from "../SideBar/SideBar";
-import { CircularProgress, Box, Typography, Card, CardContent, CardActions, Slider, withStyles } from "@material-ui/core";
-import pfp1 from '../../assets/images/pfp1.png';
-import pfp2 from '../../assets/images/pfp2.png';
-import pfp3 from '../../assets/images/pfp3.png';
-import pfp4 from '../../assets/images/pfp4.png';
-import fireimg from '../../assets/images/fire.png';
-import thumbsdownimg from '../../assets/images/thumbsdown.png';
-import { getUserAnswer, question, getRandomAnswers } from "../../service/ApiCalls";
+import { CircularProgress, Box, Typography, Card, CardContent, Grid, Slider, withStyles, Backdrop, LinearProgress, Avatar } from "@material-ui/core";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import { getUserAnswer, question, getRandomAnswers, getRating, getUsersRating, addRating, getProfilePicLink } from "../../service/ApiCalls";
 
 const HotSlider = withStyles({
   root: {
@@ -49,34 +43,6 @@ const HotSlider = withStyles({
   },
 })(Slider);
 
-const marks1 = [
-  {
-    value: 92,
-    label: 'Avg',
-  }
-];
-
-const marks2 = [
-  {
-    value: 79,
-    label: 'Avg',
-  }
-];
-
-const marks3 = [
-  {
-    value: 37,
-    label: 'Avg',
-  }
-];
-
-const marks4 = [
-  {
-    value: 62,
-    label: 'Avg',
-  }
-];
-
 export class Analysis extends React.Component{
   
   constructor(props) {
@@ -85,27 +51,51 @@ export class Analysis extends React.Component{
     timeNext.setDate(timeNext.getDate() + 1)
     timeNext.setHours(0, 0 ,0, 0)
     this.state = {
-      time: new Date(timeNext - new Date()).toISOString().slice(11,19)
+      time: new Date(timeNext - new Date()).toISOString().slice(11,19),
+      percentTime: (timeNext - new Date())/864000,
+      userAnswer: "",
+      userName: "",
+      userRating: 100,
+      answer0: "",
+      name0: "",
+      email0: "",
+      answer1: "",
+      name1: "",
+      email1: "",
+      answer2: "",
+      name2: "",
+      email2: "",
+      questionOfTheDay: "",
+      marks1:[{ value: 100, label: 'Avg: 100%' }],
+      marks2:[{ value: 100, label: 'Avg: 100%' }], 
+      marks3:[{ value: 100, label: 'Avg: 100%' }],
+      rate1: null,
+      rate2: null,
+      rate3: null,
+      updateOnce: true,
+      profilePicLink: "",
+      dpLink1: "",
+      dpLink2: "",
+      dpLink3: "",
     };
-    this.state = {
-      percentTime: (timeNext - new Date())/864000
-    };
-    this.state = { userAnswer: "" };
-    this.state = { userName: "" };
+  }
 
-    this.state = { answer0: ""};
-    this.state = { name0: ""};
-    this.state = { email0: ""};
+  async sendRating1(rate) {
+    var dateOfMonth = new Date().getDate() % 10;
+    const rating = await addRating("fanalyst" + dateOfMonth.toString(), this.state.email0, this.props.user.email, rate);
+    this.setState({ marks1:[{ value: rating, label: 'Avg: '+Math.round(rating) +'%'}] })
+  }
 
-    this.state = { answer1: ""};
-    this.state = { name1: ""};
-    this.state = { email1: ""};
+  async sendRating2(rate) {
+    var dateOfMonth = new Date().getDate() % 10;
+    const rating = await addRating("fanalyst" + dateOfMonth.toString(), this.state.email1, this.props.user.email, rate);
+    this.setState({ marks2:[{ value: rating, label: 'Avg: '+Math.round(rating)+'%'}] })
+  }
 
-    this.state = { answer2: ""};
-    this.state = { name2: ""};
-    this.state = { email2: ""};
-
-    this.state = { questionOfTheDay: "" };
+  async sendRating3(rate) {
+    var dateOfMonth = new Date().getDate() % 10;
+    const rating = await addRating("fanalyst" + dateOfMonth.toString(), this.state.email2, this.props.user.email, rate);
+    this.setState({ marks3:[{ value: rating, label: 'Avg: '+Math.round(rating)+'%'}] })
   }
 
   async componentDidMount() {
@@ -119,24 +109,49 @@ export class Analysis extends React.Component{
     );
   }
   async componentDidUpdate(prevProps) {
-    if (prevProps.user.email !== this.props.user.email) {
+
+    if (prevProps.user.email !== this.props.user.email || this.state.updateOnce) {
+      this.setState({ updateOnce: false })
+
       var dateOfMonth = new Date().getDate() % 10;
+      const dpLink = await getProfilePicLink(this.props.user.email)
       const answer = await getUserAnswer(this.props.user.email, "fanalyst" + dateOfMonth.toString())
+      const usersRating = await getRating(this.props.user.email, "fanalyst" + dateOfMonth.toString())
       this.setState({ userAnswer: await answer[0] });
       this.setState({ userName: await answer[1] });
+      this.setState({ userRating: usersRating })
+      this.setState({ profilePicLink: await dpLink });
 
       const answers = await getRandomAnswers("fanalyst" + dateOfMonth.toString())
+      const rating0 = await getRating(answers[2], "fanalyst" + dateOfMonth.toString())
+      const dpLink1 = await getProfilePicLink(answers[2])
+      const rateFromDB0 = await getUsersRating("fanalyst" + dateOfMonth.toString(), answers[2], this.props.user.email)
       this.setState({ answer0: await answers[0] });
       this.setState({ name0: await answers[1] });
       this.setState({ email0: await answers[2] });
+      this.setState({ marks1:[{ value: rating0, label: 'Avg: '+Math.round(rating0)+'%'}] })
+      this.setState({ rate1: await rateFromDB0 })
+      this.setState({ dpLink1: await dpLink1 });
 
+      const rating1 = await getRating(answers[5], "fanalyst" + dateOfMonth.toString())
+      const dpLink2 = await getProfilePicLink(answers[5])
+      const rateFromDB1 = await getUsersRating("fanalyst" + dateOfMonth.toString(), answers[5], this.props.user.email)
       this.setState({ answer1: await answers[3] });
       this.setState({ name1: await answers[4] });
       this.setState({ email1: await answers[5] });
+      this.setState({ marks2:[{ value: rating1, label: 'Avg: '+Math.round(rating1)+'%'}] })
+      this.setState({ rate2: await rateFromDB1 })
+      this.setState({ dpLink2: await dpLink2 });
 
+      const rating2 = await getRating(answers[8], "fanalyst" + dateOfMonth.toString())
+      const dpLink3 = await getProfilePicLink(answers[8])
+      const rateFromDB2 = await getUsersRating("fanalyst" + dateOfMonth.toString(), answers[8], this.props.user.email)
       this.setState({ answer2: await answers[6] });
       this.setState({ name2: await answers[7] });
       this.setState({ email2: await answers[8] });
+      this.setState({ marks3:[{ value: rating2, label: 'Avg: '+Math.round(rating2)+'%'}] })
+      this.setState({ rate3: await rateFromDB2 })
+      this.setState({ dpLink3: await dpLink3 });
 
     }
   }
@@ -155,39 +170,55 @@ export class Analysis extends React.Component{
     });
   }
 
-  render(){
+  render(){ 
+  
+    if (this.state.percentTime == null || this.state.rate3 == null) {
       return(
+        <div>
+          <Backdrop style={{ color: "green" }} open={true} >
+            <CircularProgress />
+          </Backdrop>
+        </div>
+      );
+    }
+
+    const handleChangeCommitted1 = (event, newValue) => {
+      this.sendRating1(newValue);
+    };
+    const handleChangeCommitted2 = (event, newValue) => {
+      this.sendRating2(newValue);
+    };
+    const handleChangeCommitted3 = (event, newValue) => {
+      this.sendRating3(newValue);
+    };
+
+        return(
           <div>
             <Typography color="textSecondary" gutterBottom>
-              Question of the Day
-            </Typography>
-            <Typography variant="h4" component="h2">
-              {this.state.questionOfTheDay}
-            </Typography>
-            <br></br>
-            <br></br>
-            <Box position="absolute" top="80px" right="40px" display="inline-flex" height="90px" width="90px" >
-              <CircularProgress variant="static" value={this.state.percentTime} size="90px" />
-              <Box
-                top={0}
-                left={0}
-                bottom={0}
-                right={0}
-                position="absolute"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Typography color="textSecondary" gutterBottom>
-                  {this.state.time}
+                  Question of the Day
                 </Typography>
-              </Box>
-            </Box>
+                <Grid container direction="row" spacing={2}>
+                  <Grid item xs={11}>
+                    <Typography variant="h4" component="h2">
+                      {this.state.questionOfTheDay}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={1}>
+                    <CircularProgressbar
+                      value={this.state.percentTime}
+                      strokeWidth={50}
+                      styles={buildStyles({
+                        strokeLinecap: "butt", pathColor: "red"
+                      })}
+                    />
+                  </Grid>
+                </Grid>
+            <br></br>
             <Card hidden={this.state.answer0=="" || this.state.answer0==this.state.userAnswer}>
               <CardContent>
                 <Box display="flex">
                   <Box p={1}>
-                    <img src={pfp3} width="50" height="50"/>
+                    <Avatar src={this.state.dpLink1} width="60" height="60"/>
                   </Box>
                   <Box p={1} flexGrow={1}>
                   <Typography color="textSecondary" gutterBottom variant="h6">
@@ -196,9 +227,6 @@ export class Analysis extends React.Component{
                     <Typography color="textSecondary" gutterBottom>
                       {this.state.answer0}
                     </Typography>
-                  </Box>
-                  <Box>
-                    <img src={fireimg} width="30" height="30"/>
                   </Box>
                 </Box>
               </CardContent>
@@ -212,7 +240,9 @@ export class Analysis extends React.Component{
                   <Box p={1} flexGrow={1}>
                     <HotSlider
                       aria-label="hot-slider"
-                      marks={marks1}
+                      marks={this.state.marks1}
+                      valueLabelDisplay="auto"
+                      onChangeCommitted={handleChangeCommitted1}
                     />
                   </Box>
                   <Box p={1}>
@@ -228,7 +258,7 @@ export class Analysis extends React.Component{
               <CardContent>
                 <Box display="flex">
                   <Box p={1}>
-                    <img src={pfp2} width="50" height="50"/>
+                    <Avatar src={this.state.dpLink2} width="60" height="60"/>
                   </Box>
                   <Box p={1} flexGrow={1}>
                     <Typography color="textSecondary" gutterBottom variant="h6" >
@@ -250,7 +280,9 @@ export class Analysis extends React.Component{
                   <Box p={1} flexGrow={1}>
                     <HotSlider
                       aria-label="hot-slider"
-                      marks={marks2}
+                      marks={this.state.marks2}
+                      valueLabelDisplay="auto"
+                      onChangeCommitted={handleChangeCommitted2}
                     />
                   </Box>
                   <Box p={1}>
@@ -266,7 +298,7 @@ export class Analysis extends React.Component{
               <CardContent>
                 <Box display="flex">
                   <Box p={1}>
-                    <img src={pfp4} width="50" height="50"/>
+                    <Avatar src={this.state.dpLink3} width="60" height="60"/>
                   </Box>
                   <Box p={1} flexGrow={1}>
                     <Typography color="textSecondary" gutterBottom variant="h6" >
@@ -275,9 +307,6 @@ export class Analysis extends React.Component{
                     <Typography color="textSecondary" gutterBottom>
                     {this.state.answer2}
                     </Typography>
-                  </Box>
-                  <Box>
-                    <img src={thumbsdownimg} width="30" height="30"/>
                   </Box>
                 </Box>
               </CardContent>
@@ -291,7 +320,9 @@ export class Analysis extends React.Component{
                   <Box p={1} flexGrow={1}>
                     <HotSlider
                       aria-label="hot-slider"
-                      marks={marks3}
+                      marks={this.state.marks3}
+                      valueLabelDisplay="auto"
+                      onChangeCommitted={handleChangeCommitted3}
                     />
                   </Box>
                   <Box p={1}>
@@ -311,7 +342,7 @@ export class Analysis extends React.Component{
               <CardContent>
                 <Box display="flex">
                   <Box p={1}>
-                    <img src={pfp1} width="50" height="50"/>
+                    <Avatar src={this.state.profilePicLink} width="60" height="60"/>
                   </Box>
                   <Box p={1} flexGrow={1}>
                     <Typography color="textSecondary" gutterBottom variant="h6" >
@@ -325,21 +356,12 @@ export class Analysis extends React.Component{
               </CardContent>
               <CardContent>
                 <Box display="flex">
-                  <Box p={1}>
-                    <Typography color="textSecondary" gutterBottom>
-                      Disagree
-                    </Typography>
-                  </Box>
                   <Box p={1} flexGrow={1}>
-                    <HotSlider
-                      aria-label="hot-slider"
-                      marks={marks4}
-                      value="62"
-                    />
+                    <LinearProgress value={this.state.userRating} variant="determinate" />
                   </Box>
                   <Box p={1}>
                     <Typography color="textSecondary" gutterBottom>
-                      Agree
+                      {Math.round(this.state.userRating)}%
                     </Typography>
                   </Box>
                 </Box>

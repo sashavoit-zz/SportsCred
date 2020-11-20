@@ -1,14 +1,17 @@
 import React from "react";
-import SideBar from "../SideBar/SideBar";
-import { CircularProgress, Box, Typography, Card, CardContent, CardActions, Button, TextField, } from "@material-ui/core";
-import pfp1 from '../../assets/images/pfp1.png';
-import { question, answer, doesAnswerExist } from "../../service/ApiCalls";
+import { CircularProgress, Box, Typography, Card, CardContent, CardActions, Button, TextField, Grid, Backdrop, Avatar } from "@material-ui/core";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import { question, answer, doesAnswerExist, getProfilePicLink } from "../../service/ApiCalls";
+import { withRouter } from 'react-router-dom'
 
 async function shouldRedirect(email, questionID) {
   var result = await doesAnswerExist(email, questionID);
-  if(result) {
-    window.location.href = '../analysis';
-  }
+  console.log(result)
+  /*if(result) {
+    //window.location.href = '../analysis';
+    //history.push('/analysis')
+  }*/
+  return result;
 }
 
 export class Debate extends React.Component{
@@ -17,7 +20,13 @@ export class Debate extends React.Component{
     super(props);
 
     var dateOfMonth = new Date().getDate() % 10;
-    shouldRedirect(this.props.user.email, "fanalyst" + dateOfMonth.toString());
+    shouldRedirect(this.props.user.email, "fanalyst" + dateOfMonth.toString())
+      .then(
+        (result) => {
+          if(result) {
+            this.props.history.push('/analysis')
+          }
+        })
 
     var timeNext = new Date()
     timeNext.setDate(timeNext.getDate() + 1)
@@ -33,19 +42,22 @@ export class Debate extends React.Component{
     this.state = {value: ''};
     this.handleChange = this.handleChange.bind(this);
     this.state = { emailLoaded: false };
+    this.state = { profilePicLink: "" };
   }
 
   async goToAnalysis(email, answer1) {
     var dateOfMonth = new Date().getDate() % 10;
     await answer(email, "fanalyst" + dateOfMonth.toString(), answer1);
-    window.location.href = '../analysis';
-  }  
+    this.props.history.push('/analysis')
+  }
 
   handleChange(event) {
     this.setState({value: event.target.value});
   }
   
   async componentDidMount() {
+    const dpLink = await getProfilePicLink(this.props.user.email)
+    this.setState({ profilePicLink: await dpLink });
     var dateOfMonth = new Date().getDate() % 10;
     const question1 = await question("fanalyst" + dateOfMonth.toString())
     this.setState({ questionOfTheDay: await question1 });
@@ -81,6 +93,16 @@ export class Debate extends React.Component{
 
   render(){
     let email = this.props.user.email;
+
+      if (this.state.percentTime == null) {
+        return(
+          <div>
+            <Backdrop style={{ color: "green" }} open={true} >
+              <CircularProgress />
+            </Backdrop>
+          </div>
+        );
+      }
       return(
           <div>
             <Card>
@@ -88,13 +110,26 @@ export class Debate extends React.Component{
                 <Typography color="textSecondary" gutterBottom>
                   Question of the Day
                 </Typography>
-                <Typography variant="h4" component="h2">
-                  {this.state.questionOfTheDay}
-                </Typography>
+                <Grid container direction="row" spacing={2}>
+                  <Grid item xs={11}>
+                    <Typography variant="h4" component="h2">
+                      {this.state.questionOfTheDay}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={1}>
+                    <CircularProgressbar
+                      value={this.state.percentTime}
+                      strokeWidth={50}
+                      styles={buildStyles({
+                        strokeLinecap: "butt", pathColor: "red"
+                      })}
+                    />
+                  </Grid>
+                </Grid>
                 <br></br>
                 <Box display="flex">
                   <Box p={1}>
-                    <img src={pfp1} width="50" height="50"/>
+                    <Avatar src={this.state.profilePicLink} width="60" height="60"/>
                   </Box>
                   <Box p={1} flexGrow={1}>
                     <TextField
@@ -118,26 +153,9 @@ export class Debate extends React.Component{
                 </CardActions>
               </Box>
             </Card>
-            <Box position="absolute" top="80px" right="40px" display="inline-flex" height="90px" width="90px" >
-              <CircularProgress variant="static" value={this.state.percentTime} size="90px" />
-              <Box
-                top={0}
-                left={0}
-                bottom={0}
-                right={0}
-                position="absolute"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Typography color="textSecondary" gutterBottom>
-                  {this.state.time}
-                </Typography>
-              </Box>
-            </Box>
           </div>
       );
   }
 }
 
-export default Debate;
+export default withRouter(Debate);

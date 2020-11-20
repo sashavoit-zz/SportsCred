@@ -131,6 +131,94 @@ const getUserAnswer = async (email, questionID) => {
   }
 };
 
+const getRating = async (posterEmail, questionID) => {
+  // send email to server
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      posterEmail,
+      questionID,
+    }),
+  };
+
+  let res = await fetch("/getRating", requestOptions);
+
+  if (res.status !== 200) {
+    throw "err";
+  } else {
+    let body = await res.json();
+    return body.rating;
+  }
+};
+
+const getUsersRating = async (questionID, posterEmail, raterEmail) => {
+  // send email to server
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      questionID,
+      posterEmail,
+      raterEmail,
+    }),
+  };
+
+  let res = await fetch("/getUsersRating", requestOptions);
+
+  if (res.status !== 200) {
+    throw "err";
+  } else {
+    let body = await res.json();
+    return body.rating;
+  }
+};
+
+const getProfilePicLink = async (userEmail) => {
+  
+  const requestOptions = {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Token": localStorage.getItem("Token"),
+      },
+  };
+  fetch("/getUserProfilePic/"+userEmail, requestOptions)
+      .then(response => response.json())
+      .then(
+        (result) => {
+          return result.link
+      },
+      (error) => {
+        console.error(error)
+      }
+    )
+  
+}
+
+const addRating = async (questionID, posterEmail, raterEmail, rating) => {
+  // send email to server
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      questionID,
+      posterEmail,
+      raterEmail,
+      rating,
+    }),
+  };
+
+  let res = await fetch("/addRating", requestOptions);
+
+  if (res.status !== 200) {
+    throw "err";
+  } else {
+    let body = await res.json();
+    return body.rating;
+  }
+};
+
 const getRandomAnswers = async (questionID) => {
   // send email to server
   const requestOptions = {
@@ -195,4 +283,4 @@ const getUser = async () => {
   }
 };
 
-export { getAuthToken, getUser, doesEmailExist, createUserAccount, question, answer, doesAnswerExist, getUserAnswer, getRandomAnswers };
+export { getAuthToken, getUser, doesEmailExist, createUserAccount, question, answer, doesAnswerExist, getUserAnswer, getRandomAnswers, getRating, getUsersRating, addRating, getProfilePicLink };
