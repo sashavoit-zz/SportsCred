@@ -4,7 +4,7 @@
 
 
 
-*   Everyone attended the demo meeting
+*   Everyone attended the retrospective meeting
 
 **Unfinished tasks:**
 
