@@ -22,6 +22,7 @@ type QProfile struct{
 	Avatar string
 	Username string
 	Status string
+	Email string
 }
 type Result struct{
 	Total int

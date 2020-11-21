@@ -51,6 +51,48 @@ func LoadAllPosts(driver neo4j.Driver) (interface{}, error) {
 
 	return result, nil
 }
+
+func LoadPosts(driver neo4j.Driver, email string) (interface{}, error) {
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return nil, err
+	}
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"CALL{\n"+
+				"MATCH (p:Post)\n"+
+				"MATCH (u:User {email:$email})-[:CREATED]->(p)\n"+
+				"RETURN u.firstName as firstname, u.lastName as lastname, p\n"+
+				"ORDER BY p.postTime DESC\n"+
+				"}\n"+
+				"RETURN collect({"+
+				"firstName: firstname,"+
+				"lastName: lastname,"+
+				"postId: toString(p.postId),"+
+				"content: p.content,"+
+				"time: p.postTime,"+
+				"likes: toString(p.likes),"+
+				"dislikes: toString(p.dislikes)"+
+				"})\n"+
+				"as posts",
+			map[string]interface{}{"email": email})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			value, _ := result.Record().Get("posts")
+			return value, nil
+		} else {
+			return nil, nil
+		}
+	})
+
+	return result, nil
+}
+
 func LoadPost(driver neo4j.Driver, postId string) (interface{}, error) {
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
@@ -66,7 +108,7 @@ func LoadPost(driver neo4j.Driver, postId string) (interface{}, error) {
 				"MATCH(u:User {email: p.email}) \n"+
 				"RETURN u.firstName as userFirstName, u.lastName as userLastName \n"+
 				"} \n"+
-				"RETURN collect({firstName: userFirstName, lastName: userLastName, userProfile: p.userProfile, postId: toString(p.postId), content: p.content, time: toString(p.time), likes: toString(p.likes), dislikes: toString(p.dislikes)}) as posts",
+				"RETURN collect({firstName: userFirstName, lastName: userLastName, userProfile: p.userProfile, postId: toString(p.postId), content: p.content, time: toString(p.postTime), likes: toString(p.likes), dislikes: toString(p.dislikes)}) as posts",
 			map[string]interface{}{"postId": postId})
 		if err != nil {
 			return nil, err
@@ -217,7 +259,17 @@ func LoadPostReply(driver neo4j.Driver, postid string) (interface{}, error) {
 				"MATCH(u:User {email: p.email}) \n"+
 				"RETURN u.firstName as userFirstName, u.lastName as userLastName \n"+
 				"} \n"+
-				"RETURN collect({firstName: userFirstName, lastName: userLastName, userProfile: p.userProfile, commentId: toString(c.commentId), content: c.content, time: c.time, likes: toString(c.likes), dislikes: toString(c.dislikes)}) as replies",
+				"RETURN collect({"+
+				"firstName:userFirstName,"+
+				"lastName:userLastName,"+
+				"userProfile:p.userProfile,"+
+				"commentId:toString(c.commentId),"+
+				"content:c.content,"+
+				"time:c.commentTime,"+
+				"likes:toString(c.likes),"+
+				"dislikes:toString(c.dislikes),"+
+				"email:c.email"+
+				"}) as replies",
 			map[string]interface{}{"postid": id})
 		if err != nil {
 			return nil, err

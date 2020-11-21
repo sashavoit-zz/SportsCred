@@ -13,7 +13,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import UploadPicPopup from './UploadPicPopup'
 import {fetchUserProfilePic} from "../../service/ProfileService"
 
-const ACSSCORE = "560"
+// <<<<<<< HEAD
+// import FaceIcon from '@material-ui/icons/Face';
+// //const ACSSCORE = "560"
+// =======
+// const ACSSCORE = "560"
+// >>>>>>> master
 const letters = /^[A-Za-z]*$/;
 const numbers = /^[+\d]?(?:[\d-.\s()]*)$/;
 
@@ -64,6 +69,7 @@ const styles = theme => ({
     position: "relative",
     //height:"100%",
     //display: "inline-block",
+    marginTop: "30px",
     textAlign: "center",
   },
   userIcon: {
@@ -139,7 +145,7 @@ function post_profile(input) {
   fetch(profile_request)
     .then(res => {
       const name_tag = document.querySelector("#username");
-      name_tag.textContent = input.lastName + " " + input.firstName;
+      name_tag.textContent = input.firstName + " " + input.lastName;
     })
     .catch((error) => {
       console.log(error)
@@ -149,16 +155,28 @@ function post_profile(input) {
 class Profile extends Component {
   constructor(props) {
     super(props);
-    const user_url = '/user/' + this.props.user.email;
+
+    // get_user(localStorage.getItem("User"))
+    // log("------user email passed in from props:")
+    // log(localStorage.getItem("User"))
+    // log(localStorage.getItem("User"))
     this.state = {
       edit: false,
       errmsg: false,
-      openPopup:false, 
+      openPopup: false,
       selectedFile: null,
-      profileLink:null,
-      uploaded:false
+      profileLink: null,
+      uploaded: false
     }
+  }
+  componentDidMount(){
+    this.getUserProfile();
+    this.getUserProfilePic();
+    console.log("getting user profile");
+  }
 
+  getUserProfile = async() => {
+    const user_url = '/user/' + localStorage.getItem("User");
 
     const user_request = new Request(user_url, {
       method: 'GET',
@@ -169,7 +187,7 @@ class Profile extends Component {
     });
     fetch(user_request)
       .then(res => {
-        if (res.status === 200) {
+        if (res.status == 200) {
           return res.json();
         } else {
           console.log('could not get user');
@@ -182,14 +200,15 @@ class Profile extends Component {
           firstName: data.FirstName,
           lastName: data.LastName,
           about: data.About,
-          phone: data.Phone
+          phone: data.Phone,
+          acs: data.Acs,
         })
         //render_reports(data);
       })
       .catch((error) => {
       });
-
   }
+  
 
   handleBackProfile = (event) => {
     event.preventDefault()
@@ -233,10 +252,10 @@ class Profile extends Component {
       [event.target.id]: event.target.value
     })
   }
-  componentDidMount(){
-      this.getUserProfilePic();
+  // componentDidMount(){
       
-  }
+      
+  // }
   
    async getUserProfilePic(){
     const result = await fetchUserProfilePic(this.props.user.email)
@@ -245,10 +264,10 @@ class Profile extends Component {
  
   render() {
     const { classes } = this.props;
-
+    
     const profileContent = this.state.edit ? (
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
-        <TextField className={classes.inputField} id="email" label={this.props.user.email} variant="filled" onChange={this.handleInputChange} disabled /><br />
+        <TextField className={classes.inputField} id="email" label={localStorage.getItem("User")} variant="filled" onChange={this.handleInputChange} disabled /><br />
         <TextField error={this.state.lastName === "" || !this.state.lastName.match(letters) ? true : false} className={classes.inputFieldShort} id="lastName" label="Last Name" value={this.state.lastName} variant="filled" onChange={this.handleInputChange} />
         <TextField error={this.state.firstName === "" || !this.state.firstName.match(letters) ? true : false} className={classes.inputFieldShort} id="firstName" label="First Name" value={this.state.firstName} variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
@@ -281,7 +300,7 @@ class Profile extends Component {
         </Collapse>
       </form>
     ) : (
-        <Tabs>
+        <Tabs user={localStorage.getItem("User")} profile={localStorage.getItem("User")}>
         </Tabs>
       )
 
@@ -315,7 +334,7 @@ class Profile extends Component {
               </div>
               <div className={classes.rightProfile}>
                 <Typography variant="h5" component="h2">
-                  ACS Score: {ACSSCORE}
+                  ACS Score: {this.state.acs}
                 </Typography>
                   <Button 
                     color="primary"

@@ -23,6 +23,9 @@ export class OpenCourtPost extends React.Component {
 
   componentDidMount() {
     const user_url = '/post/' + this.props.param;
+    console.log("open court did mount");
+    console.log(this.props.param);
+    console.log(this.props);
     const user_request = new Request(user_url, {
       method: 'GET',
       headers: {

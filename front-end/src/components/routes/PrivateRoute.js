@@ -10,6 +10,7 @@ function PrivateRoute(props) {
   const history = useHistory();
   const [user, setUser] = useState({ email: '' });
   const param = props.computedMatch.params.post;
+  const profile = props.computedMatch.params.email;
 
   useState(async () => {
     let jwt = localStorage.getItem("Token");
@@ -32,7 +33,7 @@ function PrivateRoute(props) {
       {...routeProps}
       render={(props) =>
         user && <Dashboard>
-          <Component user={user} param={param}/>
+          <Component user={user} param={param} profile={profile}/>
         </Dashboard>
       }
     />

@@ -53,13 +53,13 @@ class PostComment extends Component {
         <Comment>
           <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/christian.jpg' />
           <Comment.Content>
-            <Comment.Author as='a'>{f_comm.lastName + " " + f_comm.firstName}</Comment.Author>
+          <Comment.Author as='a'>{f_comm.firstName+ " " + f_comm.lastName}</Comment.Author>
             <Comment.Metadata>
-              <span className={classes.time}>{f_comm.time}</span>
+              <span className={classes.time}>{f_comm.time + " - " + f_comm.email}</span>
             </Comment.Metadata>
             <Comment.Text>{f_comm.content}</Comment.Text>
             <Comment.Actions>
-              <a>Reply</a>
+              {/* <a>{f_comm.time}</a> */}
             {r_comm.length > 0 ? <a onClick={this.handleCheckbox} className={classes.collapseButton}>Expand</a> : null}
 
             </Comment.Actions>
@@ -70,13 +70,13 @@ class PostComment extends Component {
         <Comment>
           <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
           <Comment.Content>
-            <Comment.Author as='a'>{item.lastName + " " + item.firstName}</Comment.Author>
+            <Comment.Author as='a'>{item.firstName+ " " + item.lastName}</Comment.Author>
             <Comment.Metadata>
               <span className={classes.time}>{item.time}</span>
             </Comment.Metadata>
             <Comment.Text>{item.content}</Comment.Text>
             <Comment.Actions>
-              <a>Reply</a>
+              {/* <a>{item.time}</a> */}
             </Comment.Actions>
           </Comment.Content>
         </Comment>

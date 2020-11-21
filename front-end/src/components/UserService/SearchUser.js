@@ -17,11 +17,22 @@ import FaceIcon from '@material-ui/icons/Face';
 
 
 // TODO: make better
-function SearchUser() {
-    return (
-        <SearchBar user="kevin"></SearchBar>
-        //"hello"
-      );
-  }
+export class SearchUser extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            profile: []
+        }
+      }
+    
+    render() {
+        const { classes } = this.props;
+        const { user } = this.props;
+        return (
+            <SearchBar user={user}></SearchBar>
+            //"hello"
+        );
+    }
+}
   
   export default SearchUser;

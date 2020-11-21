@@ -87,7 +87,22 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 			c.String(404, "Not found")
 			return
 		}
-		log.Println("00000012")
+		// log.Println("00000012")
+		// log.Println(result)
+		c.JSON(200, result)
+	}))
+
+	app.GET("/allPosts/:email", CheckAuthToken(func(c *gin.Context, _ string) {
+		email := c.Param("email");
+		result, err := queries.LoadPosts(driver, email)
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		} else if result == nil {
+			c.String(404, "Not found")
+			return
+		}
+		log.Println("000000222")
 		log.Println(result)
 		c.JSON(200, result)
 	}))
@@ -104,8 +119,8 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 			c.String(404, "Not found")
 			return
 		}
-		log.Println("0000001")
-		log.Println(result)
+		// log.Println("0000001")
+		// log.Println(result)
 		c.JSON(200, result)
 	}))
 
@@ -121,8 +136,8 @@ func SetUpOpenCourt(app *gin.Engine, driver neo4j.Driver) {
 			c.String(404, "Not found")
 			return
 		}
-		log.Println("0000002")
-		log.Println(result)
+		// log.Println("0000002")
+		// log.Println(result)
 		c.JSON(200, result)
 	})
 

@@ -14,7 +14,11 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import Pagination from '@material-ui/lab/Pagination';
+import Friend from "../profile/EditFriend";
 
+import {useHistory} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { Redirect } from 'react-router';
 import {
     AppBar,
     Toolbar,
@@ -46,10 +50,10 @@ const useStyles = theme => ({
 
 class SearchBar extends Component {
     constructor(props){
-        console.log("bruh");
         super(props);
         this.searchType = 'user';
         this.user = props.user;
+        this.clickedprofile = '';
         this.state = {
             query: '',
             results: {},
@@ -59,7 +63,8 @@ class SearchBar extends Component {
             numPages: 0,
             numResults: 0,
             pageCount: 20,
-            queryType: 'user'
+            queryType: 'user',
+            redirect: false
         }
         
     }
@@ -168,11 +173,27 @@ class SearchBar extends Component {
             }
         });
     }
+
+    redirectHandler = (value) => {
+        this.clickedprofile = value;
+        this.setState({ redirect: true })
+        this.renderRedirect();
+    }
+    renderRedirect = () => {
+        let url = '/user/'+this.clickedprofile;
+        if(this.clickedprofile == this.props.user.email){
+            url = '/profile';
+        }
+        if (this.state.redirect) {
+            return <Redirect to={url}/>
+        }
+    }
     
     renderResults = () => {
         console.log("rendering result");
         const {classes} = this.props;
         const {results} = this.state;
+        const { user } = this.props;
         //console.log(Object.keys(results).length);
         if(Object.keys(results).length && results.length){
             var loop = 1;
@@ -190,13 +211,17 @@ class SearchBar extends Component {
                         }
                         console.log(loop+":"+results.length)
                         loop += 1;
+                        var friend = <Friend user={user.email} stranger={result.Email} msg="true"/>;
+                        if(user.email == result.Email){
+                            friend = null;
+                        }
                         return(
                             //result.id
                             //result.avatar
                             //result.username
                             //result.status
                             <div key={result.Id} className="list-item">
-                                <ListItem button alignItems="flex-start" onClick={console.log('clicked on profile')}>
+                                <ListItem button alignItems="flex-start" onClick={() => this.redirectHandler(result.Email)}>
                                     <ListItemAvatar>
                                         <Avatar alt={result.Id} src={result.Avatar}/>
                                     </ListItemAvatar>
@@ -209,9 +234,10 @@ class SearchBar extends Component {
                                     }
                                     />
                                     <ListItemSecondaryAction onClick={console.log("add friend")}>
-                                        <IconButton edge="end" aria-label="PersonAdd">
+                                        {/* <IconButton edge="end" aria-label="PersonAdd">
                                         <PersonAddIcon />
-                                        </IconButton>
+                                        </IconButton> */}
+                                        {friend}
                                     </ListItemSecondaryAction>
                                 </ListItem>
                                 {divider}
@@ -243,6 +269,7 @@ class SearchBar extends Component {
 
         return(
             <div className="container">
+                {this.renderRedirect()}
                 <h2 className="heading">Live Search</h2>
                 <label className="search-label" htmlFor="search-input">
                     {/* <AppBar position="fixed" color="default" className={classes.appBar}> */}

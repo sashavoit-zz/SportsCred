@@ -6,7 +6,12 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import FriendsList from './FriendsList';
+import AcsTable from './AcsTable';
+import PostsTable from './PostsTable';
+import DebateTable from './DebateTable';
 
+const url = "localhost:3001/";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -20,7 +25,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={3}>
-          <Typography>{children}</Typography>
+          <Typography component={'span'}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -51,14 +56,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SimpleTabs() {
+function getFriends(){
+  let req = new Request(url, {
+    method:'GET'
+  });
+}
+
+export default function SimpleTabs({user, profile}) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+ 
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -67,19 +78,23 @@ export default function SimpleTabs() {
             indicator: classes.indicator
           }}
         >
-          <Tab label="Debate" {...a11yProps(0)} />
-          <Tab label="Posts" {...a11yProps(1)} />
+          <Tab label="Posts" {...a11yProps(0)} />
+          <Tab label="Debate" {...a11yProps(1)} />
           <Tab label="ACS Chart" {...a11yProps(2)} />
+          <Tab label="Friends" {...a11yProps(3)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        Sprint2 -> CSGAN-75 -> Debate List
+        <PostsTable user={profile}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Sprint2 -> CSGAN-11 -> Open Court
+        <DebateTable user={profile} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Sprint2+ -> CSGAN-6 -> Profile
+        <AcsTable user={profile}/>
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <FriendsList user={user} profile={profile}></FriendsList>
       </TabPanel>
     </div>
   );

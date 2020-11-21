@@ -193,6 +193,44 @@ function checkWebsite(url){
     return web
 }
 
+function timeConverter(UNIX_timestamp) {
+    if (!UNIX_timestamp) {
+        return null
+    }
+    const a = new Date(UNIX_timestamp)//.toLocaleDateString("en-US");
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const year = a.getFullYear();
+    const month = months[a.getMonth()];
+    const date = a.getDate();
+    return date + ' ' + month + ' ' + year
+}
+
+function timeSince(UNIX_timestamp) {
+    if (!UNIX_timestamp) {
+        return null
+    }
+    //const a = //.toLocaleDateString("en-US")
+    const timeStamp = new Date(UNIX_timestamp)
+    const now = new Date(),
+        secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
+    if (secondsPast < 60) {
+        return parseInt(secondsPast) + 's ago';
+    }
+    if (secondsPast < 3600) {
+        return parseInt(secondsPast / 60) + 'm ago';
+    }
+    if (secondsPast <= 86400) {
+        return parseInt(secondsPast / 3600) + 'h ago';
+    }
+    if (secondsPast > 86400) {
+        const day = timeStamp.getDate();
+        const month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ", "");
+        const year = timeStamp.getFullYear() == now.getFullYear() ? "" : " " + timeStamp.getFullYear();
+        return day + " " + month + year;
+    }
+}
+
+
 
 export class Post extends React.Component{
     constructor(props) {
@@ -217,7 +255,8 @@ export class Post extends React.Component{
                 "email": author,
                 "likes":0,
                 "dislikes":0,
-                "commentTime":commentTime
+                "commentTime":commentTime,
+                "email": localStorage.getItem("User")
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -257,7 +296,7 @@ export class Post extends React.Component{
             }
         })
         .then(commts => {
-            log("comments-----")
+            log("comments-------------------------99989989")
             log(commts)
             this.setState({ commtData: commts })
         })
@@ -317,7 +356,7 @@ export class Post extends React.Component{
                                 {postInfo.firstName + " " + postInfo.lastName + "   "}
                             </Box>
                             <Box className={classes.postInfo} display='inline'>
-                                {userId +"-"+ postInfo.time.split('T')[0]}
+                                {userId + " - " + timeSince(postInfo.time)}
                             </Box>
                             {!this.props.isSingle ?
                                 <Link to={"/the-zone/" + postInfo.postId}>
@@ -363,7 +402,7 @@ export class Post extends React.Component{
                                 {/**TODO: onlick to reply the post */}
                                 <CommentIcon />
                             </IconButton>
-                            <IconButton className={classes.iconButton}>
+                            <IconButton className={classes.iconButton} onClick={() => {console.log("this is thhe url"+this.state.url)}}>
                                 {/**TODO: onlick to reply the post */}
                                 <ShareMenu
                                     data={[this.state.url, postInfo.content, "#SportCred"]} //url, content, and hashtag
