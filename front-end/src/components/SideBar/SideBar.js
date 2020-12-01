@@ -9,17 +9,15 @@ import {
   Toolbar,
   Typography,
   makeStyles,
-  Box,
+  Menu,
+  MenuItem,
+  IconButton
 } from "@material-ui/core";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import IconButton from "@material-ui/core/IconButton";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
 import SportsBasketballIcon from "@material-ui/icons/SportsBasketball";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import NotifBell from "./NotifBell";
+import SearchBar from './SearchBar'
 
 const drawerWidth = 250;
 
@@ -187,10 +185,8 @@ function SideBar(props) {
   return (
     <div className={classes.root}>
       <AppBar position="fixed" color="primary" className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" noWrap>
-            {page}
-          </Typography>
+        <Toolbar style={{ paddingLeft: 0 }}>
+          <SearchBar/>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <NotifBell/>
