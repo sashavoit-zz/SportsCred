@@ -103,7 +103,8 @@ func SearchQuery(driver neo4j.Driver, query string, skip int, pagesize int)(inte
 				"content:node.content,"+
 				"time:node.postTime,"+
 				"likes:toString(node.likes),"+
-				"dislikes:toString(node.dislikes)"+
+				"dislikes:toString(node.dislikes),"+
+				"resultType:'post'"+
 			"}) as posts",
 			map[string]interface{}{"query":query,"skip":skip,"pagesize":pagesize})
 		if err != nil {
@@ -155,7 +156,8 @@ func QueryHashtag(driver neo4j.Driver, hashtag string, skip int, pagesize int)(i
 					"content: p.content,"+
 					"time: p.postTime,"+
 					"likes: toString(p.likes),"+
-					"dislikes: toString(p.dislikes)"+
+					"dislikes: toString(p.dislikes),"+
+					"resultType:'post'"+
 				"})\n"+
 				"as posts",
 		map[string]interface{}{"hashtag":hashtag,"skip":skip,"pagesize":pagesize})
@@ -193,48 +195,103 @@ func QueryUsers(driver neo4j.Driver, emails []string, query string, text string,
 			res = append(res, directUser)
 		}
 	} else {
-
-	session, err := driver.Session(neo4j.AccessModeWrite)
-	if err != nil {
-		return res, err
+		session, err := driver.Session(neo4j.AccessModeWrite)
+		if err != nil {
+			return res, err
+		}
+		defer session.Close()
+		log.Println("got here")
+		log.Println(query)
+		result, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error){
+			result, err := transaction.Run(
+				"CALL db.index.fulltext.queryNodes('userIndex',$query)\n"+
+				"YIELD node\n"+
+				"WITH node\n"+
+				"SKIP $skip LIMIT $pagesize\n"+
+				"WITH COLLECT({"+
+					"profilePic:node.profilePic,"+
+					"username:node.firstName,"+
+					"about:node.about,"+
+					"email:node.email,"+
+					"resultType:'user'"+
+					"}) as result\n"+
+				"RETURN result",
+				map[string]interface{}{"query":query,"skip":skip,"pagesize":pagesize})
+				if err != nil{
+					return nil, err
+				}
+				if result.Next() {
+					value, _ := result.Record().Get("result")
+					return value, nil
+				} else {
+					return nil, nil
+				}
+				return nil, result.Err()
+		})
+		if err != nil {
+			return res, err
+		} else {
+			res = append(res, result)
+		}
 	}
-	defer session.Close()
-	log.Println("got here")
-	log.Println(query)
-	result, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error){
-		result, err := transaction.Run(
-			"CALL db.index.fulltext.queryNodes('userIndex',$query)\n"+
-			"YIELD node\n"+
-			"WITH node\n"+
-			"SKIP $skip LIMIT $pagesize\n"+
-			"WITH COLLECT({"+
-				"profilePic:node.profilePic,"+
-				"username:node.firstName,"+
-				"about:node.about,"+
-				"email:node.email"+
-				"}) as result\n"+
-			"RETURN result",
-			map[string]interface{}{"query":query,"skip":skip,"pagesize":pagesize})
-			if err != nil{
-				return nil, err
-			}
-			if result.Next() {
-				value, _ := result.Record().Get("result")
-				return value, nil
-			} else {
-				return nil, nil
-			}
-			return nil, result.Err()
-	})
-	if err != nil {
-		return res, err
-	} else {
-		res = append(res, result)
-	}
-}
+	//flatten result array
+	//log.Println(flatten(res))
+	//res = flatten(res)
 	return res, nil
 	
 }
+
+// func flatten(arr interface{})([]interface{}){
+// 	result := flattenhelper(nil, arr)
+// 	return result
+// }
+
+// func flattenhelper(stack []interface{}, arr interface{})([]interface{}){
+// 	switch x := arr.(type) {
+// 	case []interface{}:
+// 		for _, slice := range x {
+// 			stack = flattenhelper(stack, slice)
+// 		}
+// 	default:
+// 		stack = append(stack , x)
+// 	}
+// 	return stack
+// }
+
+// func flattenhelper(arr interface{})([]interface{}){
+// 	var res []interface{}
+// 	switch x := arr.(type) {
+// 	case []interface{}:
+// 		if len(x) == 0{
+// 			return res
+// 		}
+// 		first, rest := x[0], x[1:]
+// 		return append(flattenhelper(first), flattenhelper(rest))
+// 	default:
+// 		return append(res, arr)
+// 	}
+// }
+
+// func flattenhelper(arr []interface{})([]interface{}){
+// 	var result interface{}
+// 	for i, j := range arr{
+// 		switch x := j.(type) {
+// 		case []interface{}:
+// 			result = append(result, flatten(x))
+// 		default:
+// 			result = append(result, j)
+// 		}
+// 		// if j.([]interface{}){
+// 		// 	result = append(result, flatten(j))
+// 		// } else {
+// 		// 	result = append(result, j)
+// 		// }
+		
+// 		log.Println(j)
+// 		log.Println(i)
+// 	}
+// 	return result
+// }
 
 
 // id:n.id,
@@ -254,7 +311,14 @@ func QueryEmail(driver neo4j.Driver, email string)(interface{}, error){
 		result, err := transaction.Run(
 		"MATCH (n: User) \n"+
 		"WHERE toLower(n.email) CONTAINS toLower($email) \n"+
-		"WITH COLLECT({id:n.id,avatar:n.avatar,username:n.firstName,status:n.about,email:n.email}) AS result \n"+
+		"WITH COLLECT({"+
+			"id:n.id,"+
+			"avatar:n.avatar,"+
+			"username:n.firstName,"+
+			"status:n.about,"+
+			"email:n.email,"+
+			"resultType:'user'"+
+		"}) AS result \n"+
 		"RETURN result",
 		map[string]interface{}{"email":email})
 		if err != nil {
