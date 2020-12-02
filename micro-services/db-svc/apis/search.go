@@ -78,7 +78,7 @@ func SetUpSearch(app *gin.Engine, driver neo4j.Driver){
 		}
 		log.Println(user)
 		log.Println("alsjdhalsjhflkashfjkahdahskjdlkahj")
-		log.Println(querystring)
+		log.Println(err)
 		//log.Println(currpage)
 		//log.Println(pagecount)
 		var emailID = regexp.MustCompile("(.+)@(.+)(\\.)(.+)")
@@ -138,7 +138,10 @@ func SetUpSearch(app *gin.Engine, driver neo4j.Driver){
 		// 	posts, qerr = queries.SearchQuery(driver, querystring, currpage * pagecount, pagecount)
 		// 	//else search on fulltext index
 		// }
-
+		log.Println("got here 4")
+		log.Println(err)
+		log.Println(qerr)
+		log.Println("got here 4.5")
 		if(err != nil || qerr != nil){
 			var errstrings []string 
 
@@ -148,9 +151,9 @@ func SetUpSearch(app *gin.Engine, driver neo4j.Driver){
 			errstrings = append(errstrings, qerr.Error())
 			c.JSON(500, errstrings)
 		}
-
+		log.Println("got here 5")
 		res = append(res, posts)
-
+		log.Println(flatten(res))
 
 		c.JSON(200, flatten(res))
 

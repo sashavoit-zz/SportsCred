@@ -53,7 +53,7 @@ function SearchBar(props) {
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-        history.push(`/results?search=${searchQuery}`)
+        history.push(`/search/all/?search=${searchQuery}`)
     }
   };
 

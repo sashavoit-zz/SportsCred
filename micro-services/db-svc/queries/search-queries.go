@@ -36,6 +36,21 @@ func IndexPosts(driver neo4j.Driver){
 	})
 	return
 }
+func IndexAll(driver neo4j.Driver){
+	log.Println("creating post index ----------------------------")
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return
+	}
+	defer session.Close()
+	session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error){
+		transaction.Run(
+			"CALL db.index.fulltext.createNodeIndex('usersAndPosts',['Post','User'],['content','email','firstName','lastName','about'])", nil)
+			return nil, nil
+	})
+	return
+}
+
 // func QueryType(driver neo4j.Driver, input string) (string, error){
 
 
@@ -201,6 +216,7 @@ func QueryUsers(driver neo4j.Driver, emails []string, query string, text string,
 		}
 		defer session.Close()
 		log.Println("got here")
+		log.Println(err)
 		log.Println(query)
 		result, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error){
 			result, err := transaction.Run(
@@ -210,7 +226,7 @@ func QueryUsers(driver neo4j.Driver, emails []string, query string, text string,
 				"SKIP $skip LIMIT $pagesize\n"+
 				"WITH COLLECT({"+
 					"profilePic:node.profilePic,"+
-					"username:node.firstName,"+
+					"username:node.firstName+' '+node.lastName,"+
 					"about:node.about,"+
 					"email:node.email,"+
 					"resultType:'user'"+
@@ -228,6 +244,8 @@ func QueryUsers(driver neo4j.Driver, emails []string, query string, text string,
 				}
 				return nil, result.Err()
 		})
+		log.Println("got here 2")
+		log.Println(err)
 		if err != nil {
 			return res, err
 		} else {
@@ -312,10 +330,9 @@ func QueryEmail(driver neo4j.Driver, email string)(interface{}, error){
 		"MATCH (n: User) \n"+
 		"WHERE toLower(n.email) CONTAINS toLower($email) \n"+
 		"WITH COLLECT({"+
-			"id:n.id,"+
-			"avatar:n.avatar,"+
-			"username:n.firstName,"+
-			"status:n.about,"+
+			"profilePic:n.profilePic,"+
+			"username:n.firstName+' '+n.lastName,"+
+			"about:n.about,"+
 			"email:n.email,"+
 			"resultType:'user'"+
 		"}) AS result \n"+
