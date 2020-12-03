@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {CardActions,Card, CardHeader,CardContent, Typography, IconButton,Avatar, CardActionArea} from '@material-ui/core';
+import {CardActions,Card, Grid,CardContent, Typography, IconButton,Avatar, CardActionArea,GridList,GridListTile} from '@material-ui/core';
 import FacebookEmbeds from './facebookEmbeds';
 import TwitterEmbeds from './twitterEmbeds';
 import RedditEmbeds from './redditEmbeds';
@@ -27,7 +27,7 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import { Button, Form } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 
-const log = console.log
+
 
 const styles = theme => ({
     root: {
@@ -116,11 +116,10 @@ const styles = theme => ({
         backgroundColor: "#333333",
     },
     cardArea: {
-        maxWidth: "600px",
         marginTop: "60px",
         marginLeft: "auto",
         marginRight: "auto",
-        width: "60vw",
+        width: "50vw",
     },
     card:{
         width:'60%',
@@ -136,18 +135,22 @@ const styles = theme => ({
     url:{
         color:"#757ce8",
     },
+    imageGrid:{
+        maxHeight:"100%",
+        maxWidth:"100%"
+    },
 
 
     cardRoot: {
         overflow: "hidden",
         backgroundColor: "#00000060",
-        paddingBottom: "15px"
+        paddingBottom: "15px",
     },
     userIcon: {
         float: "left",
-        fontSize: "60px",
-        margin: "12px"
-
+        margin: "12px",
+        width: theme.spacing(7),
+        height: theme.spacing(7),
     },
     launchIcon: {
         float: "right",
@@ -164,7 +167,7 @@ const styles = theme => ({
         paddingLeft: "0",
     },
     cardName: {
-        fontSize: "15px"
+        fontSize: "20px"
     },
     postInfo: {
         color: "#737373",
@@ -184,7 +187,13 @@ const styles = theme => ({
     },
     commentDivider: {
         marginBottom: "15px"
-    }
+    },
+    gridList: {
+        maxHeight: 500,
+        // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+        transform: 'translateZ(0)',
+      },
+ 
 });
 function checkWebsite(url){
     const beforeCom = url.split(".com")[0];
@@ -296,8 +305,6 @@ export class Post extends React.Component{
             }
         })
         .then(commts => {
-            log("comments-------------------------99989989")
-            log(commts)
             this.setState({ commtData: commts })
         })
         .catch((error) => {
@@ -325,10 +332,7 @@ export class Post extends React.Component{
             }, () => { this.refresh(); })
             replyFiel.value = ""
             replyFiel.placeholder = "comment send."
-            log("befoer after")
-            log(this.state.commtData)
             this.setState({commtData: this.state.commtData})
-            log(this.state.commtData)
         }
     }
 
@@ -340,11 +344,30 @@ export class Post extends React.Component{
         this.refresh();
     }
 
+    highlightPattern = (text, pattern) => {
+        const splitText = text.split(pattern);
+      
+        if (splitText.length <= 1) {
+          return text;
+        }
+      
+        const matches = text.match(pattern);
+      
+        return splitText.reduce((arr, element, index) => (matches[index] ? [
+          ...arr,
+          element,
+          <Typography variant= "h5" color="primary" display="inline">
+            {matches[index]}
+          </Typography>,
+        ] : [...arr, element]), []);
+      };
+
     render(){
         const { classes } = this.props;
         const {userId} = this.props;
         const {postInfo} = this.props;
         const url = postInfo.content.match(/\bhttps?:\/\/\S+/gi)
+        const hash =/(?:\s|^)?#[A-Za-z0-9\-\.\_]+(?:\s|$)/g
     
         return (
             <div className={classes.cardArea}>
@@ -368,14 +391,28 @@ export class Post extends React.Component{
                         </div>
                         <div className={classes.cardBody}>
                         {url == null
-                        ?<Typography variant ="body1" color="textSecondary" style={{ wordWrap: "break-word" }}>
-                            {postInfo.content}
+                        ?<div>
+                        <Typography variant ="h5" color="textSecondary" style={{ wordWrap: "break-word" }}>
+                            {this.highlightPattern(postInfo.content, hash)}
                         </Typography>
-                        :<Typography variant ="body1" color="textSecondary">
+                        {postInfo.pics == null
+                        ?<div></div>
+                        :
+                        <GridList cellHeight={400} spacing={3} className={classes.gridList} cols={2}>
+                            {postInfo.pics.map(imageURL => (
+                            <GridListTile cols={1}>
+                                <img  src={imageURL} className = {classes.imageGrid}/>
+                            </GridListTile>
+                            ))}
+                        </GridList>
+
+                        }
+                        </div>
+                        :<Typography variant ="h5" color="textSecondary">
                             <Typography style={{ wordWrap: "break-word" }}>
-                                {postInfo.content.split(url)[0]}
+                                {this.highlightPattern(postInfo.content.split(url)[0], hash)}
                             <Typography>
-                                {postInfo.content.split(url)[1]}
+                                {this.highlightPattern(postInfo.content.split(url)[1], hash)}
                             </Typography>
                         </Typography>
                             <Card className = {classes.card}>

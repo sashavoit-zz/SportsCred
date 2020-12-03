@@ -12,7 +12,6 @@ import (
 	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
-	"google.golang.org/api/option"
 	"google.golang.org/appengine"
 )
 
@@ -28,7 +27,7 @@ type AcsOffset struct {
 	Offset int
 }
 
-func SetUpProfile(app *gin.Engine, driver neo4j.Driver) {
+func SetUpProfile(app *gin.Engine, driver neo4j.Driver, storageClient *storage.Client) {
 	app.GET("/friendslist/:user", func(c *gin.Context) {
 		user := c.Param("user")
 		result, err := queries.GetFriendsList(driver, user)
@@ -241,25 +240,10 @@ func SetUpProfile(app *gin.Engine, driver neo4j.Driver) {
 			"acs": "updated",
 		})
 	}))
-	var (
-		storageClient *storage.Client
-	)
+
 	app.POST("/uploadProfilePic", CheckAuthToken(func(c *gin.Context, _ string) {
 		bucket := "sportcred-user-profile-pic"
-
-		var err error
-
 		ctx := appengine.NewContext(c.Request)
-
-		storageClient, err = storage.NewClient(ctx, option.WithCredentialsFile("keys.json"))
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": err.Error(),
-				"error":   true,
-			})
-			return
-		}
-
 		f, uploadedFile, err := c.Request.FormFile("file")
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{

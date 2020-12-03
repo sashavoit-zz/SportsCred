@@ -29,6 +29,7 @@ func LoadAllPosts(driver neo4j.Driver) (interface{}, error) {
 				"firstName: firstname,"+
 				"lastName: lastname,"+
 				"profilePic: profilePic,"+
+				"pics: p.pics,"+
 				"postId: toString(p.postId),"+
 				"content: p.content,"+
 				"time: p.postTime,"+
@@ -174,7 +175,7 @@ func AddPost(driver neo4j.Driver, content string, email string, likes int, disli
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
 			"CALL{\n"+
-				"CREATE (n:Post {content:$content, email:$email, likes:$likes, dislikes:$dislikes})\n"+
+				"CREATE (n:Post {content:$content, email:$email, likes:$likes, dislikes:$dislikes, pics:[]})\n"+
 				"SET n.postId = id(n), n.postTime=datetime()\n"+
 				"WITH n \n"+
 				"MATCH(u:User{email:$email})\n"+
@@ -558,5 +559,63 @@ func GetDislikes(driver neo4j.Driver, postid string) (interface{}, error) {
 		}
 		return nil, result.Err()
 	})
+	return result, nil
+}
+
+func AddHashTags(driver neo4j.Driver, hashTags []string, postId string) (interface{}, error) {
+	id, err := strconv.Atoi(postId)
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return nil, err
+	}
+	defer session.Close()
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"MATCH(p:Post)\n"+
+				"WHERE id(p)=$postId\n"+
+				"UNWIND $hashTags as tag\n"+
+				"MERGE (h:hashTag {tag:tag})\n"+
+				"MERGE (p)-[:TAGED]->(h)\n"+
+				"RETURN collect(h.tag) as hashTags",
+			map[string]interface{}{"postId": id, "hashTags": hashTags})
+		if err != nil {
+			return nil, err
+		}
+		if result.Next() {
+			value, _ := result.Record().Get("hashTags")
+			return value, nil
+		}
+		return nil, result.Err()
+	})
+	return result, nil
+
+}
+
+func UploadPicforPost(driver neo4j.Driver, postId string, link string) (interface{}, error) {
+	id, err := strconv.Atoi(postId)
+	session, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return nil, err
+	}
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"MATCH(p: Post{postId:$postId}) \n"+
+				"SET p.pics=p.pics+ $link\n"+
+				"RETURN {pics:p.pics} as pic",
+			map[string]interface{}{"postId": id, "link": link})
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			value, _ := result.Record().Get("pic")
+			return value, nil
+		} else {
+			return nil, nil
+		}
+	})
+
 	return result, nil
 }

@@ -67,7 +67,6 @@ export default function UploadPicPopup(props) {
         profilePage.setState({openPopup:false})
     }
 
-    const u = !profilePage.state.uploaded
     return (
         <Dialog open={profilePage.state.openPopup} maxWidth="md" classes={{ paper: classes.dialogWrapper }}>
             <DialogTitle className={classes.dialogTitle}>
