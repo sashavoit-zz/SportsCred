@@ -57,21 +57,7 @@ function SearchResults(props) {
   const [resultsPerPage, setResultsPerPage] = useState(10);
 
   useEffect(() => {
-    // async function fetchData() {
-    //   const res = await fetch("/search/users/?search="+queryString+"&params=a0BtYWlsLmNvbSYwJjEw");
-    //   res
-    //     .json()
-    //     .then(res => setSearchResults(res))
-    //     .catch(err => setErrors(err));
-    // }
-    // fetchData();
-
-    // const res = fetch("/search/users/search?=k@mail.com&params=a0BtYWlsLmNvbSYwJjEw");
-    // res
-    //   .json()
-    //   .then(res => setSearchResults(res))
-    //   .catch(err => setErrors(err));
-    // get search results with queryString
+    
   }, [queryString, setSearchResults]);
 
   return (

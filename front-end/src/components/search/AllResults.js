@@ -138,6 +138,14 @@ class SearchAll extends Component {
         this.queryPosts();
     }
 
+    componentDidUpdate(oldProps) {
+        if (oldProps.query != this.props.query) {
+            console.log("componeto did update ")
+            this.queryUsers();
+            this.queryPosts();
+        }
+    }
+
     renderUsers() {
         const {classes} = this.props;
         const {user} = this.props;
