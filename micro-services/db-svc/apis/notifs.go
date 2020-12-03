@@ -97,6 +97,23 @@ func SetUpNotifs(app *gin.Engine, driver neo4j.Driver){
 		c.JSON(200, nil)
 	}))
 
+	app.POST("/notifs/addInvitation", CheckAuthToken(func(c *gin.Context, email string){
+
+		jsonData, err := ioutil.ReadAll(c.Request.Body)
+		type Data struct {
+			To string `json:"to"`
+		}
+		var data Data
+		json.Unmarshal(jsonData, &data)
+
+		err = SendTriviaInvitation(email, data.To)
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		}
+		c.JSON(200, nil)
+	}))
+
 	app.DELETE("/notifs/removeNotif", CheckAuthToken(func(c *gin.Context, email string){
 
 		jsonData, err := ioutil.ReadAll(c.Request.Body)
@@ -116,12 +133,23 @@ func SetUpNotifs(app *gin.Engine, driver neo4j.Driver){
 }
 
 func SendNotif(email string, title string, content string, notifType string) error {
-	_, err := queries.AddNotif(dbDriver, email, title, content, notifType)
+	_, err := queries.AddNotif(dbDriver, email, title, content, notifType, "")
 	if openChans[email] {
 		fmt.Println("Sending to channel for " + email)
 		openChans[email] = false
 		close(chans[email])
 		fmt.Println("Sent to channel for " + email)
+	}
+	return err
+}
+
+func SendTriviaInvitation(from string, to string) error {
+	_, err := queries.AddNotif(dbDriver, to, "Invitation to play trivia", "From " + from, "info", from)
+	if openChans[to] {
+		fmt.Println("Sending to channel for " + to)
+		openChans[to] = false
+		close(chans[to])
+		fmt.Println("Sent to channel for " + to)
 	}
 	return err
 }

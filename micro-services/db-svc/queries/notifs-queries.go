@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func AddNotif(driver neo4j.Driver, email string, title string, content string, notifType string)(interface{}, error){
+func AddNotif(driver neo4j.Driver, email string, title string, content string, notifType string, from string)(interface{}, error){
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
 		panic(err)
@@ -17,8 +17,9 @@ func AddNotif(driver neo4j.Driver, email string, title string, content string, n
 	_, err = session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		_, err = transaction.Run(
 			"MATCH(u:User {email: $email})\n"+
-			"CREATE (n: Notification {type: $notifType, title: $title, content: $content})<-[:RECIPIENT_OF]-(u)\n",
-			map[string]interface{}{"email": email, "title": title, "content": content, "notifType": notifType})
+			"CREATE (n: Notification {type: $notifType, title: $title, content: $content, from: $from})<-[:RECIPIENT_OF]-(u)\n",
+			map[string]interface{}{"email": email, "title": title, "content": content, "notifType": notifType,
+				"from": from})
 		if err != nil {
 			panic(err)
 			return nil, err
@@ -77,7 +78,7 @@ func GetNotifs(driver neo4j.Driver, email string) (interface{}, error){
 				"WHERE NOT EXISTS(n.dateSeen) OR n.dateSeen = $today\n" +
 				"SET n.dateSeen = $today\n" +
 				"WITH n, ID(n) as notifId\n" +
-				"RETURN COLLECT({id: notifId, title: n.title, content: n.content, type: n.type}) as notifs",
+				"RETURN COLLECT({id: notifId, title: n.title, content: n.content, type: n.type, from: n.from}) as notifs",
 			map[string]interface{}{"today": today, "email": email})
 		if err != nil {
 			panic(err)
