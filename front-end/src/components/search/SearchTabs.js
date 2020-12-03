@@ -112,13 +112,15 @@ export default function SearchTabs({user, query}) {
           
 
       <TabPanel value={value} index={0}>
-        <SearchAll query={query} user={user}></SearchAll>
+        <SearchAll query={query} user={user} type={'all'}></SearchAll>
       </TabPanel>
       <TabPanel value={value} index={1}>
+        <SearchAll query={query} user={user} type={'user'}></SearchAll>
           
 
       </TabPanel>
       <TabPanel value={value} index={2}>
+        <SearchAll query={query} user={user} type={'post'}></SearchAll>
       </TabPanel>
     </div>
   );

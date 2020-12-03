@@ -70,13 +70,46 @@ class SearchAll extends Component {
         
     }
 
+    handlePageChange = (e, value) => {
+        e.preventDefault();
+        var newPage = value;
+        console.log("page changed to newPage");
+        this.setState({
+            currPage: newPage
+        }, () => {
+            if(!this.state.loading){
+                this.setState({
+                    loading: true,
+                    message: ''
+                }, () =>{
+                    this.querySearch();
+                });
+            }
+        });
+    }
+
+    redirectHandler = (value) => {
+        this.clickedprofile = value;
+        this.setState({ redirect: true })
+        this.renderRedirect();
+    }
+    renderRedirect = () => {
+        let url = '/user/'+this.clickedprofile;
+        if(this.clickedprofile == this.props.user.email){
+            url = '/profile';
+        }
+        if (this.state.redirect) {
+            return <Redirect to={url}/>
+        }
+    }
+
 
     getPageCount = (totalItemCount, itemsPerPage) => {
         return Math.ceil(totalItemCount / itemsPerPage);
     }
 
     queryUsers = async () => {
-        var userOptions = this.user+'&'+this.state.currPage+'&'+3;
+        var userOptions = this.user+'&'+this.state.currPage+'&'+10;
         var userQuery = url+'users/?search='+this.props.query+'&params='+btoa(userOptions);
         const userReq = new Request(userQuery, {
             method:'GET'
@@ -94,8 +127,6 @@ class SearchAll extends Component {
                     userResults: data,
                     messageUsers: cmessage
             }, () => {
-                console.log("after querystate");
-                console.log("ASKJDHALKJSHDLKJASLGFJAKSJHDJLKA\n\n\n\n\nALKSJDHLAS")
                 console.log(this.state.userResults);
                 this.renderUsers()}
             )})
@@ -160,6 +191,7 @@ class SearchAll extends Component {
             var loop = 1;
             return(
                 <List className={classes.root}>
+                    {this.renderRedirect()}
                     {userResults.map(profile => {
                         if(profile != null){
                            
@@ -235,12 +267,27 @@ class SearchAll extends Component {
         const {user} = this.props;
         const {query} = this.props;
         const {classes} = this.props;
-        return(
-            <div>
-            {this.renderUsers()}
-            {this.renderPosts()}
-            </div>
-        )
+        const {type} = this.props;
+        if(type == 'all'){
+            return(
+                <div>
+                {this.renderUsers()}
+                {this.renderPosts()}
+                </div>
+            )
+        } else if (type == 'user'){
+            return(
+                <div>
+                    {this.renderUsers()}
+                </div>
+            )
+        } else {
+            return(
+                <div>
+                    {this.renderPosts()}
+                </div>
+            )
+        }
         
     }
 }
