@@ -22,13 +22,15 @@ func LoadAllPosts(driver neo4j.Driver) (interface{}, error) {
 			"CALL{\n"+
 				"MATCH (p:Post)\n"+
 				"MATCH (u:User)-[:CREATED]->(p)\n"+
-				"RETURN u.firstName as firstname, u.lastName as lastname, u.profilePic as profilePic, p\n"+
+				"RETURN u.firstName as firstname, u.lastName as lastname, u.profilePic as profilePic, u.acs as acs, u.email as email,p\n"+
 				"ORDER BY p.postTime DESC\n"+
 				"}\n"+
 				"RETURN collect({"+
 				"firstName: firstname,"+
 				"lastName: lastname,"+
 				"profilePic: profilePic,"+
+				"email: email,"+
+				"acs: acs,"+
 				"pics: p.pics,"+
 				"postId: toString(p.postId),"+
 				"content: p.content,"+
@@ -256,13 +258,15 @@ func LoadPostReply(driver neo4j.Driver, postid string) (interface{}, error) {
 			"MATCH (c:Comment)-[r:REPLY]->(p:Post)\n"+
 				"WHERE id(p)=$postid\n"+
 				"CALL { \n"+
-				"WITH p \n"+
-				"MATCH(u:User {email: p.email}) \n"+
-				"RETURN u.firstName as userFirstName, u.lastName as userLastName \n"+
+				"WITH c \n"+
+				"MATCH(u:User {email: c.email}) \n"+
+				"RETURN u.firstName as userFirstName, u.lastName as userLastName, u.profilePic as profilePic,u.acs as userAcs\n"+
 				"} \n"+
 				"RETURN collect({"+
 				"firstName:userFirstName,"+
 				"lastName:userLastName,"+
+				"profilePic:profilePic,"+
+				"acs:userAcs,"+
 				"userProfile:p.userProfile,"+
 				"commentId:toString(c.commentId),"+
 				"content:c.content,"+

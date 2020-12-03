@@ -379,7 +379,7 @@ export class Post extends React.Component{
                                 {postInfo.firstName + " " + postInfo.lastName + "   "}
                             </Box>
                             <Box className={classes.postInfo} display='inline'>
-                                {userId + " - " + timeSince(postInfo.time)}
+                                {"ACS: " + postInfo.acs + " - " + postInfo.email + " - " + timeSince(postInfo.time)}
                             </Box>
                             {!this.props.isSingle ?
                                 <Link to={"/the-zone/" + postInfo.postId}>

@@ -644,6 +644,21 @@ func checkAnswer(c *gin.Context) {
 
 // SetUpDebate  sets up debate
 func SetUpDebate(server *gin.Engine, driver neo4j.Driver) {
+	// -------soso: this is for profile page
+	server.GET("/allDebateAnswer/:email", CheckAuthToken(func(c *gin.Context, _ string) {
+		email := c.Param("email")
+		result, err := queries.LoadDebateAnswers(driver, email)
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		} else if result == nil {
+			c.String(404, "Not found")
+			return
+		}
+		c.JSON(200, result)
+	}))
+	// -------sosoend
+
 	neo4jDriver2 = driver
 
 	//fmt.Println("here1")

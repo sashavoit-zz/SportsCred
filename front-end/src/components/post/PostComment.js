@@ -20,6 +20,10 @@ const styles = theme => ({
     float: "right",
     //fontSize: "60px",
   },
+  posterAcs: {
+    float: "right",
+    //fontSize: "60px",
+  },
   
 });
 
@@ -46,17 +50,20 @@ class PostComment extends Component {
     this.first_commts = null
     this.commts = null
     const data = this.props.data
+    // log("booiiiiiisjfidjsif")
+    // log(data)
     const f_comm = data[0]
     const r_comm = data.slice(1)
     if (f_comm) {
       this.first_commts =
         <Comment>
-          <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/christian.jpg' />
+        <Comment.Avatar as='a' src={f_comm.profilePic} />
           <Comment.Content>
           <Comment.Author as='a'>{f_comm.firstName+ " " + f_comm.lastName}</Comment.Author>
             <Comment.Metadata>
-              <span className={classes.time}>{f_comm.time + " - " + f_comm.email}</span>
+            <span className={classes.time}>{"ACS: " + f_comm.acs + " - " + f_comm.email + " - " + f_comm.time}</span>
             </Comment.Metadata>
+            {/* <span className={classes.posterAcs}>{}</span> */}
             <Comment.Text>{f_comm.content}</Comment.Text>
             <Comment.Actions>
               {/* <a>{f_comm.time}</a> */}
@@ -68,12 +75,13 @@ class PostComment extends Component {
 
       this.commts = r_comm.map((item) =>
         <Comment>
-          <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
+          <Comment.Avatar as='a' src={item.profilePic} />
           <Comment.Content>
             <Comment.Author as='a'>{item.firstName+ " " + item.lastName}</Comment.Author>
             <Comment.Metadata>
-              <span className={classes.time}>{item.time}</span>
+              <span className={classes.time}>{"ACS: " + item.acs + " - " + item.email + " - " + item.time}</span>
             </Comment.Metadata>
+            {/* <span className={classes.posterAcs}>{"ACS: "+item.acs}</span> */}
             <Comment.Text>{item.content}</Comment.Text>
             <Comment.Actions>
               {/* <a>{item.time}</a> */}

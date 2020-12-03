@@ -253,7 +253,7 @@ func UpdateACS(driver neo4j.Driver, email string, addValue int, debate bool, tri
 	log.Println(addValue)
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
-		result, err := transaction.Run("MATCH (u:User {email:$email}) SET u.triviaAcs = u.triviaAcs + toInteger($triviaAcs), u.debateAcs = u.debateAcs + toInteger($debateAcs), u.acs = u.acs + toInteger($addValue),u.acsHistory = u.acsHistory + [toString(toInteger(head(split(last(u.acsHistory),'@'))) + toInteger($addValue)) + '@' + timestamp()];",
+		result, err := transaction.Run("MATCH (u:User {email:$email}) SET u.triviaAcs = u.triviaAcs + toInteger($triviaAcs), u.debateAcs = u.debateAcs + toInteger($debateAcs), u.acs = CASE WHEN u.acs + toInteger($addValue) > 100 THEN u.acs + toInteger($addValue) ELSE 100 END ,u.acsHistory = u.acsHistory + [toString(toInteger(head(split(last(u.acsHistory),'@'))) + toInteger($addValue)) + '@' + timestamp()];",
 			map[string]interface{}{"email": email, "addValue": addValue, "triviaAcs": triviaAcs, "debateAcs": debateAcs})
 		if err != nil {
 

@@ -19,6 +19,16 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 //import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 
+import { CardActions, Card, CardHeader, CardContent, Typography, Avatar, CardActionArea } from '@material-ui/core';
+import CommentIcon from '@material-ui/icons/Comment';
+import ShareMenu from '../post/ShareMenu';
+import PostComment from '../post/PostComment';
+import { Box, Divider } from "@material-ui/core";
+import FaceIcon from '@material-ui/icons/Face';
+import LaunchIcon from '@material-ui/icons/Launch';
+import { Button, Form } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
+
 const log = console.log
 const styles = theme => ({
     tableHeader: {
@@ -29,9 +39,49 @@ const styles = theme => ({
     },
     tableTime: {
         fontSize: "20px"
+    },
+    redirectIcon: {
+        //textAlign: "right"
+    },
+    post: {
+        fontSize: "20px"
     }
 });
 
+
+function timeConverter(UNIX_timestamp) {
+    if (!UNIX_timestamp) {
+        return null
+    }
+    const a = new Date(UNIX_timestamp)//.toLocaleDateString("en-US");
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const year = a.getFullYear();
+    const month = months[a.getMonth()];
+    const date = a.getDate();
+    return date + ' ' + month + ' ' + year
+}
+
+function timeSince(UNIX_timestamp) {
+    if (!UNIX_timestamp) {
+        return null
+    }
+    //const a = //.toLocaleDateString("en-US")
+    const timeStamp = new Date(UNIX_timestamp)
+    const now = new Date(),
+        secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
+    if (secondsPast < 60) {
+        return ' - ' + parseInt(secondsPast) + 's ago';
+    }
+    if (secondsPast < 3600) {
+        return ' - ' + parseInt(secondsPast / 60) + 'm ago';
+    }
+    if (secondsPast <= 86400) {
+        return ' - ' + parseInt(secondsPast / 3600) + 'h ago';
+    }
+    if (secondsPast > 86400) {
+        return "";
+    }
+}
 
 
 function TablePaginationActions(props) {
@@ -93,11 +143,11 @@ TablePaginationActions.propTypes = {
 };
 
 
-class PostsTable extends Component {
+class DebateTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            acsList: [],
+            postList: [],
             page: 0,
             rowsPerPage: 5,
         }
@@ -105,7 +155,9 @@ class PostsTable extends Component {
     //const classes = useStyles();
     componentDidMount() {
         //const postId
-        const url = '/acsHistory/' + "soso@gmail.com"; //http://localhost:3001
+        log('999----------------')
+        log(this.props)
+        const url = '/allDebateAnswer/' + this.props.user;
         const comment_request = new Request(url, {
             method: 'GET',
             headers: {
@@ -118,13 +170,15 @@ class PostsTable extends Component {
                 if (res.status === 200) {
                     return res.json();
                 } else {
-                    console.log('could not get user acs');
+                    console.log('could not get user posts');
                 }
             })
-            .then(res => {
+            .then(data => {
                 this.setState({
-                    acsList: [1,2,3],
+                    postList: data,
                 })
+                // log('data!!!!!!!!!!!!!!!!')
+                // log(data)
             })
             .catch((error) => {
                 console.log(error)
@@ -136,7 +190,7 @@ class PostsTable extends Component {
     render() {
         //getAcsHistory();
         const { classes } = this.props;
-        const emptyRows = this.state.rowsPerPage - Math.min(this.state.rowsPerPage, this.state.acsList.length - this.state.page * this.state.rowsPerPage);
+        const emptyRows = this.state.rowsPerPage - Math.min(this.state.rowsPerPage, this.state.postList.length - this.state.page * this.state.rowsPerPage);
         const handleChangePage = (event, newPage) => {
             this.setState({ page: newPage })
         };
@@ -146,23 +200,31 @@ class PostsTable extends Component {
                 page: 0,
             })
         };
+        const { userId } = this.props;
         return (
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell className={classes.tableCell}>CSGAN-132 -> Sprint 4</TableCell>
-                        </TableRow>
-                    </TableHead>
                     <TableBody>
                         {(this.state.rowsPerPage > 0
-                            ? this.state.acsList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
-                            : this.state.acsList // []
-                        ).map((row) => (
+                            ? this.state.postList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+                            : this.state.postList // []
+                        ).map((post) => (
                             <TableRow>
                                 <TableCell className={classes.tableCell} component="th" scope="row">
-                                    &nbsp;
+                                    <Box className={classes.post} display='inline'>
+                                        {/* {timeConverter(post.time) + timeSince(post.time)} */}
+                                        {post.answer}
+                                    </Box>
+                                    <br />
+                                    <Typography variant="body1" color="textSecondary" style={{ wordWrap: "break-word" }}>
+                                        {post.question}
+                                    </Typography>
                                 </TableCell>
+                                {/* <TableCell className={classes.tableTime} align="right">{
+                                    <Link className={classes.redirectIcon} to={"/the-zone/" + post.postId}>
+                                        <LaunchIcon className={classes.launchIcon}></LaunchIcon>
+                                    </Link>
+                                }</TableCell> */}
                             </TableRow>
                         ))}
                         {emptyRows > 0 && (
@@ -172,6 +234,7 @@ class PostsTable extends Component {
                                     <TableCell className={classes.tableCell} component="th" scope="row">
                                         &nbsp;
                                     </TableCell>
+                                    <TableCell className={classes.tableTime} align="right"></TableCell>
                                 </TableRow>
                             ))
                         )}
@@ -181,7 +244,7 @@ class PostsTable extends Component {
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                                 colSpan={3}
-                                count={this.state.acsList.length}
+                                count={this.state.postList.length}
                                 rowsPerPage={this.state.rowsPerPage}
                                 page={this.state.page}
                                 SelectProps={{
@@ -199,8 +262,8 @@ class PostsTable extends Component {
         );
     }
 }
-PostsTable.propTypes = {
+DebateTable.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(PostsTable);
+export default withStyles(styles)(DebateTable);
