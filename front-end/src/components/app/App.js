@@ -21,6 +21,7 @@ import Analysis from "../debate-and-analysis/Analysis";
 import User from "../profile/otherProfile";
 import StrangerProfile from "../profile/ViewProfile";
 import Leaderboards from "../leaderboards/Leaderboards";
+import SearchResults from "../search/SearchResults"
 
 const theme = createMuiTheme({
   palette: {
@@ -41,7 +42,6 @@ function App() {
           <Route exact path="/login" component={LogIn} />
           {!jwt && <Route exact path="/the-zone/:post" component={VisitorOpenCourtPost} />}
           {/* private routes */}
-          <PrivateRoute exact path="/searchuser" component={SearchUser}/>
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/trivia" component={Trivia} />
           <PrivateRoute exact path="/the-zone" component={openCourt}/>
@@ -51,6 +51,7 @@ function App() {
           <PrivateRoute exact path="/analysis" component={Analysis}/>
           {!!jwt && <PrivateRoute exact path="/user/:email" component={StrangerProfile} />}
           <PrivateRoute exact path="/leaderboards" component={Leaderboards}/>
+          {!!jwt && <PrivateRoute exact path="/search/:type" component={SearchResults}/>}
           {/* Add new paths heres */}
           <Route path="/" component={() => <Redirect to="/the-zone"/>} />
         </Switch>

@@ -10,6 +10,8 @@ require (
 	github.com/googollee/go-socket.io v1.4.4 // indirect
 	github.com/mitchellh/mapstructure v1.3.3
 	github.com/neo4j/neo4j-go-driver v1.8.3
+	github.com/timtadh/data-structures v0.5.3 // indirect
+	github.com/timtadh/lexmachine v0.2.2
 	google.golang.org/api v0.35.0
 	google.golang.org/appengine v1.6.7
 )

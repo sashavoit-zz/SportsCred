@@ -6,6 +6,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import { withStyles } from "@material-ui/core/styles";
 import CommentIcon from '@material-ui/icons/Comment';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 
 const url = 'http://localhost:3001/';
 
@@ -52,7 +53,7 @@ class EditFriend extends React.Component {
         var icon = <PersonAddIcon/>
         if(this.state.friend){
             message = <Typography color="error">{"Remove Friend"}</Typography>
-            icon = <PersonAddIcon color="error"/>
+            icon = <RemoveCircleIcon color="error"/>
         }
         if(msg && msg == "false"){
             message = null;

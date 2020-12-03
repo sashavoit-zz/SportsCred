@@ -21,7 +21,7 @@ export class StrangerProfile extends React.Component {
   }
 
   componentDidMount() {
-    const user_url = 'http://localhost:3001/profile/' + this.props.profile;
+    const user_url = '/profile/' + this.props.profile;
     console.log("here is the profiel we are vewiing");
     console.log(this.props);
     const user_request = new Request(user_url, {

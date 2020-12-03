@@ -31,7 +31,7 @@ import InviteButton from '../trivia/InviteButton'
 import Grid from '@material-ui/core/Grid'
   
 const drawerWidth = 200;
-const url = 'http://localhost:3001/search?';
+const url = '/search?';
 
 const useStyles = theme => ({
     root: {
