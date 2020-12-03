@@ -1,53 +1,37 @@
 import React from "react";
 import { CircularProgress, Box, Typography, Card, CardContent, CardActions, Button, TextField, Grid, Backdrop, Avatar } from "@material-ui/core";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import { question, answer, doesAnswerExist, getProfilePicLink } from "../../service/ApiCalls";
+import { question, answer, doesAnswerExist, getProfilePicLink, getUserACS } from "../../service/ApiCalls";
 import { withRouter } from 'react-router-dom'
 
 async function shouldRedirect(email, questionID) {
   var result = await doesAnswerExist(email, questionID);
   console.log(result)
-  /*if(result) {
-    //window.location.href = '../analysis';
-    //history.push('/analysis')
-  }*/
   return result;
 }
 
-export class Debate extends React.Component{
+export class Debate extends React.Component {
 
   constructor(props) {
     super(props);
 
-    var dateOfMonth = new Date().getDate() % 10;
-    shouldRedirect(this.props.user.email, "fanalyst" + dateOfMonth.toString())
-      .then(
-        (result) => {
-          if(result) {
-            this.props.history.push('/analysis')
-          }
-        })
-
+    this.updateACS()
     var timeNext = new Date()
     timeNext.setDate(timeNext.getDate() + 1)
     timeNext.setHours(0, 0 ,0, 0)
     this.state = {
-      time: new Date(timeNext - new Date()).toISOString().slice(11,19)
-    };
-    this.state = {
-      percentTime: (timeNext - new Date())/864000
-    };
-    this.state = { questionOfTheDay: "" };
-
-    this.state = {value: ''};
+      time: new Date(timeNext - new Date()).toISOString().slice(11,19),
+      percentTime: (timeNext - new Date())/864000,
+      emailLoaded: false,
+      value: '',
+    }
     this.handleChange = this.handleChange.bind(this);
-    this.state = { emailLoaded: false };
-    this.state = { profilePicLink: "" };
   }
 
   async goToAnalysis(email, answer1) {
     var dateOfMonth = new Date().getDate() % 10;
-    await answer(email, "fanalyst" + dateOfMonth.toString(), answer1);
+    console.log("answer: " + answer1)
+    await answer(email, this.state.tier + dateOfMonth.toString(), answer1);
     this.props.history.push('/analysis')
   }
 
@@ -58,9 +42,6 @@ export class Debate extends React.Component{
   async componentDidMount() {
     const dpLink = await getProfilePicLink(this.props.user.email)
     this.setState({ profilePicLink: await dpLink });
-    var dateOfMonth = new Date().getDate() % 10;
-    const question1 = await question("fanalyst" + dateOfMonth.toString())
-    this.setState({ questionOfTheDay: await question1 });
     
     this.intervalID = setInterval(
       () => this.tick(),
@@ -71,11 +52,40 @@ export class Debate extends React.Component{
     clearInterval(this.intervalID);
   }
 
+  updateACS() {
+    var dateOfMonth = new Date().getDate() % 10;
+    getUserACS(this.props.user.email).then(
+      (acs) => {
+        if(acs<=300) {
+          this.setState({tier: "fanalyst", tierPretty: "Fanalyst"})
+        } else if(acs<=600) {
+          this.setState({tier: "analyst", tierPretty: "Analyst"})
+        } else if(acs<=900) {
+          this.setState({tier: "proanalyst", tierPretty: "Pro Analyst"})
+        } else {
+          this.setState({tier: "expertanalyst", tierPretty: "Expert Analyst"})
+        }
+        shouldRedirect(this.props.user.email, this.state.tier + dateOfMonth.toString())
+        .then(
+          (result) => {
+            if(result) {
+              this.props.history.push('/analysis')
+            }
+          }
+        );
+        question(this.state.tier + dateOfMonth.toString()).then(
+          (question) => {
+            this.setState({ questionOfTheDay: question })
+          }
+        )
+      }
+    )
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.user.email !== this.props.user.email) {
       this.setState({emailLoaded: true});
-      var dateOfMonth = new Date().getDate() % 10;
-      shouldRedirect(this.props.user.email, "fanalyst" + dateOfMonth.toString());
+      this.updateACS();
     }
   }
 
@@ -84,17 +94,13 @@ export class Debate extends React.Component{
     timeNext.setDate(timeNext.getDate() + 1)
     timeNext.setHours(0, 0 ,0, 0)
     this.setState({
-      time: new Date(timeNext - new Date()).toISOString().slice(11,19)
-    });
-    this.setState({
+      time: new Date(timeNext - new Date()).toISOString().slice(11,19),
       percentTime: (timeNext - new Date())/864000
     });
   }
 
   render(){
-    let email = this.props.user.email;
-
-      if (this.state.percentTime == null) {
+      if (this.state.questionOfTheDay == null || this.state.tier == null) {
         return(
           <div>
             <Backdrop style={{ color: "green" }} open={true} >
@@ -108,7 +114,7 @@ export class Debate extends React.Component{
             <Card>
               <CardContent>
                 <Typography color="textSecondary" gutterBottom>
-                  Question of the Day
+                  {this.state.tierPretty}{" "}Question of the Day
                 </Typography>
                 <Grid container direction="row" spacing={2}>
                   <Grid item xs={11}>
@@ -120,10 +126,11 @@ export class Debate extends React.Component{
                     <CircularProgressbar
                       value={this.state.percentTime}
                       strokeWidth={50}
+                      text={this.state.time}
                       styles={buildStyles({
-                        strokeLinecap: "butt", pathColor: "red"
-                      })}
-                    />
+                        strokeLinecap: "butt", pathColor: "red", textColor: 'white',
+                      })}>
+                    </CircularProgressbar>
                   </Grid>
                 </Grid>
                 <br></br>
@@ -141,6 +148,8 @@ export class Debate extends React.Component{
                         fullWidth="true"
                         value={this.state.value}
                         onChange={this.handleChange}
+                        helperText={ this.state.value.length>=100 ? `${1000-this.state.value.length} characters left` : `${100-this.state.value.length} more characters at least`}
+                        inputProps={{ maxLength: 1000 }}
                      />
                   </Box>
                 </Box>
@@ -148,7 +157,8 @@ export class Debate extends React.Component{
               <Box display="flex" justifyContent="flex-end" m={1}>
                 <CardActions>
                   <Button variant="contained" color="primary"
-                    onClick={(event) => this.goToAnalysis(email, this.state.value)}
+                    disabled={this.state.value.length<=100}
+                    onClick={(event) => this.goToAnalysis(this.props.user.email, this.state.value)}
                   > Debate</Button>
                 </CardActions>
               </Box>

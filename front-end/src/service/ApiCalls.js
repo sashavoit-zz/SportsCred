@@ -180,19 +180,17 @@ const getProfilePicLink = async (userEmail) => {
       method: "GET",
       headers: {
           "Content-Type": "application/json",
-          "Token": localStorage.getItem("Token"),
+          "Token": getAuthTokenFromLS(),
       },
   };
-  fetch("/getUserProfilePic/"+userEmail, requestOptions)
-      .then(response => response.json())
-      .then(
-        (result) => {
-          return result.link
-      },
-      (error) => {
-        console.error(error)
-      }
-    )
+
+  let res = await fetch("/getUserProfilePic/"+userEmail, requestOptions);
+  if (res.status !== 200) {
+    throw "err";
+  } else {
+    let result = await res.json();
+    return result.link
+  }
   
 }
 
@@ -218,6 +216,27 @@ const addRating = async (questionID, posterEmail, raterEmail, rating) => {
     return body.rating;
   }
 };
+
+const getUserACS = async(email) => {
+  const user_url = '/profile/' + email;
+
+  const user_request = {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Token':  getAuthTokenFromLS(),
+    }
+  };
+
+  let res = await fetch(user_url, user_request);
+  if (res.status !== 200) {
+    throw "err";
+  } else {
+    let body = await res.json();
+    return body[0].acs
+  }
+
+}
 
 const getRandomAnswers = async (questionID) => {
   // send email to server
@@ -283,4 +302,4 @@ const getUser = async () => {
   }
 };
 
-export { getAuthToken, getUser, doesEmailExist, createUserAccount, question, answer, doesAnswerExist, getUserAnswer, getRandomAnswers, getRating, getUsersRating, addRating, getProfilePicLink };
+export { getAuthToken, getUser, doesEmailExist, createUserAccount, question, answer, doesAnswerExist, getUserAnswer, getRandomAnswers, getRating, getUsersRating, addRating, getProfilePicLink, getUserACS };

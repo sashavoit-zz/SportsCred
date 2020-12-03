@@ -1,12 +1,16 @@
 package apis
 
 import (
+	"db-svc/queries"
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
+	"github.com/robfig/cron/v3"
 )
 
 var neo4jDriver2 neo4j.Driver // used in all db related funcs
@@ -397,6 +401,50 @@ func getRandomUserAnswers(questionID string) ([9]string, error) {
 	return answers, nil
 }
 
+func updateACS(questionID string) error {
+
+	// session set up
+	session, err := neo4jDriver2.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+
+	validation, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		// quering db
+		result, err := transaction.Run(
+			"MATCH (author:User)<-[:POSTEDBY]-(da: DebateAnswer {questionID:$questionID})-[r:RATEDBY]->(u:User) RETURN author.email, avg(r.rating) ORDER BY avg(r.rating) desc",
+			map[string]interface{}{"questionID": questionID})
+		if err != nil {
+			return nil, err
+		}
+
+		i := 0
+		for result.Next() {
+			var email = result.Record().GetByIndex(0)
+			var rating = result.Record().GetByIndex(1)
+
+			message := fmt.Sprint("Congratulations for getting a debate rating of ", math.Round(rating.(float64)), " yesterday. You are being awarded ", (math.Floor(rating.(float64)/10) + 1), " ACS points")
+			queries.UpdateACS(neo4jDriver2, email.(string), int((math.Floor(rating.(float64)/10) + 1)), true, false)
+			SendNotif(email.(string), "Debate ACS", message, "info")
+
+			if i == 0 {
+				leaderMessage := fmt.Sprint("Congratulations for getting the highest debate rating of ", math.Round(rating.(float64)), " yesterday in your group. You are being awarded an additional 5 ACS points.")
+				queries.UpdateACS(neo4jDriver2, email.(string), 5, true, false)
+				SendNotif(email.(string), "Debate ACS", leaderMessage, "info")
+				i++
+			}
+		}
+
+		return nil, result.Err()
+	})
+	if validation != nil {
+		return nil
+	}
+
+	return nil
+}
+
 func getAnswers(c *gin.Context) {
 
 	type Answer struct {
@@ -581,9 +629,6 @@ func checkAnswer(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(json.Email)
-	fmt.Println(json.QuestionID)
-
 	// verify user in DB
 	if result, err := checkAnswerExists(json.Email, json.QuestionID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()}) // db error
@@ -615,4 +660,20 @@ func SetUpDebate(server *gin.Engine, driver neo4j.Driver) {
 	server.POST("/getRating", getRating)
 	server.POST("/addRating", addRating)
 	server.POST("/getUsersRating", getUsersRating)
+
+	c := cron.New()
+	// Job runs every day at 12am
+	//c.AddFunc("19 17 * * *", func() {
+	c.AddFunc("0 0 * * *", func() {
+		currentTime := time.Now()
+		day := currentTime.Day() - 1
+		//day := currentTime.Day()
+		dayString := strconv.Itoa(day)
+		endDigitString := dayString[len(dayString)-1:]
+		updateACS("fanalyst" + endDigitString)
+		updateACS("analyst" + endDigitString)
+		updateACS("proanalyst" + endDigitString)
+		updateACS("expertanalyst" + endDigitString)
+	})
+	c.Start()
 }

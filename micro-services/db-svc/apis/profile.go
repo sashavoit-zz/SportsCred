@@ -25,6 +25,8 @@ type Profile struct {
 type AcsOffset struct {
 	Email  string
 	Offset int
+	Debate bool
+	Trivia bool
 }
 
 func SetUpProfile(app *gin.Engine, driver neo4j.Driver, storageClient *storage.Client) {
@@ -226,8 +228,13 @@ func SetUpProfile(app *gin.Engine, driver neo4j.Driver, storageClient *storage.C
 
 		email := acsInput.Email
 		addValue := acsInput.Offset
+		debate := acsInput.Debate
+		trivia := acsInput.Trivia
+		log.Println("-------------------ddbatetrivia")
+		log.Println(debate)
+		log.Println(trivia)
 		//add the addValue to acs
-		result, err := queries.UpdateACS(driver, email, addValue)
+		result, err := queries.UpdateACS(driver, email, addValue, debate, trivia)
 		if err != nil {
 			// 500 failed add user
 			c.String(500, "Internal Error")

@@ -143,7 +143,9 @@ func GetProfile(driver neo4j.Driver, email string) (interface{}, error) {
 				"phone:u.phone,"+
 				"email:u.email,"+
 				"about:u.about,"+
-				"acs:toString(u.acs)"+
+				"acs:toString(u.acs),"+
+				"debateAcs:toString(u.debateAcs),"+
+				"triviaAcs:toString(u.triviaAcs)"+
 				"})\n"+
 				"as result",
 			map[string]interface{}{"email": email})
@@ -229,17 +231,36 @@ func GetUserByEmail(driver neo4j.Driver, email string) (interface{}, error) {
 	return result, nil
 }
 
-func UpdateACS(driver neo4j.Driver, email string, addValue int) (string, error) {
+func UpdateACS(driver neo4j.Driver, email string, addValue int, debate bool, trivia bool) (string, error) {
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {
 		return "", err
 	}
+	debateAcs, triviaAcs := 0, 0
+
+	if debate {
+		debateAcs = addValue
+	}
+	if trivia {
+		triviaAcs = addValue
+	}
+	log.Println("-------------------9900")
+	log.Println(debate)
+	log.Println(trivia)
+	log.Println(debateAcs)
+	log.Println(triviaAcs)
+	log.Println(email)
+	log.Println(addValue)
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
-		result, err := transaction.Run("MATCH (u:User {email:$email}) SET u.acs = u.acs + toInteger($addValue),u.acsHistory = u.acsHistory + [toString(toInteger(head(split(last(u.acsHistory),'@'))) + toInteger($addValue)) + '@' + timestamp()];",
-			map[string]interface{}{"email": email, "addValue": addValue})
+		result, err := transaction.Run("MATCH (u:User {email:$email}) SET u.triviaAcs = u.triviaAcs + toInteger($triviaAcs), u.debateAcs = u.debateAcs + toInteger($debateAcs), u.acs = u.acs + toInteger($addValue),u.acsHistory = u.acsHistory + [toString(toInteger(head(split(last(u.acsHistory),'@'))) + toInteger($addValue)) + '@' + timestamp()];",
+			map[string]interface{}{"email": email, "addValue": addValue, "triviaAcs": triviaAcs, "debateAcs": debateAcs})
 		if err != nil {
+
 			return nil, err
+		}
+		if result.Err() != nil {
+			log.Println(result.Err())
 		}
 		if result.Next() {
 			return result.Record().GetByIndex(0), nil
