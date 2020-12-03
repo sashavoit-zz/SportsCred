@@ -91,11 +91,7 @@ export default function SearchTabs({user, query}) {
   function viewAll() {
     history.push(`/search/all/?search=`+query);
   }
-//   const handleKeyDown = (event) => {
-//     if (event.key === "Enter") {
-//         history.push(`/search/all/?search=${searchQuery}`)
-//     }
-//   };
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
