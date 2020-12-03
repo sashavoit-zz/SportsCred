@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.text.secondary,
         backgroundColor: '#0099ff',
         color: 'white',
-        fontSize: 50 + 'px',
+        fontSize: 30 + 'px',
         justifyContent: 'center',
         width: '100%'
     },
@@ -116,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
         display: "none"
     },
     optionBox: {
-        width: '100%',
+        width: '80%',
         textAlign: 'center',
         justifyContent: 'center',
         position: 'relative'
@@ -152,13 +152,13 @@ function Trivia(props) {
     
     // get new question and show on site (consumer REST api)
 
-    addQuestionsToDb();
+    //addQuestionsToDb();
 
     getQuestion();
     if (document.getElementById("questionLabel").innerHTML == "") {
         addQuestionsToUser(localStorage.getItem("User"));
         getQuestion();
-    } 
+    }
 
     pleaseWork.setCorrectReponse("hello?");
     console.log(pleaseWork.getCorrectResponse());
@@ -184,6 +184,22 @@ function Trivia(props) {
     }
   
     return array;
+  }
+
+  function updateAcs(email, offset) {
+    const requestOptionsToUpdateAcs = {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Token": localStorage.getItem("Token")
+        },
+        body: JSON.stringify({
+            "email": email,
+            "offset": offset
+        }),
+    };
+
+    fetch('/acs/', requestOptionsToUpdateAcs);
   }
 
   async function addQuestion(question, option1, option2, option3, answer) {
@@ -284,12 +300,14 @@ function Trivia(props) {
         }
 
             if (userAnswer == correct) {
-                document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "+6 points";
-                setTotalAcs((prevTotal) => (prevTotal = prevTotal + 6));
+                document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "+1 points";
+                setTotalAcs((prevTotal) => (prevTotal = prevTotal + 1));
+                updateAcs(localStorage.getItem("User"), 1);
             }
             else {
-                document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "-6 points";
-                setTotalAcs((prevTotal) => (prevTotal = prevTotal - 6));
+                document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "-1 points";
+                setTotalAcs((prevTotal) => (prevTotal = prevTotal - 1));
+                updateAcs(localStorage.getItem("User"), -1);
             }
 
             if (pickedAnswer != "wrong") {
@@ -340,6 +358,22 @@ function Trivia(props) {
 
     document.getElementById('currentTime').innerHTML = "0";
   }
+
+  React.useEffect(() => {
+    const requestOptions4 = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Token": localStorage.getItem("Token"), 
+        },
+    };
+    fetch("/profile/"+ localStorage.getItem("User"), requestOptions4)
+        .then(response => response.json())
+        .then((data) => {
+            setTotalAcs(parseInt(data[0].acs, 10));
+        })
+        .catch(err => console.log(err))
+  }, [])
 
   React.useEffect(() => {
 

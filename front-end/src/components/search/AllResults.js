@@ -20,8 +20,10 @@ import {uid} from "react-uid";
 import {useHistory} from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import { Redirect } from 'react-router';
+
 import InviteButton from '../trivia/InviteButton'
 import Grid from '@material-ui/core/Grid'
+
 import {
     AppBar,
     Toolbar,
@@ -227,6 +229,7 @@ class SearchAll extends Component {
                                 }
                                 />
                                 <ListItemSecondaryAction onClick={console.log("add friend")}>
+
                                     <Grid
                                         container
                                         direction="row"

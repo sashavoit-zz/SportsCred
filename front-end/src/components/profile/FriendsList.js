@@ -27,6 +27,7 @@ import { Component } from 'react';
 import Grid from '@material-ui/core/Grid'
 import { __esModule } from 'react-router-dom/cjs/react-router-dom.min';
 import {BrowserRouter} from 'react-router-dom'
+import InviteButton from '../trivia/InviteButton'
 const url = 'http://localhost:3001/';
 const cols = 2;
 
@@ -184,7 +185,15 @@ export class FriendsList extends React.Component {
                                                 {/* <IconButton edge="end" aria-label="PersonAdd">
                                                 <PersonAddIcon />
                                                 </IconButton> */}
-                                                {editfriend}
+                                                <Grid
+                                                    container
+                                                    direction="row"
+                                                    justify="center"
+                                                    alignItems="center"
+                                                >
+                                                    <InviteButton email={friend.email} />
+                                                    {editfriend}
+                                                </Grid>
                                             </ListItemSecondaryAction>
                                         </ListItem>
                                         {divider}

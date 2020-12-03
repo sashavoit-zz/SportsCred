@@ -26,6 +26,9 @@ import {
   
   
 import TextField from '@material-ui/core/TextField';
+
+import InviteButton from '../trivia/InviteButton'
+import Grid from '@material-ui/core/Grid'
   
 const drawerWidth = 200;
 const url = '/search?';
@@ -212,8 +215,10 @@ class SearchBar extends Component {
                         console.log(loop+":"+results.length)
                         loop += 1;
                         var friend = <Friend user={user.email} stranger={result.Email} msg="true"/>;
+                        var invite = <InviteButton email={result.Email}/>;
                         if(user.email == result.Email){
                             friend = null;
+                            invite = null;
                         }
                         return(
                             //result.id
@@ -233,12 +238,21 @@ class SearchBar extends Component {
                                     </React.Fragment>
                                     }
                                     />
-                                    <ListItemSecondaryAction onClick={console.log("add friend")}>
-                                        {/* <IconButton edge="end" aria-label="PersonAdd">
-                                        <PersonAddIcon />
-                                        </IconButton> */}
-                                        {friend}
-                                    </ListItemSecondaryAction>
+
+                                        <ListItemSecondaryAction onClick={console.log("add friend")}>
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justify="center"
+                                                alignItems="center"
+                                            >
+                                                {/* <IconButton edge="end" aria-label="PersonAdd">
+                                                <PersonAddIcon />
+                                                </IconButton> */}
+                                                {invite}
+                                                {friend}
+                                            </Grid>
+                                        </ListItemSecondaryAction>
                                 </ListItem>
                                 {divider}
                             </div>

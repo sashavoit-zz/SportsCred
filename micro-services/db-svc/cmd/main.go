@@ -42,6 +42,7 @@ func main() {
 	apis.SetUpDebate(app, driver)
 	apis.SetUpNotifs(app, driver)
 	apis.SetUpLeaderboards(app, driver)
+	apis.SetUpMultiplayerTrivia(app, driver)
 
 	app.Run(":3001")
 
