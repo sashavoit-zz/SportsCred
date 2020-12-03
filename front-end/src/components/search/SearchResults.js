@@ -25,11 +25,12 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     //backgroundColor: theme.palette.background.paper,
     backgroundColor: "#333333",
-    maxWidth: "700px", left: '50%',
+    maxWidth: "700px",
+    margin: "auto",
     position: 'relative',
-    transform: 'translate(-50%, -50%)',
-    marginTop: '100px',
-    maxHeight: '100%',
+    //transform: 'translate(-50%, -50%)',
+    //marginTop: '100px',
+    //maxHeight: '100%',
 
 
   },
@@ -77,7 +78,6 @@ function SearchResults(props) {
     <>
       {/* <Tabs user={localStorage.getItem("User")} query={queryString}>
       </Tabs> */}
-      Search results for {queryString}{JSON.stringify(searchResults)}
       <br></br>
       <br></br>
 
@@ -88,28 +88,19 @@ function SearchResults(props) {
         <Card className={classes.root} variant="outlined">
           <CardHeader className={classes.header} title="Search Results for"></CardHeader>
           <CardContent className={classes.content}>
-          <Grid item xs={12}>
             <TextField disabled id="standard-disabled" value={queryString}/>
             <br></br>
             <br></br>
             <br></br>
             <br></br>
-          </Grid>
-          <Grid item xs={12}>
             <Tabs user={localStorage.getItem("User")} query={queryString}>
             </Tabs>
-          </Grid>
-          <Grid item xs={12}>
-          {JSON.stringify(searchResults)}
-          </Grid>
          
           </CardContent>
           <CardActions>
             <Button size="small">Learn More</Button>
           </CardActions>
         </Card>
-
-        {JSON.stringify(searchResults)}
     </>
   );
 }

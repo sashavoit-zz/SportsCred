@@ -34,7 +34,7 @@ const url = '/search/';
 const useStyles = theme => ({
     root: {
       width: '100%',
-      maxWidth: '500px',
+    //   maxWidth: '500px',
       backgroundColor: theme.palette.background.paper,
     },
     appBar: {

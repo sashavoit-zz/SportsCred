@@ -28,7 +28,7 @@ import {
 import TextField from '@material-ui/core/TextField';
   
 const drawerWidth = 200;
-const url = 'http://localhost:3001/search?';
+const url = '/search?';
 
 const useStyles = theme => ({
     root: {
