@@ -20,6 +20,8 @@ import {uid} from "react-uid";
 import {useHistory} from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import { Redirect } from 'react-router';
+import InviteButton from '../trivia/InviteButton'
+import Grid from '@material-ui/core/Grid'
 import {
     AppBar,
     Toolbar,
@@ -205,8 +207,10 @@ class SearchAll extends Component {
                         }
                         loop += 1;
                         var friend = <Friend user={user} stranger={profile.email} msg="true"/>;
+                        var invite = <InviteButton email={profile.email}/>;
                         if(user == profile.email){
                             friend = null;
+                            invite = null;
                         }
                         return(
                             <div key={profile.email} className="list-item">
@@ -223,10 +227,15 @@ class SearchAll extends Component {
                                 }
                                 />
                                 <ListItemSecondaryAction onClick={console.log("add friend")}>
-                                    {/* <IconButton edge="end" aria-label="PersonAdd">
-                                    <PersonAddIcon />
-                                    </IconButton> */}
+                                    <Grid
+                                        container
+                                        direction="row"
+                                        justify="center"
+                                        alignItems="center"
+                                    >
+                                    {invite}
                                     {friend}
+                                    </Grid>
                                 </ListItemSecondaryAction>
                             </ListItem>
                             {divider}
