@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import SideBar from "../SideBar/SideBar";
 import { Button, Typography, Box, makeStyles, StylesProvider, Container, Grid, Paper, TextareaAutosize, CircularProgress } from "@material-ui/core";
 import { addQuestionRelationship, addQuestion, addQuestionsToUser, addQuestionsToDb } from "../../service/SignUpScript";
+import Modal from 'react-modal';
 
 const drawerWidth = 200;
 const drawerHeight = 64;
@@ -18,6 +19,21 @@ class AnswerObject {
         return this.correctResponse;
     }
 }
+
+const customStyles = {
+    content : {
+        top                   : '40%',
+        left                  : '50%',
+        right                 : 'auto',
+        bottom                : 'auto',
+        marginRight           : '-50%',
+        transform             : 'translate(-50%, -40%)',
+        color: 'black',
+        width: '30%',
+        height: '25$',
+        textAlign: 'center'
+    }
+  };
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -123,6 +139,13 @@ const useStyles = makeStyles((theme) => ({
     },
     lastGrid: {
         display: 'none'
+    },
+    startButton: {
+        display: 'block',
+        textAlign: 'center',
+        justifyContent: 'center',
+        marginLeft: 'auto',
+        marginRight: 'auto'
     }
 }));
 
@@ -133,8 +156,13 @@ function Trivia(props) {
   const classes = useStyles();
   const [progress, setProgress] = React.useState(0);
   const [totalAcs, setTotalAcs] = React.useState(0);
+  const [nextQuestionLabel, setNextQuestionLabel] = React.useState("Next question");
+  const [totalPoints, setTotalPoints] = React.useState(0);
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [currentQuestion, setCurrentQuestion] = React.useState(1);
 
   var question;
+  var answer;
   var answer;
 
   var answerChosen;
@@ -153,18 +181,55 @@ function Trivia(props) {
     // get new question and show on site (consumer REST api)
 
     //addQuestionsToDb();
+    //addQuestionsToUser(localStorage.getItem("User"));
+
+    var url = "/getQuestion/" + "maya" + "/hashasdasd";
+      const response = fetch(url, {
+          mode: 'cors',
+          headers: {
+              'Token': localStorage.getItem("Token"), // move whole function to ApiCalls.js later
+              'User': localStorage.getItem("User")
+          }
+        })
+      .then(response => {
+          if (response.ok) {
+              response.json().then(json => {
+                if (json["question"].toString() == null) {
+                    addQuestionsToUser(localStorage.getItem("User"));
+                }
+              })
+          }
+      });
 
     getQuestion();
-    if (document.getElementById("questionLabel").innerHTML == "") {
+    /*if (document.getElementById("questionLabel").innerHTML == "") {
         addQuestionsToUser(localStorage.getItem("User"));
         getQuestion();
-    }
+    }*/
 
     pleaseWork.setCorrectReponse("hello?");
     console.log(pleaseWork.getCorrectResponse());
 
     document.getElementById('currentTime').innerHTML = "0";
+    document.getElementById('currentQuestion').innerHTML = "1";
+    setTotalPoints(0);
   }
+
+  function openModal() {
+    setIsOpen(true);
+
+    if (document.getElementById('startButton') != null) {
+        document.getElementById('startButton').style.display = "none";
+    }
+  };
+
+  function closeModal() {
+    setIsOpen(false);
+
+    if (document.getElementById('startButton') != null) {
+        document.getElementById('startButton').style.display = "block";
+    }
+  };
 
   //Shuffle array algorithm from the internet: https://github.com/coolaj86/knuth-shuffle
   function shuffle(array) {
@@ -303,11 +368,13 @@ function Trivia(props) {
                 document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "+1 points";
                 setTotalAcs((prevTotal) => (prevTotal = prevTotal + 1));
                 updateAcs(localStorage.getItem("User"), 1);
+                setTotalPoints((prevTotalPoints) => (prevTotalPoints = prevTotalPoints + 1));
             }
             else {
                 document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "-1 points";
                 setTotalAcs((prevTotal) => (prevTotal = prevTotal - 1));
                 updateAcs(localStorage.getItem("User"), -1);
+                setTotalPoints((prevTotalPoints) => (prevTotalPoints = prevTotalPoints - 1));
             }
 
             if (pickedAnswer != "wrong") {
@@ -340,8 +407,42 @@ function Trivia(props) {
     }
   }
 
+  function finishGame() {
+      openModal();
+
+      if (document.getElementById('currentQuestion') != null) {
+        document.getElementById('currentQuestion').innerHTML = "0";
+      }
+      setNextQuestionLabel("Next question");
+
+      if (document.getElementById('entry-modal') != null) {
+        document.getElementById('entry-modal').style.display = "block";
+      }
+
+      if (document.getElementById('main-modal') != null) {
+        document.getElementById('main-modal').style.display = "none";
+      }
+  }
+
  function nextQuestion() {
     getQuestion();
+
+    if (document.getElementById('currentQuestion') != null) {
+        if (document.getElementById('currentQuestion').innerHTML != null) {
+            var currentQuestion = parseInt(document.getElementById('currentQuestion').innerHTML);
+            if (currentQuestion == 10) {
+                finishGame();
+            }
+            else {
+                currentQuestion = currentQuestion + 1;
+                if (currentQuestion == 10) {
+                    setNextQuestionLabel("Finish game!");
+                }
+                document.getElementById('currentQuestion').innerHTML = currentQuestion.toString();
+                setCurrentQuestion(currentQuestion);
+            }
+        }
+    }
 
     document.getElementById("option1Label").style.backgroundColor = "#0099ff";
     document.getElementById("option2Label").style.backgroundColor = "#0099ff";
@@ -406,16 +507,25 @@ function Trivia(props) {
 
     return () => {
       clearInterval(timer);
+      if (document.getElementById('currentQuestion') != null) {
+        var currentQuestion = parseInt(document.getElementById('currentQuestion').innerHTML);
+        if (currentQuestion != 10) {
+          updateAcs(localStorage.getItem("User"), -10);
+        }
+      }
     };
   }, []);
 
   return (
     <>
         <Container id="entry-modal" className={classes.introPage}>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h3" gutterBottom>
                 Would you like to test your skills?
             </Typography>
-            <Button variant="contained" color="primary" onClick={beginTrivia}>
+            <Typography variant="h5" gutterBottom>
+                WARNING: An early exit will result in a deduction of 10 points!
+            </Typography>
+            <Button className={classes.startButton} id="startButton" variant="contained" color="primary" onClick={beginTrivia}>
                 Begin trivia!
             </Button>
         </Container>
@@ -424,7 +534,7 @@ function Trivia(props) {
                 <Grid item xs={8} className={classes.questionBox}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} className={classes.labelBox}>
-                            Question:
+                            Question: {currentQuestion}
                             <hr></hr>
                         </Grid>
                         <Grid item xs={8}>
@@ -508,7 +618,7 @@ function Trivia(props) {
             <Grid container spacing={3}>
                 <Grid id="nextButton" item xs={12} className={classes.nextButton}>
                     <Button variant="contained" color="primary" size="large" onClick={nextQuestion}>
-                        Next question
+                        {nextQuestionLabel}
                     </Button>
                 </Grid>
             </Grid>
@@ -518,7 +628,21 @@ function Trivia(props) {
             <Grid id="currentTime" container spacing={3} className={classes.lastGrid}>
 
             </Grid>
+            <Grid id="currentQuestion" container spacing={3} className={classes.lastGrid}>
+
+            </Grid>
         </Container>
+        <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles} contentLabel="Example modal" overlayClassName="Overlay">
+                <Typography variant="h3" gutterBottom>
+                    Game over!
+                </Typography>
+                <Typography variant="h5" gutterBottom>
+                    Net point gain/loss: {totalPoints}
+                </Typography>
+                <Button variant="contained" color="primary" onClick={closeModal}>
+                    Close
+                </Button>
+        </Modal>
     </>
     
   );

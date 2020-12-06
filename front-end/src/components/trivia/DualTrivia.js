@@ -3,9 +3,25 @@ import React, { useState } from "react";
 import SideBar from "../SideBar/SideBar";
 import { Button, Typography, Box, makeStyles, StylesProvider, Container, Grid, Paper, TextareaAutosize, CircularProgress } from "@material-ui/core";
 import { addQuestionRelationship, addQuestion, addQuestionsToUser, addQuestionsToDb } from "../../service/SignUpScript";
+import Modal from 'react-modal';
 
 const drawerWidth = 200;
 const drawerHeight = 64;
+
+const customStyles = {
+    content : {
+        top                   : '40%',
+        left                  : '50%',
+        right                 : 'auto',
+        bottom                : 'auto',
+        marginRight           : '-50%',
+        transform             : 'translate(-50%, -40%)',
+        color: 'black',
+        width: '30%',
+        height: '25$',
+        textAlign: 'center'
+    }
+  };
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -131,6 +147,14 @@ function DualTrivia(props) {
   const [opponentEmail, setOpponentEmail] = React.useState(props.opponentName);
   const [userPoints, setUserPoints] = React.useState(0);
   const [opponentPoints, setOpponentPoints] = React.useState(0);
+  const [welcomeMessage, setWelcomeMessage] = React.useState("Waiting for other player...");
+  const [warningMessage, setWarningMessage] = React.useState("");
+
+  const [nextQuestionLabel, setNextQuestionLabel] = React.useState("Next question");
+  const [totalPoints, setTotalPoints] = React.useState(0);
+  const [OpponentTotalPoints, setOpponentTotalPoints] = React.useState(0);
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [currentQuestion, setCurrentQuestion] = React.useState(1);
 
   var question;
   var answer;
@@ -192,6 +216,22 @@ function DualTrivia(props) {
     return array;
   }
 
+  function openModal() {
+    setIsOpen(true);
+
+    if (document.getElementById('startButton') != null) {
+        document.getElementById('startButton').style.display = "none";
+    }
+  };
+
+  function closeModal() {
+    setIsOpen(false);
+
+    if (document.getElementById('startButton') != null) {
+        document.getElementById('startButton').style.display = "block";
+    }
+  };
+
   function opponentLeft() {
     if (document.getElementById('entry-modal') != null) {
         document.getElementById('entry-modal').style.display = "block";
@@ -202,6 +242,13 @@ function DualTrivia(props) {
     if (document.getElementById('startButton') != null) {
         document.getElementById('startButton').style.display = "none";
     }
+
+    if (document.getElementById('currentQuestion') != null) {
+        document.getElementById('currentQuestion').innerHTML = "10";
+    }
+
+    setWelcomeMessage("Waiting for other player...");
+    setWarningMessage("");
   }
 
   function opponentJoined() {
@@ -210,6 +257,9 @@ function DualTrivia(props) {
         document.getElementById('startButton').style.display = "block";
         console.log("entered join function");
     }
+
+    setWelcomeMessage("Opponent is ready to play!");
+    setWarningMessage("WARNING: An early exit will result in a deduction of 10 points!");
     
   }
 
@@ -222,10 +272,12 @@ function DualTrivia(props) {
                 //setTotalAcs((prevTotal) => (prevTotal = prevTotal + 1));
                 if (whichUser.email == localStorage.getItem("User")) {
                     setUserPoints((prevUserPoints) => (prevUserPoints = prevUserPoints + 1));
+                    setTotalPoints((prevTotalPoints) => (prevTotalPoints = prevTotalPoints + 1));
                     updateAcs(localStorage.getItem("User"), 1);
                 }
                 else {
                     setOpponentPoints((prevOpponentPoints) => (prevOpponentPoints = prevOpponentPoints + 1));
+                    setOpponentTotalPoints((prevOpponentTotalPoints) => (prevOpponentTotalPoints = prevOpponentTotalPoints + 1));
                 }
             }
             else {
@@ -233,10 +285,12 @@ function DualTrivia(props) {
                 //setTotalAcs((prevTotal) => (prevTotal = prevTotal - 1));
                 if (whichUser.email == localStorage.getItem("User")) {
                     setUserPoints((prevUserPoints) => (prevUserPoints = prevUserPoints - 1));
+                    setTotalPoints((prevTotalPoints) => (prevTotalPoints = prevTotalPoints - 1));
                     updateAcs(localStorage.getItem("User"), -1);
                 }
                 else {
                     setOpponentPoints((prevOpponentPoints) => (prevOpponentPoints = prevOpponentPoints - 1));
+                    setOpponentTotalPoints((prevOpponentTotalPoints) => (prevOpponentTotalPoints = prevOpponentTotalPoints - 1));
                 }
             }
 
@@ -357,10 +411,30 @@ function DualTrivia(props) {
     }
 
     document.getElementById('currentTime').innerHTML = "0";
+    document.getElementById('currentQuestion').innerHTML = "1";
+    setTotalPoints(0);
+    setOpponentTotalPoints(0);
     //document.getElementById('questionAcsLabel').innerHTML = localStorage.getItem("User") + ":";
   }
 
   function opponentPressedNext(question, option1, option2, option3, correctAnswer) {
+
+    if (document.getElementById('currentQuestion') != null) {
+        if (document.getElementById('currentQuestion').innerHTML != null) {
+            var currentQuestion = parseInt(document.getElementById('currentQuestion').innerHTML);
+            if (currentQuestion == 10) {
+                finishGame();
+            }
+            else {
+                currentQuestion = currentQuestion + 1;
+                if (currentQuestion == 10) {
+                    setNextQuestionLabel("Finish game!");
+                }
+                document.getElementById('currentQuestion').innerHTML = currentQuestion.toString();
+                setCurrentQuestion(currentQuestion);
+            }
+        }
+    }
 
     var responseBody = [1,2,3,4];
     responseBody = shuffle(responseBody);
@@ -392,6 +466,23 @@ function DualTrivia(props) {
 
     document.getElementById('currentTime').innerHTML = "0";
   }
+
+  function finishGame() {
+    openModal();
+
+    if (document.getElementById('currentQuestion') != null) {
+      document.getElementById('currentQuestion').innerHTML = "0";
+    }
+    setNextQuestionLabel("Next question");
+
+    if (document.getElementById('entry-modal') != null) {
+      document.getElementById('entry-modal').style.display = "block";
+    }
+
+    if (document.getElementById('main-modal') != null) {
+      document.getElementById('main-modal').style.display = "none";
+    }
+}
 
   async function eventListener() {
     const requestOptions = {
@@ -553,6 +644,8 @@ function DualTrivia(props) {
             document.getElementById('startButton').style.display = "block";
             console.log("entered join function");
         }
+        setWelcomeMessage("Opponent is ready to play!");
+        setWarningMessage("WARNING: An early exit will result in a deduction of 10 points!");
     }
 
     eventListener();
@@ -589,14 +682,23 @@ function DualTrivia(props) {
 
     return () => {
       clearInterval(timer);
+      if (document.getElementById('currentQuestion') != null) {
+        var currentQuestion = parseInt(document.getElementById('currentQuestion').innerHTML);
+        if (currentQuestion != 10) {
+          updateAcs(localStorage.getItem("User"), -10);
+        }
+      }
     };
   }, []);
 
   return (
     <>
         <Container id="entry-modal" className={classes.introPage}>
-            <Typography variant="h4" gutterBottom>
-                Waiting for other player...
+            <Typography id="welcomeMessage" variant="h3" gutterBottom>
+                {welcomeMessage}
+            </Typography>
+            <Typography id="warningMessage" variant="h5" gutterBottom>
+                {warningMessage}
             </Typography>
             <Button className={classes.startButton} id="startButton" variant="contained" color="primary" onClick={beginTrivia}>
                 Begin trivia!
@@ -607,7 +709,7 @@ function DualTrivia(props) {
                 <Grid item xs={8} className={classes.questionBox}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} className={classes.labelBox}>
-                            Question:
+                            Question: {currentQuestion}
                             <hr></hr>
                         </Grid>
                         <Grid item xs={8}>
@@ -691,7 +793,7 @@ function DualTrivia(props) {
             <Grid container spacing={3}>
                 <Grid id="nextButton" item xs={12} className={classes.nextButton}>
                     <Button variant="contained" color="primary" size="large" onClick={nextQuestion}>
-                        Next question
+                    {nextQuestionLabel}
                     </Button>
                 </Grid>
             </Grid>
@@ -701,7 +803,24 @@ function DualTrivia(props) {
             <Grid id="currentTime" container spacing={3} className={classes.lastGrid}>
 
             </Grid>
+            <Grid id="currentQuestion" container spacing={3} className={classes.lastGrid}>
+
+            </Grid>
         </Container>
+        <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles} contentLabel="Example modal" overlayClassName="Overlay">
+                <Typography variant="h3" gutterBottom>
+                    Game over!
+                </Typography>
+                <Typography variant="h5" gutterBottom>
+                    Your net point gain/loss: {totalPoints}
+                </Typography>
+                <Typography variant="h5" gutterBottom>
+                    Opponent net point gain/loss: {OpponentTotalPoints}
+                </Typography>
+                <Button variant="contained" color="primary" onClick={closeModal}>
+                    Close
+                </Button>
+        </Modal>
     </>
     
   );
