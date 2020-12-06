@@ -180,6 +180,24 @@ function DualTrivia(props) {
     //document.getElementById('questionAcsLabel').innerHTML = localStorage.getItem("User") + ":";
   }
 
+  function sendNotification() {
+    const requestOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Token": localStorage.getItem("Token")
+        },
+        body: JSON.stringify({
+            email: localStorage.getItem("User"),
+            title: "Trivia penalty",
+            content: "10 ACS points deducted for not finishing trivia game",
+            type: "trivia"
+        }),
+    };
+
+    fetch('/notifs/addNotif', requestOptions);
+  }
+
   function updateAcs(email, offset) {
     const requestOptionsToUpdateAcs = {
         method: "PATCH",
@@ -686,6 +704,7 @@ function DualTrivia(props) {
         var currentQuestion = parseInt(document.getElementById('currentQuestion').innerHTML);
         if (currentQuestion != 10) {
           updateAcs(localStorage.getItem("User"), -10);
+          sendNotification();
         }
       }
     };
