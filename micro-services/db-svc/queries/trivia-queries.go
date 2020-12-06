@@ -74,6 +74,14 @@ func GetQuestion(driver neo4j.Driver, user string) ([6]string, error) {
 
 			return result.Record().GetByIndex(0), nil
 		}
+		if !result.Next() {
+			responseBody[0] = "n/a"
+			responseBody[1] = ""
+			responseBody[2] = ""
+			responseBody[3] = ""
+			responseBody[4] = ""
+			return "", nil
+		}
 		return nil, result.Err()
 	})
 

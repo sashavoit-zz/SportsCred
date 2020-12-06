@@ -14,6 +14,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import lebrown from "../../assets/images/lebrown.jpg";
 import { getAuthToken } from "../../service/ApiCalls";
+import { addQuestionsToUser } from "../../service/SignUpScript";
 
 function LogIn(props) {
   const classes = useStyles();
@@ -25,6 +26,7 @@ function LogIn(props) {
     try {
       await getAuthToken(formFields.username, formFields.password);
       history.replace('/')
+      checkForQuestions();
     } catch (err) {
       console.log(err)
       setAuthError(true);
@@ -47,6 +49,29 @@ function LogIn(props) {
       await handleLogin();
     }
   };
+
+  function checkForQuestions() {
+    var url = "/getQuestion/" + "maya" + "/hashasdasd";
+      const response = fetch(url, {
+          mode: 'cors',
+          headers: {
+              'Token': localStorage.getItem("Token"), // move whole function to ApiCalls.js later
+              'User': localStorage.getItem("User")
+          }
+        })
+      .then(response => {
+          if (response.ok) {
+              response.json().then(json => {
+                //console.log("testing: ", json["question"]);
+                if (json["question"].toString() == "n/a") {
+                    console.log("testing: " + json["question"].toString());
+                    addQuestionsToUser(localStorage.getItem("User"));
+                    //getQuestion();
+                }
+              })
+          }
+      });
+  }
 
   return (
     <section style={sectionStyle}>

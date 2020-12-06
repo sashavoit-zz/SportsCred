@@ -183,24 +183,7 @@ function Trivia(props) {
     //addQuestionsToDb();
     //addQuestionsToUser(localStorage.getItem("User"));
 
-    var url = "/getQuestion/" + "maya" + "/hashasdasd";
-      const response = fetch(url, {
-          mode: 'cors',
-          headers: {
-              'Token': localStorage.getItem("Token"), // move whole function to ApiCalls.js later
-              'User': localStorage.getItem("User")
-          }
-        })
-      .then(response => {
-          if (response.ok) {
-              response.json().then(json => {
-                if (json["question"].toString() == null) {
-                    addQuestionsToUser(localStorage.getItem("User"));
-                }
-              })
-          }
-      });
-
+    checkForQuestions();
     getQuestion();
     /*if (document.getElementById("questionLabel").innerHTML == "") {
         addQuestionsToUser(localStorage.getItem("User"));
@@ -213,6 +196,29 @@ function Trivia(props) {
     document.getElementById('currentTime').innerHTML = "0";
     document.getElementById('currentQuestion').innerHTML = "1";
     setTotalPoints(0);
+  }
+
+  function checkForQuestions() {
+    var url = "/getQuestion/" + "maya" + "/hashasdasd";
+      const response = fetch(url, {
+          mode: 'cors',
+          headers: {
+              'Token': localStorage.getItem("Token"), // move whole function to ApiCalls.js later
+              'User': localStorage.getItem("User")
+          }
+        })
+      .then(response => {
+          if (response.ok) {
+              response.json().then(json => {
+                //console.log("testing: ", json["question"]);
+                if (json["question"].toString() == "n/a") {
+                    console.log("testing: " + json["question"].toString());
+                    addQuestionsToUser(localStorage.getItem("User"));
+                    getQuestion();
+                }
+              })
+          }
+      });
   }
 
   function openModal() {
@@ -307,7 +313,7 @@ function Trivia(props) {
       responseBody = shuffle(responseBody);
 
       var url = "/getQuestion/" + "maya" + "/hashasdasd";
-      const response = await fetch(url, {
+      const response = fetch(url, {
           mode: 'cors',
           headers: {
               'Token': localStorage.getItem("Token"), // move whole function to ApiCalls.js later
@@ -425,6 +431,9 @@ function Trivia(props) {
   }
 
  function nextQuestion() {
+
+    checkForQuestions();
+    
     getQuestion();
 
     if (document.getElementById('currentQuestion') != null) {
@@ -474,6 +483,7 @@ function Trivia(props) {
             setTotalAcs(parseInt(data[0].acs, 10));
         })
         .catch(err => console.log(err))
+    checkForQuestions();
   }, [])
 
   React.useEffect(() => {
