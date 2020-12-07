@@ -440,6 +440,7 @@ function Trivia(props) {
         document.getElementById('currentQuestion').innerHTML = "0";
       }
       setNextQuestionLabel("Next question");
+      setCurrentQuestion(1);
 
       if (document.getElementById('entry-modal') != null) {
         document.getElementById('entry-modal').style.display = "block";
