@@ -152,6 +152,7 @@ export class FriendsList extends React.Component {
                 <Grid container>
                     {this.state.friends.map(friends =>{
                         var loop = 1;
+                        console.log(friends)
                         return(
                             <Grid item xs={6}>
                                 {friends.map(friend =>{
@@ -174,7 +175,7 @@ export class FriendsList extends React.Component {
                                                 <Avatar alt="" src=""/>
                                             </ListItemAvatar>
                                             <ListItemText
-                                            primary={friend.firstname+' '+friend.lastname}
+                                            primary={friend.firstname+' '+friend.lastname + ' ACS:' + friend.acs}
                                             secondary={
                                             <React.Fragment>
                                                 {friend.about}

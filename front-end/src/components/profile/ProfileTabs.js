@@ -81,7 +81,7 @@ export default function SimpleTabs({user, profile}) {
           <Tab label="Posts" {...a11yProps(0)} />
           <Tab label="Debate" {...a11yProps(1)} />
           <Tab label="ACS Chart" {...a11yProps(2)} />
-          <Tab label="Friends" {...a11yProps(3)} />
+          <Tab label="Radar" {...a11yProps(3)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>

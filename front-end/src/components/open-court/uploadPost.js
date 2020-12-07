@@ -4,6 +4,7 @@ import {TextField, Button, Avatar, Container, Grid, Typography, Card, CardConten
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 async function addPost(content, author, postTime) {
+    addAcs(author)
     const requestOptions = {
         mode: 'cors',
         method: 'POST',
@@ -26,6 +27,29 @@ async function addPost(content, author, postTime) {
       })
       return newPost
       }
+async function addAcs(email){
+    const url = '/acs'; //http://localhost:3001
+    const data = {
+        email: email,
+        offset: 1
+    }
+    const profile_request = new Request(url, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json',
+            'Token': localStorage.getItem("Token") // move whole function to ApiCalls.js later
+        }
+    });
+    fetch(profile_request)
+    .then(res => {
+        
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+}
   async function reloadPost() {
         const requestOptions = {
             method: "GET",

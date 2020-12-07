@@ -103,6 +103,7 @@ func GetFriendsList(driver neo4j.Driver, email string) (interface{}, error) {
 				"firstname:s.firstName,"+
 				"phone:s.phone,"+
 				"email:s.email,"+
+				"acs:s.acs,"+
 				"about:s.about"+
 				"})\n"+
 				"as result",

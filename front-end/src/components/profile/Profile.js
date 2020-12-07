@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import SideBar from "../SideBar/SideBar";
 import Tabs from "./ProfileTabs";
-import PassDialog from "./ChangePassword";
+//import PassDialog from "./ChangePassword";
 import OptionButton from "./OptionButton";
 
 import PropTypes from 'prop-types';
@@ -13,12 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import UploadPicPopup from './UploadPicPopup'
 import {fetchUserProfilePic} from "../../service/ProfileService"
 
-// <<<<<<< HEAD
-// import FaceIcon from '@material-ui/icons/Face';
-// //const ACSSCORE = "560"
-// =======
-// const ACSSCORE = "560"
-// >>>>>>> master
+
 const letters = /^[A-Za-z]*$/;
 const numbers = /^[+\d]?(?:[\d-.\s()]*)$/;
 
@@ -309,14 +304,19 @@ class Profile extends Component {
         <CardContent className={classes.content}>
           <div className={classes.menu}>
 
+            
+            <Typography onClick={() => this.setState({ edit: false })} className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
+              Profile
+            </Typography>
+
             <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
               Edit Profile
-              </Typography>
-
-
-            <Typography className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
-              <PassDialog></PassDialog>
             </Typography>
+
+            
+            {/* <Typography className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
+              <PassDialog></PassDialog>
+            </Typography> */}
 
           </div>
           <div className={classes.profile}>

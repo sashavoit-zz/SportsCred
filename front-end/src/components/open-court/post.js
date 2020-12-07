@@ -245,7 +245,7 @@ export class Post extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            errorText:"",
+            errorText: "Add reply to this post",
             firstName:"",
             lastName:"",
             replies: [],
@@ -328,10 +328,9 @@ export class Post extends React.Component{
             this.addComment(replyText, this.props, date)
             this.setState({
                 uploadInput: "",
-                errorText: ""
+                errorText: "comment send."
             }, () => { this.refresh(); })
             replyFiel.value = ""
-            replyFiel.placeholder = "comment send."
             this.setState({commtData: this.state.commtData})
         }
     }
@@ -452,7 +451,7 @@ export class Post extends React.Component{
                         {this.state.inputMode ?
                             <Form id="fm" onSubmit={this.handleSubmit} reply style={{ marginTop: "15px" }}>
                                 <Form.TextArea
-                                    placeholder="Add reply to this post"
+                                        placeholder={this.state.errorText}
                                 />
                                 <Button content='Add Reply' type="submit" labelPosition='left' icon='edit' primary />
                             </Form> : null
