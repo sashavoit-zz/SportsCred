@@ -175,13 +175,21 @@ export class FriendsList extends React.Component {
                                                 <Avatar alt="" src=""/>
                                             </ListItemAvatar>
                                             <ListItemText
-                                            primary={friend.firstname+' '+friend.lastname + ' ACS:' + friend.acs}
-                                            secondary={
-                                            <React.Fragment>
-                                                {friend.about}
-                                            </React.Fragment>
-                                            }
+                                                primary={
+                                                    <div>
+                                                        <span style={{ fontWeight: "bold" }}>{friend.firstname + ' ' + friend.lastname + "   "}</span>
+                                                        <span style={{ color: "#737373" }}>{"ACS: " + friend.acs}</span>
+                                                    </div>
+                                                    //friend.firstname+' '+friend.lastname + ' ACS:' + friend.acs
+                                                }
+                                                secondary={
+                                                    <React.Fragment>
+                                                        {friend.about}
+                                                    </React.Fragment>
+                                                }
                                             />
+
+                                            
                                             <ListItemSecondaryAction>
                                                 {/* <IconButton edge="end" aria-label="PersonAdd">
                                                 <PersonAddIcon />
