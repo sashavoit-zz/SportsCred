@@ -211,7 +211,7 @@ function Trivia(props) {
             email: localStorage.getItem("User"),
             title: "Trivia penalty",
             content: "10 ACS points deducted for not finishing trivia game",
-            type: "info"
+            type: "error"
         }),
     };
 
