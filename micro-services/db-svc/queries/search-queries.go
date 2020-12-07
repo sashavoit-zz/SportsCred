@@ -229,6 +229,7 @@ func QueryUsers(driver neo4j.Driver, emails []string, query string, text string,
 					"username:node.firstName+' '+node.lastName,"+
 					"about:node.about,"+
 					"email:node.email,"+
+					"acs:node.acs,"+
 					"resultType:'user'"+
 					"}) as result\n"+
 				"RETURN result",

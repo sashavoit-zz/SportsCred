@@ -220,14 +220,32 @@ class SearchAll extends Component {
                                 <ListItemAvatar>
                                     <Avatar alt={profile.email} src={profile.profilePic}/>
                                 </ListItemAvatar>
-                                <ListItemText
+                                {/* <ListItemText
                                 primary={profile.username}
                                 secondary={
                                 <React.Fragment>
                                     {profile.about}
                                 </React.Fragment>
                                 }
+                                /> */}
+
+                                <ListItemText
+                                    primary={
+                                        <div>
+                                            <span style={{ fontWeight: "bold" }}>{profile.username + "   "}</span>
+                                            <span style={{ color: "#737373" }}>{"ACS: " + profile.acs}</span>
+                                        </div>
+                                        //friend.firstname+' '+friend.lastname + ' ACS:' + friend.acs
+                                    }
+                                    secondary={
+                                        <React.Fragment>
+                                            {profile.about}
+                                        </React.Fragment>
+                                    }
                                 />
+
+
+
                                 <ListItemSecondaryAction onClick={console.log("add friend")}>
 
                                     <Grid
