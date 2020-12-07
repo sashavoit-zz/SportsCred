@@ -22,16 +22,14 @@ class AnswerObject {
 
 const customStyles = {
     content : {
-        top                   : '40%',
+        top                   : '50%',
         left                  : '50%',
         right                 : 'auto',
         bottom                : 'auto',
-        marginRight           : '-50%',
-        transform             : 'translate(-50%, -40%)',
+        transform             : 'translate(-50%, -50%)',
         color: 'black',
-        width: '30%',
-        height: '25$',
-        textAlign: 'center'
+        textAlign: 'center',
+        marginLeft: '100px'
     }
   };
 
@@ -39,11 +37,16 @@ const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
         position: 'absolute',
-        marginLeft: 0,
-        marginTop: drawerHeight,
         display: 'none',
         width: '75%',
-        height: '100%',
+        top                   : '50%',
+        left                  : '50%',
+        right                 : 'auto',
+        bottom                : 'auto',
+        transform             : 'translate(-50%, -50%)',
+        marginLeft: '120px',
+        marginTop: '40px',
+        height: '80%'
     },
     introPage: {
         flexGrow: 1,
@@ -56,9 +59,12 @@ const useStyles = makeStyles((theme) => ({
         color: 'black',
         backgroundColor: 'white',
         paddingTop: '5px',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        marginLeft: '25%'
+        marginLeft: '100px',
+        top                   : '50%',
+        left                  : '50%',
+        right                 : 'auto',
+        bottom                : 'auto',
+        transform             : 'translate(-50%, -50%)'
     },
     topNav: {
         border: 1 + 'px solid aqua',
@@ -185,10 +191,6 @@ function Trivia(props) {
 
     checkForQuestions();
     getQuestion();
-    /*if (document.getElementById("questionLabel").innerHTML == "") {
-        addQuestionsToUser(localStorage.getItem("User"));
-        getQuestion();
-    }*/
 
     pleaseWork.setCorrectReponse("hello?");
     console.log(pleaseWork.getCorrectResponse());
@@ -209,7 +211,7 @@ function Trivia(props) {
             email: localStorage.getItem("User"),
             title: "Trivia penalty",
             content: "10 ACS points deducted for not finishing trivia game",
-            type: "trivia"
+            type: "info"
         }),
     };
 
