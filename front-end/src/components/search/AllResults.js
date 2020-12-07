@@ -236,7 +236,6 @@ class SearchAll extends Component {
                                         justify="center"
                                         alignItems="center"
                                     >
-                                    {invite}
                                     {friend}
                                     </Grid>
                                 </ListItemSecondaryAction>

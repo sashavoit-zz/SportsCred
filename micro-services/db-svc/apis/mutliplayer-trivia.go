@@ -59,9 +59,9 @@ func SetUpMultiplayerTrivia(app *gin.Engine, driver neo4j.Driver){
 
 		if room, ok := rooms[data.AnotherPlayer]; ok {
 			rooms[email] = room
+			waitForResponse[email] = make(chan Response)
 			waitForResponse[data.AnotherPlayer] <- Response{"Joined", Player{email}}
 		}else{
-			waitForResponse[data.AnotherPlayer] = make(chan Response)
 			waitForResponse[email] = make(chan Response)
 			rooms[email] = Room{Player{email}, Player{data.AnotherPlayer}}
 		}
@@ -138,10 +138,15 @@ func SetUpMultiplayerTrivia(app *gin.Engine, driver neo4j.Driver){
 			return
 		}
 		room := rooms[email]
-		if email == room.First.Email {
-			close(waitForResponse[room.Second.Email])
-		}else{
-			close(waitForResponse[room.First.Email])
+
+		delete(rooms, email)
+		close(waitForResponse[email])
+
+		if _, ok := rooms[room.First.Email]; ok {
+			waitForResponse[room.First.Email] <- Response{"Left", nil}
+		}
+		if _, ok := rooms[room.Second.Email]; ok {
+			waitForResponse[room.Second.Email] <- Response{"Left", nil}
 		}
 
 		c.JSON(200, nil)
@@ -157,13 +162,7 @@ func SetUpMultiplayerTrivia(app *gin.Engine, driver neo4j.Driver){
 		select{
 			case response, ok := <- waitForResponse[email]:
 				if !ok {
-					room := rooms[email]
 					//ONE OF PLAYERS LEFT, I.E. "Left" EVENT OCCURRED
-					waitForResponse[room.First.Email] = nil
-					waitForResponse[room.Second.Email] = nil
-					delete(rooms, room.First.Email)
-					delete(rooms, room.Second.Email)
-
 					response = Response{"Left", nil}
 					c.JSON(200, response)
 				}else{
