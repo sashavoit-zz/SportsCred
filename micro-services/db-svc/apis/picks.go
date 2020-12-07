@@ -69,10 +69,12 @@ func SetUpPicks(app *gin.Engine, driver neo4j.Driver) {
 			var notifType string
 
 			if winner == data.Winner {
-				isCorrect = "correct"
+				queries.UpdateACS(driver, email, 1, false, false)
+				isCorrect = "correct (ACS +1)"
 				notifType = "success"
 			} else {
-				isCorrect = "incorrect"
+				queries.UpdateACS(driver, email, -1, false, false)
+				isCorrect = "incorrect (ACS -1)"
 				notifType = "error"
 			}
 
