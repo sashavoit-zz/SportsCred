@@ -415,8 +415,8 @@ export class Post extends React.Component{
 
                         }
                         </div>
-                        :<Typography variant ="h5" color="textSecondary">
-                            <Typography style={{ wordWrap: "break-word" }}>
+                        :<Typography color="textSecondary">
+                            <Typography variant ="h5" style={{ wordWrap: "break-word" }}>
                                 {this.highlightPattern(postInfo.content.split(url)[0], hash)}
                             <Typography>
                                 {this.highlightPattern(postInfo.content.split(url)[1], hash)}
