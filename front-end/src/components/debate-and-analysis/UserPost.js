@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Card, CardContent, Slider, withStyles, Avatar, Fab,} from "@material-ui/core";
+import { Box, Typography, Card, CardContent, Slider, withStyles, Avatar, Button, } from "@material-ui/core";
 import { addRating, } from "../../service/ApiCalls";
 
 const HotSlider = withStyles({
@@ -67,13 +67,7 @@ export class UserPost extends React.Component {
             identityBox = <CardContent>
                             <Box display="flex">
                                 <Box p={1}>
-                                    <Fab color="red"
-                                        disabled={this.state ? !this.state.didSendRating : true}
-                                        onClick={() => this.setState({ shouldRevealIdentity: true })}
-                                        width="50" height="50"
-                                    >
-                                    ?
-                                    </Fab>
+                                    <Avatar src={""} width="60" height="60" />
                                 </Box>
                                 <Box p={1} flexGrow={1}>
                                     <Typography style={{opacity:.5}} color="textSecondary" gutterBottom variant="h6">
@@ -84,13 +78,35 @@ export class UserPost extends React.Component {
                                     </Typography>
                                 </Box>
                             </Box>
-                        </CardContent>;
-            hotSlider = <HotSlider
-                            aria-label="hot-slider"
-                            valueLabelDisplay="auto"
-                            onChangeCommitted={handleChangeCommitted}
-                            disabled={showUser}
-                        />
+                                <Box display="flex">
+                                    <Box p={1}>
+                                        <Typography color="textSecondary" gutterBottom>
+                                            Disagree
+                                    </Typography>
+                                    </Box>
+                                    <Box p={1} flexGrow={1}>
+                                        <HotSlider
+                                            aria-label="hot-slider"
+                                            valueLabelDisplay="auto"
+                                            onChangeCommitted={handleChangeCommitted}
+                                            disabled={showUser}
+                                        />
+                                    </Box>
+                                    <Box p={1}>
+                                        <Typography color="textSecondary" gutterBottom>
+                                            Agree{"\t"}<Button
+                                                variant="contained"
+                                                color="secondary"
+                                                disabled={this.state ? !this.state.didSendRating : true}
+                                                onClick={() => this.setState({ shouldRevealIdentity: true })}
+                                            >
+                                                Finalize
+                                             </Button>
+                                    </Typography>
+                                    </Box>
+                                </Box>
+                            </CardContent>
+                        ;
         } else {
             identityBox = <CardContent>
                             <Box display="flex">
@@ -109,37 +125,35 @@ export class UserPost extends React.Component {
                                     </Typography>
                                 </Box>
                             </Box>
-                        </CardContent>;
-            hotSlider = <HotSlider
-                            aria-label="hot-slider"
-                            marks={this.state ? this.state.marks : this.props.marks}
-                            valueLabelDisplay="auto"
-                            onChangeCommitted={handleChangeCommitted}
-                            disabled={showUser}
-                        />
+                                <Box display="flex">
+                                    <Box p={1}>
+                                        <Typography color="textSecondary" gutterBottom>
+                                            Disagree
+                                    </Typography>
+                                    </Box>
+                                    <Box p={1} flexGrow={1}>
+                                        <HotSlider
+                                            aria-label="hot-slider"
+                                            marks={this.state ? this.state.marks : this.props.marks}
+                                            valueLabelDisplay="auto"
+                                            onChangeCommitted={handleChangeCommitted}
+                                            disabled={showUser}
+                                        />
+                                    </Box>
+                                    <Box p={1}>
+                                        <Typography color="textSecondary" gutterBottom>
+                                            Agree
+                                    </Typography>
+                                    </Box>
+                                </Box>
+                            </CardContent>
+                    ;
         }
 
         return (
             <div>
                 <Card>
                     {identityBox}
-                    <CardContent>
-                        <Box display="flex">
-                            <Box p={1}>
-                                <Typography color="textSecondary" gutterBottom>
-                                    Disagree
-                            </Typography>
-                            </Box>
-                            <Box p={1} flexGrow={1}>
-                                {hotSlider}
-                            </Box>
-                            <Box p={1}>
-                                <Typography color="textSecondary" gutterBottom>
-                                    Agree
-                            </Typography>
-                            </Box>
-                        </Box>
-                    </CardContent>
                 </Card>
             </div>
         );
