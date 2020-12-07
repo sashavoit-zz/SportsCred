@@ -82,7 +82,6 @@ export class openCourt extends React.Component{
         const {user, classes} = this.props;
         return(
             <div>
-            <div>
                 <UploadPost user={user} firstName={firstName} lastName={lastName} profileLink={this.state.profileLink} component ={this}/>
                 
                 {this.state.loading
@@ -91,23 +90,17 @@ export class openCourt extends React.Component{
                     style={{ position: "fixed", top: "50%", left: "50%" }}
                     />
                 :
-                <>{this.state.posts.map(post =>
+                <div style={{width:"50vw",margin:"auto"}}>
+                {this.state.posts.map(post =>
                     <Post
                         key={uid(post)}
                         postInfo={post}
                         userId={user.email}
                         component={this}
                     />
-                )}</>
+                )}</div>
             }
-             </div>
-            </div>
-                    
-    
-                    
-                        
-                
-            
+             </div>   
         );
     }
 }

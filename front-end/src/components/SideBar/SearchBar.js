@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 function SearchBar(props) {
   const classes = useStyles();
   const history = useHistory()
@@ -53,7 +54,9 @@ function SearchBar(props) {
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-        history.push(`/search/all/?search=${searchQuery}`)
+      if(searchQuery && searchQuery.length > 0){
+        history.push(`/search/all/?search=${searchQuery.replaceAll("#","-")}`)
+      }
     }
   };
 

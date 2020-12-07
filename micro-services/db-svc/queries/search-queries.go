@@ -113,7 +113,10 @@ func SearchQuery(driver neo4j.Driver, query string, skip int, pagesize int)(inte
 			"RETURN COLLECT({"+
 				"firstName:u.firstName,"+
 				"lastName:u.lastName,"+
-				"profilePic:u.profilePic,"+
+				"profilePic: u.profilePic,"+
+				"email: u.email,"+
+				"acs: u.acs,"+
+				"pics: node.pics,"+
 				"postId:toString(node.postId),"+
 				"content:node.content,"+
 				"time:node.postTime,"+
@@ -159,14 +162,17 @@ func QueryHashtag(driver neo4j.Driver, hashtag string, skip int, pagesize int)(i
 				"MATCH (p:Post)\n"+
 				"MATCH (u:User)-[:CREATED]->(p)\n"+
 				"WHERE toLower(p.content) CONTAINS toLower($hashtag)"+
-				"RETURN u.firstName as firstname, u.lastName as lastname, u.profilePic as profilePic, p\n"+
+				"RETURN u.firstName as firstname, u.lastName as lastname, u.profilePic as profilePic, p, u.email as email, u.acs as acs, u.profilePic as pfp \n"+
 				//"ORDER BY p.postTime DESC\n"+
 				"SKIP $skip LIMIT $pagesize\n"+
 				"}\n"+
 				"RETURN collect({"+
 					"firstName: firstname,"+
 					"lastName: lastname,"+
-					"profilePic: profilePic,"+
+					"profilePic: pfp,"+
+					"email: email,"+
+					"acs: acs,"+
+					"pics: p.pics,"+
 					"postId: toString(p.postId),"+
 					"content: p.content,"+
 					"time: p.postTime,"+

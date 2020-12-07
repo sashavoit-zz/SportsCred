@@ -74,7 +74,7 @@ function SearchResults(props) {
         <Card className={classes.root} variant="outlined">
           <CardHeader className={classes.header} title="Search Results for"></CardHeader>
           <CardContent className={classes.content}>
-            <TextField disabled id="standard-disabled" value={queryString}/>
+            <TextField disabled id="standard-disabled" value={queryString.replaceAll("-","#")}/>
             <br></br>
             <br></br>
             <br></br>

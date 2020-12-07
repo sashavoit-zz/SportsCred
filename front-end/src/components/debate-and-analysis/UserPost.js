@@ -111,12 +111,16 @@ export class UserPost extends React.Component {
             identityBox = <CardContent>
                             <Box display="flex">
                                 <Box p={1}>
-                                    <Avatar src={this.props.dpLink} width="60" height="60" />
+                                    <a href={"user/" + this.props.posterEmail}>
+                                        <Avatar src={this.props.dpLink} width="60" height="60" />
+                                    </a>
                                 </Box>
                                 <Box p={1} flexGrow={1}>
-                                    <Typography display="inline" color="textSecondary" gutterBottom variant="h6">
-                                        {this.props.name}
-                                    </Typography>
+                                    <a href={"user/" + this.props.posterEmail}>
+                                        <Typography display="inline" color="textSecondary" gutterBottom variant="h6">
+                                            {this.props.name}
+                                        </Typography>
+                                    </a>
                                     <Typography style={{opacity:.7}} display="inline" color="textSecondary" gutterBottom variant="h7" >
                                         {"\tACS: "}{this.props.acs}
                                     </Typography>

@@ -57,9 +57,9 @@ class PostComment extends Component {
     if (f_comm) {
       this.first_commts =
         <Comment>
-        <Comment.Avatar as='a' src={f_comm.profilePic} />
+          <Comment.Avatar as='a' href={f_comm.email == localStorage.getItem("User") ? "/profile" : "user/" + f_comm.email} src={f_comm.profilePic} />
           <Comment.Content>
-          <Comment.Author as='a'>{f_comm.firstName+ " " + f_comm.lastName}</Comment.Author>
+          <Comment.Author as='a' href={f_comm.email == localStorage.getItem("User") ? "/profile" : "user/" + f_comm.email}>{f_comm.firstName+ " " + f_comm.lastName}</Comment.Author>
             <Comment.Metadata>
             <span className={classes.time}>{"ACS: " + f_comm.acs + " - " + f_comm.email + " - " + f_comm.time}</span>
             </Comment.Metadata>
@@ -75,9 +75,9 @@ class PostComment extends Component {
 
       this.commts = r_comm.map((item) =>
         <Comment>
-          <Comment.Avatar as='a' src={item.profilePic} />
+          <Comment.Avatar as='a' href={item.email == localStorage.getItem("User") ? "/profile" : "user/" + item.email} src={item.profilePic} />
           <Comment.Content>
-            <Comment.Author as='a'>{item.firstName+ " " + item.lastName}</Comment.Author>
+            <Comment.Author as='a' href={item.email == localStorage.getItem("User") ? "/profile" : "user/" + item.email}>{item.firstName+ " " + item.lastName}</Comment.Author>
             <Comment.Metadata>
               <span className={classes.time}>{"ACS: " + item.acs + " - " + item.email + " - " + item.time}</span>
             </Comment.Metadata>

@@ -136,7 +136,9 @@ export class Debate extends React.Component {
                 <br></br>
                 <Box display="flex">
                   <Box p={1}>
-                    <Avatar src={this.state.profilePicLink} width="60" height="60"/>
+                    <a href={"/profile"}>
+                      <Avatar src={this.state.profilePicLink} width="60" height="60" />
+                    </a>
                   </Box>
                   <Box p={1} flexGrow={1}>
                     <TextField

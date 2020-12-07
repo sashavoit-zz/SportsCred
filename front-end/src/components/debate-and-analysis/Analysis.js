@@ -200,11 +200,15 @@ export class Analysis extends React.Component{
               <CardContent>
                 <Box display="flex">
                   <Box p={1}>
-                    <Avatar src={this.state.profilePicLink} width="60" height="60"/>
+                    <a href={"/profile"}>
+                      <Avatar src={this.state.profilePicLink} width="60" height="60"/>
+                    </a>
                   </Box>
                   <Box p={1} flexGrow={1}>
                     <Typography display="inline" color="textSecondary" gutterBottom variant="h6" >
-                      {this.state.userName}
+                      <a href={"/profile"}>
+                        {this.state.userName}
+                      </a>
                     </Typography>
                     <Typography style={{opacity:.7}} display="inline" color="textSecondary" gutterBottom variant="h7" >
                       {"\tACS: "}{this.state.currentUserACS}

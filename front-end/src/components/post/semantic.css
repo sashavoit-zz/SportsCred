@@ -651,7 +651,7 @@ p:last-child {
 --------------------*/
 
 a {
-  color: #4183C4;
+  color: #ffffff;
   text-decoration: none;
 }
 
@@ -672,17 +672,17 @@ a:hover {
 
 ::-webkit-selection {
   background-color: #2e2e2e;
-  color: rgba(0, 0, 0, 0.87);
+  color: rgba(255, 255, 255, 0.87);
 }
 
 ::-moz-selection {
   background-color: #2e2e2e;
-  color: rgba(0, 0, 0, 0.87);
+  color: rgba(255, 255, 255, 0.87);
 }
 
 ::selection {
   background-color: #2e2e2e;
-  color: rgba(0, 0, 0, 0.87);
+  color: rgba(255, 255, 255, 0.87);
 }
 
 /* Form */

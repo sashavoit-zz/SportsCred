@@ -21,6 +21,8 @@ import {useHistory} from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import { Redirect } from 'react-router';
 
+import { Alert, AlertTitle } from '@material-ui/lab';
+
 import InviteButton from '../trivia/InviteButton'
 import Grid from '@material-ui/core/Grid'
 
@@ -33,7 +35,7 @@ import {
 import TextField from '@material-ui/core/TextField';
   
 const drawerWidth = 200;
-const url = '/search/';
+const url = '';
 
 const useStyles = theme => ({
     root: {
@@ -99,12 +101,18 @@ class SearchAll extends Component {
     }
     renderRedirect = () => {
         let url = '/user/'+this.clickedprofile;
-        if(this.clickedprofile == this.props.user.email){
+        if(this.clickedprofile == this.props.user){
             url = '/profile';
         }
         if (this.state.redirect) {
             return <Redirect to={url}/>
         }
+    }
+
+    encode(value){
+        let a = btoa(value)
+        a = a.replaceAll("/","-");
+        return a;
     }
 
 
@@ -114,7 +122,8 @@ class SearchAll extends Component {
 
     queryUsers = async () => {
         var userOptions = this.user+'&'+this.state.currPage+'&'+10;
-        var userQuery = url+'users/?search='+this.props.query+'&params='+btoa(userOptions);
+        var userQuery = url+'/search/users/?search='+this.props.query;
+        userQuery = encodeURI(userQuery);
         const userReq = new Request(userQuery, {
             method:'GET'
         });
@@ -144,7 +153,8 @@ class SearchAll extends Component {
 
     queryPosts = async () => {
         var postOptions = this.user+'&'+this.state.currPage+'&'+this.state.pageCount;
-        var postQuery = url+'posts/?search='+this.props.query+'&params='+btoa(postOptions);
+        var postQuery = url+'/search/posts/?search='+this.props.query;
+        postQuery = encodeURI(postQuery);
         const postReq = new Request(postQuery, {
             method:'GET'
         });
@@ -186,19 +196,18 @@ class SearchAll extends Component {
         const {user} = this.props;
         const {query} = this.props;
         const {userResults} = this.state;
-        console.log("RENDER USERS")
+        console.log("RENDER USERS1");
         console.log(userResults)
         console.log(this.state)
         
 
-        if(Object.keys(userResults).length && userResults.length){
+        if(Object.keys(userResults).length && userResults.length && userResults.length > 0){
             var loop = 1;
             return(
                 <List className={classes.root}>
                     {this.renderRedirect()}
                     {userResults.map(profile => {
                         if(profile != null){
-                           
                         
                         let divider;
                         if(loop==userResults.length){
@@ -272,7 +281,7 @@ class SearchAll extends Component {
         const {classes} = this.props;
         const {user} = this.props;
         const {postResults} = this.state;
-        if(Object.keys(postResults).length && postResults.length){
+        if(Object.keys(postResults).length && postResults.length && postResults.length > 0){
             return(
                 <div>
                 {postResults.map(post => {
@@ -287,8 +296,6 @@ class SearchAll extends Component {
                 })}
                 </div>
             );
- 
-
         }
     }
 
@@ -297,23 +304,41 @@ class SearchAll extends Component {
         const {query} = this.props;
         const {classes} = this.props;
         const {type} = this.props;
+        let messageAll = "";
+        let messageUser = "";
+        let messagePosts = "";
+
+
+        if(this.state.userResults && this.state.userResults.length == 0){
+            messageUser = <Alert severity="info">No results for users matching {this.props.query}</Alert>;
+        }
+        if(this.state.postResults && this.state.postResults.length == 0){
+            messagePosts = <Alert severity="info">No results for posts matching {this.props.query}</Alert>;
+        }
+        if(messageUser != "" && messagePosts != ""){
+            messageAll = <Alert severity="info">No results for search {this.props.query}</Alert>;
+        }
+
         if(type == 'all'){
             return(
                 <div>
-                {this.renderUsers()}
-                {this.renderPosts()}
+                    {this.renderUsers()}
+                    {this.renderPosts()}
+                    {messageAll}
                 </div>
             )
         } else if (type == 'user'){
             return(
                 <div>
                     {this.renderUsers()}
+                    {messageUser}
                 </div>
             )
         } else {
             return(
                 <div>
                     {this.renderPosts()}
+                    {messagePosts}
                 </div>
             )
         }

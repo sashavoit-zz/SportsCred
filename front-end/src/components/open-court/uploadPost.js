@@ -310,8 +310,10 @@ export class UploadPost extends React.Component{
                 <div>
                     <Grid className = {classes.grid} container spacing={1}>
                         <Grid item >
-                            <Avatar className = {classes.center} alt="user profile" src = {profileLink}/>
-                            <Typography align = 'center' className = {classes.center} >{firstName+" "+lastName}</Typography>                        
+                            <a href="/profile">
+                                <Avatar className={classes.center} alt="user profile" src={profileLink} />
+                                <Typography align='center' className={classes.center} >{firstName + " " + lastName}</Typography>
+                            </a>                      
                         </Grid>
                         <Grid item xs>
                             <Card>

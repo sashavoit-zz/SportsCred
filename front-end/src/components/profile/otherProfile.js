@@ -21,6 +21,8 @@ import { Collapse, IconButton } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 
+
+import {fetchUserProfilePic} from "../../service/ProfileService"
 import FaceIcon from '@material-ui/icons/Face';
 const ACSSCORE = "560"
 const letters = /^[A-Za-z]*$/;
@@ -94,7 +96,12 @@ const styles = theme => ({
   },
   cardAction: {
     paddingLeft: "0",
-},
+  },
+  profilePic:{
+    margin:"auto",
+    height:"100px",
+    width:"100px"
+  },
 });
 
 const url = 'localhost:3001/profile'; //http://localhost:3001
@@ -103,12 +110,21 @@ const url = 'localhost:3001/profile'; //http://localhost:3001
 class UserProfile extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      profileLink: null,
+    }
+  }
 
+  async getUserProfilePic(){
+    console.log("in user profile fetch");
+    console.log(this.props);
+    const result = await fetchUserProfilePic(this.props.profileInfo.email);
+    this.setState({profileLink: result})
   }
 
   componentDidMount = () => {
 
-
+    this.getUserProfilePic();
 
   }
 
@@ -132,8 +148,12 @@ class UserProfile extends Component {
 
             <div className={classes.profile}>
               <div className={classes.leftProfile}>
-                <FaceIcon onClick={this.handleBackProfile} className={classes.userIcon} />
-                <Typography id="username" onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
+              <IconButton>
+                <Avatar
+                  className={classes.profilePic}
+                  src={this.state.profileLink}
+                />
+                </IconButton><Typography id="username" onClick={this.handleBackProfile} className={classes.option} variant="h5" component="h2">
                     {profileInfo.firstname}&nbsp;{profileInfo.lastname}
                 </Typography>
               </div>

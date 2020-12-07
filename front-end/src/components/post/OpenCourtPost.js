@@ -54,7 +54,7 @@ export class OpenCourtPost extends React.Component {
     const { classes } = this.props;
     const { user } = this.props;
     return (
-      <div className={classes.root}>
+      <div className={classes.root} style={{width:"50vw",margin:"auto"}}>
         {this.state.posts.map(post =>
           <Post
             key={uid(post)}

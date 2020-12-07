@@ -26,8 +26,8 @@ import LaunchIcon from '@material-ui/icons/Launch';
 
 import { Button, Form } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
-
-
+// import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+// import { Redirect } from "react-router-dom";
 
 const styles = theme => ({
     root: {
@@ -119,7 +119,7 @@ const styles = theme => ({
         marginTop: "60px",
         marginLeft: "auto",
         marginRight: "auto",
-        width: "50vw",
+        width: "100%",
     },
     card:{
         width:'60%',
@@ -363,24 +363,31 @@ export class Post extends React.Component{
           </Typography>,
         ] : [...arr, element]), []);
       };
-
+    
     render(){
         const { classes } = this.props;
         const {userId} = this.props;
         const {postInfo, component} = this.props;
         const url = postInfo.content.match(/\bhttps?:\/\/\S+/gi)
         const hash =/(?:\s|^)?#[A-Za-z0-9\-\.\_]+(?:\s|$)/g
- 
     
         return (
             <div className={classes.cardArea}>
                 <Card className={classes.cardRoot} variant="outlined">
-                    <Avatar className={classes.userIcon} src ={postInfo.profilePic}/>
+                    <Link to={postInfo.email == localStorage.getItem("User") ? "/profile" : "/user/" + postInfo.email }>
+                    <a>
+                        <Avatar className={classes.userIcon} src={postInfo.profilePic}/>
+                    </a>
+                    </Link>
                     <CardContent className={classes.cardContent}>
                         <div className={classes.cardName}>
-                            <Box style={{ fontWeight: "bold" }} display='inline'>
-                                {postInfo.firstName + " " + postInfo.lastName + "   "}
-                            </Box>
+                            <Link to={postInfo.email == localStorage.getItem("User") ? "/profile" : "/user/" + postInfo.email}>
+                            <a>
+                                <Box style={{ fontWeight: "bold" }} display='inline'>
+                                    {postInfo.firstName + " " + postInfo.lastName + "   "}
+                                </Box>
+                            </a>
+                            </Link>
                             <Box className={classes.postInfo} display='inline'>
                                 {"ACS: " + postInfo.acs + " - " + postInfo.email + " - " + timeSince(postInfo.time)}
                             </Box>

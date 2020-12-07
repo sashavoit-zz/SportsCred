@@ -67,13 +67,17 @@ func LoadPosts(driver neo4j.Driver, email string) (interface{}, error) {
 			"CALL{\n"+
 				"MATCH (p:Post)\n"+
 				"MATCH (u:User {email:$email})-[:CREATED]->(p)\n"+
-				"RETURN u.firstName as firstname, u.lastName as lastname, p\n"+
+				"RETURN u.firstName as firstname, u.lastName as lastname, p, u.profilePic as pfp, u.email as email, u.acs as acs\n"+
 				"ORDER BY p.postTime DESC\n"+
 				"}\n"+
 				"RETURN collect({"+
 				"firstName: firstname,"+
 				"lastName: lastname,"+
 				"postId: toString(p.postId),"+
+				"profilePic: pfp,"+
+				"email: email,"+
+				"acs: acs,"+
+				"pics: p.pics,"+
 				"content: p.content,"+
 				"time: p.postTime,"+
 				"likes: toString(p.likes),"+
@@ -109,9 +113,9 @@ func LoadPost(driver neo4j.Driver, postId string) (interface{}, error) {
 				"CALL { \n"+
 				"WITH p \n"+
 				"MATCH(u:User {email: p.email}) \n"+
-				"RETURN u.firstName as userFirstName, u.lastName as userLastName \n"+
+				"RETURN u.firstName as userFirstName, u.lastName as userLastName, u.acs as acs, u.profilePic as pfp, u.email as email \n"+
 				"} \n"+
-				"RETURN collect({firstName: userFirstName, lastName: userLastName, userProfile: p.userProfile, postId: toString(p.postId), content: p.content, time: toString(p.postTime), likes: toString(p.likes), dislikes: toString(p.dislikes)}) as posts",
+				"RETURN collect({acs: acs, profilePic: pfp, email: email,firstName: userFirstName, lastName: userLastName, pics:p.pics, userProfile: p.userProfile, postId: toString(p.postId), content: p.content, time: toString(p.postTime), likes: toString(p.likes), dislikes: toString(p.dislikes)}) as posts",
 			map[string]interface{}{"postId": postId})
 		if err != nil {
 			return nil, err
@@ -135,7 +139,7 @@ func VisitorLoadPost(driver neo4j.Driver, postId string) (interface{}, error) {
 	defer session.Close()
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH (p:Post {postId: toInteger($postId)}) RETURN p.content, toString(p.dislikes), toString(p.likes)",
+			"MATCH (p:Post {postId: toInteger($postId)}) RETURN p.content, toString(p.dislikes), toString(p.likes), p.pics",
 			map[string]interface{}{"postId": postId})
 		if err != nil {
 			return nil, err
