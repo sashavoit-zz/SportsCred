@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {CardActions,Card, Grid,CardContent, Typography, IconButton,Avatar, CardActionArea,GridList,GridListTile} from '@material-ui/core';
+import {CardActions,Card, Grid,CardContent, Typography, IconButton,Avatar, CardActionArea,GridList,GridListTile, ButtonBase} from '@material-ui/core';
 import FacebookEmbeds from './facebookEmbeds';
 import TwitterEmbeds from './twitterEmbeds';
 import RedditEmbeds from './redditEmbeds';
@@ -136,8 +136,10 @@ const styles = theme => ({
         color:"#757ce8",
     },
     imageGrid:{
-        maxHeight:"100%",
-        maxWidth:"100%"
+        maxHeight:'100%',
+        maxWidth:'100%',
+        height:"auto",
+        width:"auto"
     },
 
 
@@ -306,6 +308,7 @@ export class Post extends React.Component{
         })
         .then(commts => {
             this.setState({ commtData: commts })
+            this.props.component.setState({loading:false})
         })
         .catch((error) => {
             console.log(error)
@@ -364,9 +367,10 @@ export class Post extends React.Component{
     render(){
         const { classes } = this.props;
         const {userId} = this.props;
-        const {postInfo} = this.props;
+        const {postInfo, component} = this.props;
         const url = postInfo.content.match(/\bhttps?:\/\/\S+/gi)
         const hash =/(?:\s|^)?#[A-Za-z0-9\-\.\_]+(?:\s|$)/g
+ 
     
         return (
             <div className={classes.cardArea}>
@@ -397,13 +401,17 @@ export class Post extends React.Component{
                         {postInfo.pics == null
                         ?<div></div>
                         :
-                        <GridList cellHeight={400} spacing={3} className={classes.gridList} cols={2}>
-                            {postInfo.pics.map(imageURL => (
-                            <GridListTile cols={1}>
-                                <img  src={imageURL} className = {classes.imageGrid}/>
+                        <div>
+                        <div style={{ marginTop:"10px"}}></div>
+                        <GridList cellHeight="auto" spacing={3} className={classes.gridList} cols={2}>
+                            {
+                            postInfo.pics.map(imageURL => (
+                            <GridListTile cols={1} >
+                                    <img  src={imageURL} className={classes.imageGrid}/>
                             </GridListTile>
                             ))}
                         </GridList>
+                        </div>
 
                         }
                         </div>

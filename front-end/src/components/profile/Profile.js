@@ -12,6 +12,8 @@ import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 import UploadPicPopup from './UploadPicPopup'
 import {fetchUserProfilePic} from "../../service/ProfileService"
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const letters = /^[A-Za-z]*$/;
@@ -112,7 +114,11 @@ const styles = theme => ({
     margin:"auto",
     height:"100px",
     width:"100px"
-  }
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 });
 
 
@@ -161,7 +167,8 @@ class Profile extends Component {
       openPopup: false,
       selectedFile: null,
       profileLink: null,
-      uploaded: false
+      uploaded: false,
+      loading:true,
     }
   }
   componentDidMount(){
@@ -254,7 +261,10 @@ class Profile extends Component {
   
    async getUserProfilePic(){
     const result = await fetchUserProfilePic(this.props.user.email)
-    this.setState({profileLink: result})
+    this.setState({
+      profileLink: result,
+      loading:false
+    })
   }
  
   render() {
@@ -300,7 +310,14 @@ class Profile extends Component {
       )
 
     return (
-      <Card className={classes.root}>
+      <div>
+        {this.state.loading
+        ?<CircularProgress
+        size="4rem"
+        style={{ position: "fixed", top: "50%", left: "50%" }}
+        />
+        :
+        <Card className={classes.root}>
         <CardContent className={classes.content}>
           <div className={classes.menu}>
 
@@ -359,6 +376,11 @@ class Profile extends Component {
                 
             </UploadPicPopup>
       </Card>
+
+        }
+            
+      
+      </div>
     );
   }
 }

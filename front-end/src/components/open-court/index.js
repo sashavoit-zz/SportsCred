@@ -1,9 +1,17 @@
 import React, { Component } from "react";
+import {withStyles} from "@material-ui/core/styles";
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import UploadPost from "./uploadPost"
 import Post from './post'
 import {uid} from "react-uid";
 import {fetchUserProfilePic} from '../../service/ProfileService'
-
+const styles = theme =>({
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+      },
+});
 const LOADPOSTS = '/allPosts'
 export class openCourt extends React.Component{
     constructor(props) {
@@ -12,6 +20,7 @@ export class openCourt extends React.Component{
             "firstName":"",
             "lastName":"",
             posts: [],
+            loading:true,
             profileLink:"",
         };
         this.reloadPost = this.reloadPost.bind(this)
@@ -39,7 +48,7 @@ export class openCourt extends React.Component{
         };
         fetch(LOADPOSTS, requestOptions)
             .then(response => response.json())
-            .then((data) => (this.setState({posts: data})))
+            .then((data) => (this.setState({posts: data, loading:false})))
             .catch(err => console.log(err))
       }
 
@@ -70,19 +79,36 @@ export class openCourt extends React.Component{
     render(){
         const firstName =this.state.firstName;
         const lastName = this.state.lastName;
-        const {user} = this.props;
+        const {user, classes} = this.props;
         return(
             <div>
-            <UploadPost user={user} firstName={firstName} lastName={lastName} profileLink={this.state.profileLink} component ={this}/>
-            {this.state.posts.map(post =>
+            <div>
+                <UploadPost user={user} firstName={firstName} lastName={lastName} profileLink={this.state.profileLink} component ={this}/>
+                
+                {this.state.loading
+                ? <CircularProgress
+                    size="4rem"
+                    style={{ position: "fixed", top: "50%", left: "50%" }}
+                    />
+                :
+                <>{this.state.posts.map(post =>
                     <Post
                         key={uid(post)}
                         postInfo={post}
                         userId={user.email}
+                        component={this}
                     />
-                )}
+                )}</>
+            }
+             </div>
             </div>
+                    
+    
+                    
+                        
+                
+            
         );
     }
 }
-export default openCourt;
+export default withStyles(styles)(openCourt);

@@ -42,7 +42,11 @@ export default function UploadPicPopup(props) {
         fetch("/uploadProfilePic", requestOptions)
             .then(response => response.json())
             .then((result) => {
-                profilePage.setState({profileLink:result.link})
+                profilePage.setState({
+                    profileLink:result.link,
+                    loading:false
+                });
+   
               })
         setPreviewSrc(profilePage.state.profileLink)
       
@@ -102,6 +106,7 @@ export default function UploadPicPopup(props) {
                     onClick = {() =>{
                                         uploadProfile(image, email);
                                         profilePage.setState({openPopup:false});
+                                        profilePage.setState({loading:true})
                                     }           
                               }
                               

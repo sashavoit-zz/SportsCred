@@ -222,6 +222,9 @@ export class UploadPost extends React.Component{
                 handleInputEmpty();
             }
             else{
+                component.setState({
+                    loading:true
+                })
                 const today = new Date();
                 const date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
                 handleHashTag(this.state.uploadInput)
@@ -233,9 +236,9 @@ export class UploadPost extends React.Component{
                 await Promise.all(this.state.images.map(async(img)=>{
                     const link = await uploadPic(img, newPost.postId)
                 }))
-                // const links = await uploadPic(this.state.images, newPost.postId)
                 const posts = await reloadPost()
                 component.setState({
+                    loading:false,
                     posts:posts
                 })
                 reset()
