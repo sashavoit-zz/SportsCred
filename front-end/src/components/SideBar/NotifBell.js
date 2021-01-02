@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         htmlFontSize: 10,
-    }
+    },
 }));
 
 const customStyles = {
@@ -189,6 +189,7 @@ export default function NotifBell() {
                 <div className={classes.notification}>
                     <Alert
                         severity = {props.type}
+                        variant = "outlined"
                         action={
                             <IconButton
                                 aria-label="close"
@@ -235,6 +236,7 @@ export default function NotifBell() {
                 <div className={classes.notification}>
                     <Alert
                         severity = {props.type}
+                        variant = "outlined"
                         action={
                             <IconButton
                                 aria-label="close"
@@ -335,8 +337,8 @@ export default function NotifBell() {
                     aria-haspopup="true"
                     onClick={handleToggle}
                 >
-                    <Badge color="secondary" variant="dot" invisible={invisible}>
-                        <Notifications/>
+                    <Badge color="error" variant="dot" invisible={invisible}>
+                        <Notifications style = {{color:"#ffffff"}}/>
                     </Badge>
                 </IconButton>
                 <Popper open={open}
@@ -349,7 +351,7 @@ export default function NotifBell() {
                             {...TransitionProps}
                             style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
                         >
-                            <Paper style={{maxHeight: 400, overflow: 'auto'}}>
+                            <Paper style={{maxHeight: 400, overflow: 'auto', backgroundColor: "#000000"}}>
                                 <ClickAwayListener onClickAway={handleClose}>
                                     <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
                                         {notifs.upds.map(upd =>

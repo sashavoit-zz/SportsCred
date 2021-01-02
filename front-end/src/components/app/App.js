@@ -25,6 +25,9 @@ import SearchResults from "../search/SearchResults"
 const theme = createMuiTheme({
   palette: {
     type: "dark",
+    background: {
+      default: "#212121"
+    },
   },
 });
 
