@@ -1,14 +1,14 @@
 import React from 'react';
 
 import {CardActions,Card, Grid,CardContent, Typography, IconButton,Avatar, CardActionArea,GridList,GridListTile, ButtonBase} from '@material-ui/core';
-import FacebookEmbeds from './facebookEmbeds';
-import RedditEmbeds from './redditEmbeds';
-import InsEmbeds from './insEmbeds';
+import FacebookEmbeds from './FacebookEmbeds';
+import RedditEmbeds from './RedditEmbeds';
+import InstagramEmbeds from './InstagramEmbeds';
 
 import ReactDOM from 'react-dom'
 import { withStyles } from "@material-ui/core/styles";
 import CommentIcon from '@material-ui/icons/Comment';
-import Rate from "./like";
+import Rate from "./Like";
 
 import PropTypes from 'prop-types';
 
@@ -426,7 +426,7 @@ export class Post extends React.Component{
                                         {
                                             'facebook':<FacebookEmbeds url={url}/>,
                                             'reddit':<RedditEmbeds url = {url}/>,
-                                            'instagram':<InsEmbeds url={url}/>
+                                            'instagram':<InstagramEmbeds url={url}/>
                                         }[checkWebsite(url[0])]
                                     }
                                 

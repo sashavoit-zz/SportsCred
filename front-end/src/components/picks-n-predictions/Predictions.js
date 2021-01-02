@@ -18,7 +18,7 @@ import {
   ButtonNext,
 } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
-import "./carousel.css";
+import "./Carousel.css";
 
 import PredictionsCard from "./PredictionsCard";
 
@@ -77,7 +77,6 @@ function Predictions(props) {
   const classes = useStyles();
 
   useEffect(() => {
-    // TODO: move async func to services
     (async () => {
       setData(null)
       const requestOptions = {

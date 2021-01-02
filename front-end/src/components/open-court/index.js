@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import {withStyles} from "@material-ui/core/styles";
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import UploadPost from "./uploadPost"
-import Post from './post'
+import UploadPost from "./UploadPost"
+import Post from './Post'
 import {uid} from "react-uid";
 import {fetchUserProfilePic} from '../../service/ProfileService'
 const styles = theme =>({

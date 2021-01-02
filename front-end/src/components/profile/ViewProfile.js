@@ -1,5 +1,5 @@
 import React from "react";
-import UserProfile from "../profile/otherProfile";
+import UserProfile from "./OtherProfile";
 import { uid } from "react-uid";
 import { withStyles } from "@material-ui/core/styles";
 import Alert from '@material-ui/lab/Alert';

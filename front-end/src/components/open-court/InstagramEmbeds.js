@@ -1,6 +1,6 @@
 import React from 'react'
 
-export class InsEmbeds extends React.Component{
+export class InstagramEmbeds extends React.Component{
     constructor(props){
         super(props);
         this.state={
@@ -31,4 +31,4 @@ export class InsEmbeds extends React.Component{
         )
     }
 }
-export default InsEmbeds
+export default InstagramEmbeds

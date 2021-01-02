@@ -7,7 +7,7 @@ import { withStyles } from "@material-ui/core/styles";
 import CommentIcon from '@material-ui/icons/Comment';
 
 import {TextField} from '@material-ui/core'
-import Rate from "./like";
+import Rate from "./Like";
 
 const userStyles = theme =>({
     root:{
