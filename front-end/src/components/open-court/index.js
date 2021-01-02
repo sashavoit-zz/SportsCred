@@ -12,6 +12,7 @@ const styles = theme =>({
         color: '#fff',
       },
 });
+
 const LOADPOSTS = '/allPosts'
 export class openCourt extends React.Component{
     constructor(props) {
@@ -81,7 +82,7 @@ export class openCourt extends React.Component{
         const lastName = this.state.lastName;
         const {user, classes} = this.props;
         return(
-            <div>
+            <div style={{width:"50vw", marginLeft: "auto", marginRight: "auto", marginTop:"60px"}}>
                 <UploadPost user={user} firstName={firstName} lastName={lastName} profileLink={this.state.profileLink} component ={this}/>
                 
                 {this.state.loading
@@ -100,7 +101,7 @@ export class openCourt extends React.Component{
                     />
                 )}</div>
             }
-             </div>   
+             </div>
         );
     }
 }

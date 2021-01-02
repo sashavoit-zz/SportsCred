@@ -112,14 +112,8 @@ const styles = theme =>({
     root: {
         '& .MuiTextField-root': {
              width:'100%',
-             margin:"auto",
              display:"flex",
          },
-      },
-      container:{
-          marginLeft:'auto',
-          marginTop:'60px',
-          width:'60vw'
       },
       grid:{
           flexGrow:1,
@@ -134,27 +128,34 @@ const styles = theme =>({
       },
       button:{
           float:"right",
-          marginTop:`-3px`,
+          marginTop:'1px',
           margin: theme.spacing(3, 0, 2),
-          marginRight:`10px`
+          marginRight: '0px'
+      },
+      card:{
+          backgroundColor:"#424242",
+          width: "100%",
       },
       imageUploadIcon:{
         marginTop:`-10px`,
+        marginLeft:`-17px`,
       },
       imageGrid:{
         maxHeight:"100%",
         maxWidth:"100%"
-    },
+      },
       cover: {
         width: 151,
       },
       center:{
-        margin:"auto",
         width: theme.spacing(7),
         height: theme.spacing(7),
       },
       hashTags:{
-        color:"blue"
+        color:"primary"
+      },
+      textField:{
+        marginTop: '10px'
       },
       gridList: {
         maxHeight: 500,
@@ -170,8 +171,7 @@ const styles = theme =>({
         color: 'white',
       },
       uploadingArea:{
-          marginLeft:`10px`,
-          marginRight:`10px`
+          marginTop:`10px`
       }
 
 });
@@ -304,52 +304,50 @@ export class UploadPost extends React.Component{
         })
     }
         return(
-            <Container className = {classes.container}>
-                <div>
+            <div>
                 <form  className = {classes.root} noValidate autoComplete = "off">
                 <div>
-                    <Grid className = {classes.grid} container spacing={1}>
-                        <Grid item >
-                            <a href="/profile">
-                                <Avatar className={classes.center} alt="user profile" src={profileLink} />
-                                <Typography align='center' className={classes.center} >{firstName + " " + lastName}</Typography>
-                            </a>                      
-                        </Grid>
-                        <Grid item xs>
-                            <Card>
-                                <CardContent>
-                                <TextField 
-                                error ={this.state.errorText.length === 0 ? false : true }
-                                id = "standard-multiline-static"
-                                multiline
-                                name = "uploadInput"
-                                value={this.state.uploadInput}
-                                onChange={e => handleInput(e.target)}
-                                placeholder="What's in your mind?"
-                                InputProps={
-                                    {className: classes.input}
-                                }
-                                helperText={this.state.errorText}
-                                >
-                                </TextField>
-                                </CardContent>
-                                <div className = {classes.uploadingArea}>
-                                {this.state.imageSrc.length == 0
-                                ?<div></div>
-                                : 
-                                    <GridList cellHeight={200} spacing={2} className={classes.gridList} cols={2}>
-                                    {this.state.imageSrc.map((imageURL, index) => (
-                                    <GridListTile cols={1} >
-                                        <img  src={imageURL} className = {classes.imageGrid}/>
-                                    <GridListTileBar
-                                        titlePosition="top"
-                                        actionIcon={
-                                            <IconButton className={classes.icon} onClick = {e => handleDeleteImg(index, imageURL,e)}>
-                                            <CloseIcon />
-                                            </IconButton>
+                    <Card className = {classes.card}>
+                        <CardContent>
+                            <Grid className = {classes.grid} container spacing={2}>
+                                <Grid item spacing={2}>
+                                    <a href="/profile">
+                                        <Avatar className={classes.center} alt="user profile" src={profileLink} />
+                                    </a>
+                                </Grid>
+                                <Grid item xs spacing={2}>
+                                    <TextField
+                                        className = {classes.textField}
+                                        error ={this.state.errorText.length === 0 ? false : true }
+                                        id = "standard-multiline-static"
+                                        multiline
+                                        name = "uploadInput"
+                                        value={this.state.uploadInput}
+                                        onChange={e => handleInput(e.target)}
+                                        placeholder="What's in your mind?"
+                                        InputProps={
+                                            {className: classes.input}
                                         }
-                                        actionPosition="right"
-                                        className={classes.titleBar}
+                                        helperText={this.state.errorText}
+                                        >
+                                    </TextField>
+                                <div className = {classes.uploadingArea}>
+                                    {this.state.imageSrc.length == 0
+                                        ?<div></div>
+                                        :
+                                        <GridList cellHeight={200} spacing={2} className={classes.gridList} cols={2}>
+                                            {this.state.imageSrc.map((imageURL, index) => (
+                                        <GridListTile cols={1} >
+                                        <img  src={imageURL} className = {classes.imageGrid}/>
+                                        <GridListTileBar
+                                            titlePosition="top"
+                                            actionIcon={
+                                                <IconButton className={classes.icon} onClick = {e => handleDeleteImg(index, imageURL,e)}>
+                                                    <CloseIcon />
+                                            <   /IconButton>
+                                            }
+                                            actionPosition="right"
+                                            className={classes.titleBar}
                                         />
                                     </GridListTile>
                                 ))}
@@ -372,8 +370,6 @@ export class UploadPost extends React.Component{
                                             />
                                         </IconButton>
                                     </label>
-                                    
-                                
                                 <Button 
                                         className ={classes.button}
                                         variant="contained" 
@@ -383,16 +379,13 @@ export class UploadPost extends React.Component{
                                         Submit
                                 </Button>
                                 </div>
-                            </Card>
-                        </Grid>
-                    
-                    </Grid>
-                    
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
                 </div>
             </form>
-                </div>
-                
-            </Container>
+            </div>
         );
     }
 }

@@ -2,7 +2,6 @@ import React from 'react';
 
 import {CardActions,Card, Grid,CardContent, Typography, IconButton,Avatar, CardActionArea,GridList,GridListTile, ButtonBase} from '@material-ui/core';
 import FacebookEmbeds from './facebookEmbeds';
-import TwitterEmbeds from './twitterEmbeds';
 import RedditEmbeds from './redditEmbeds';
 import InsEmbeds from './insEmbeds';
 
@@ -13,25 +12,20 @@ import Rate from "./like";
 
 import PropTypes from 'prop-types';
 
-
 import ShareMenu from '../post/ShareMenu';
 import PostComment from '../post/PostComment';
 
 import {Box, Divider } from "@material-ui/core";
 
-
 import FaceIcon from '@material-ui/icons/Face';
 import LaunchIcon from '@material-ui/icons/Launch';
 
-
 import { Button, Form } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
-// import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-// import { Redirect } from "react-router-dom";
 
 const styles = theme => ({
     root: {
-        backgroundColor: "#00000060"
+        backgroundColor: "#424242"
         //width: "300px",
     },
     content: {
@@ -117,23 +111,21 @@ const styles = theme => ({
     },
     cardArea: {
         marginTop: "60px",
-        marginLeft: "auto",
-        marginRight: "auto",
         width: "100%",
     },
     card:{
-        width:'60%',
+        width:'90%',
         marginTop:'15px',
         marginLeft:'3%',
         borderLeftWidth: "5px",
         borderLeftStyle: "solid",
-        borderLeftColor:"#757ce8"
+        borderLeftColor: theme.palette.primary.main,
     },
     embeds:{
-        backgroundColor: "#303030",  
+        backgroundColor: "#ffffff",
     },
     url:{
-        color:"#757ce8",
+        color:"#424242",
     },
     imageGrid:{
         maxHeight:'100%',
@@ -141,11 +133,9 @@ const styles = theme => ({
         height:"auto",
         width:"auto"
     },
-
-
     cardRoot: {
         overflow: "hidden",
-        backgroundColor: "#00000060",
+        backgroundColor: "#424242",
         paddingBottom: "15px",
     },
     userIcon: {
@@ -172,7 +162,7 @@ const styles = theme => ({
         fontSize: "20px"
     },
     postInfo: {
-        color: "#737373",
+        color: "#909090",
     },
     cardBody: {
         fontSize: "15px",
@@ -402,7 +392,7 @@ export class Post extends React.Component{
                         <div className={classes.cardBody}>
                         {url == null
                         ?<div>
-                        <Typography variant ="h5" color="textSecondary" style={{ wordWrap: "break-word" }}>
+                        <Typography variant ="h5" color="white" style={{ wordWrap: "break-word" }}>
                             {this.highlightPattern(postInfo.content, hash)}
                         </Typography>
                         {postInfo.pics == null
@@ -422,7 +412,7 @@ export class Post extends React.Component{
 
                         }
                         </div>
-                        :<Typography color="textSecondary">
+                        :<Typography color="white">
                             <Typography variant ="h5" style={{ wordWrap: "break-word" }}>
                                 {this.highlightPattern(postInfo.content.split(url)[0], hash)}
                             <Typography>
@@ -435,7 +425,6 @@ export class Post extends React.Component{
                                     {
                                         {
                                             'facebook':<FacebookEmbeds url={url}/>,
-                                            'twitter':<TwitterEmbeds url = {url}/>,
                                             'reddit':<RedditEmbeds url = {url}/>,
                                             'instagram':<InsEmbeds url={url}/>
                                         }[checkWebsite(url[0])]
@@ -464,7 +453,7 @@ export class Post extends React.Component{
                         <div id={"comm"+postInfo.postId}></div>
                         <PostComment data={this.state.commtData} />
                         {this.state.inputMode ?
-                            <Form id="fm" onSubmit={this.handleSubmit} reply style={{ marginTop: "15px" }}>
+                            <Form id="fm" onSubmit={this.handleSubmit} reply style={{ color: "#ff9800", marginTop: "15px" }}>
                                 <Form.TextArea
                                         placeholder={this.state.errorText}
                                 />
