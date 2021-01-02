@@ -1,3 +1,2 @@
-*.css linguist-detectable=false
-*.js linguist-detectable=false
-*.go linguist-detectable=true
+* linguist-vendored
+*.go linguist-vendored=false
