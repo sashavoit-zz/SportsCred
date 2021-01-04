@@ -8,7 +8,6 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 import SearchAll from "./AllResults";
-import FriendsList from '../profile/FriendsList';
 
 import { useHistory } from "react-router-dom";
 

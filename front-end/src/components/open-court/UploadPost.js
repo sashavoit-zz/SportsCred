@@ -1,6 +1,6 @@
 import React from "react";
 import {withStyles} from "@material-ui/core/styles";
-import {TextField, Button, Avatar, Container, Grid, Typography, Card, CardContent, IconButton, CardActions, CardMedia,GridList,GridListTile,GridListTileBar} from '@material-ui/core'
+import {TextField, Button, Avatar, Grid, Card, CardContent, IconButton,GridList,GridListTile,GridListTileBar} from '@material-ui/core'
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 async function addPost(content, author, postTime) {

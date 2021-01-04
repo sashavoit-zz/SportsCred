@@ -1,7 +1,7 @@
 
 async function addQuestion(question, option1, option2, option3, answer) {
 
-    const response = await fetch("/addQuestion/hashasdasd", {
+    await fetch("/addQuestion/hashasdasd", {
         mode: 'cors',
         method: 'POST',
         body: JSON.stringify({

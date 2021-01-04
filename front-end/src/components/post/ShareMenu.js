@@ -1,12 +1,9 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ShareIcon from '@material-ui/icons/Share';
 import { makeStyles } from '@material-ui/core/styles';
-//import { Button, Comment, Form, Header } from 'semantic-ui-react'
 import {
-    EmailShareButton,
     FacebookShareButton,
     RedditShareButton,
     TwitterShareButton,

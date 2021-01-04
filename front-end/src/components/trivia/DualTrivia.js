@@ -1,8 +1,6 @@
 
-import React, { useState } from "react";
-import SideBar from "../SideBar/SideBar";
-import { Button, Typography, Box, makeStyles, StylesProvider, Container, Grid, Paper, TextareaAutosize, CircularProgress } from "@material-ui/core";
-import { addQuestionRelationship, addQuestion, addQuestionsToUser, addQuestionsToDb } from "../../service/SignUpScript";
+import React from "react";
+import { Button, Typography, Box, makeStyles, StylesProvider, Container, Grid, CircularProgress } from "@material-ui/core";
 import Modal from 'react-modal';
 
 const drawerWidth = 200;
@@ -71,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     paper2: {
         padding: theme.spacing(2),
         textAlign: 'center',
-        color: theme.palette.text.secondary,
+        //color: theme.palette.text.secondary,
         backgroundColor: '#0099ff',
         color: 'white',
         fontSize: 20 + 'px',

@@ -1,11 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
@@ -13,25 +7,16 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import Pagination from '@material-ui/lab/Pagination';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Alert } from '@material-ui/lab';
 import { Redirect } from 'react-router';
-import { useHistory, Route } from "react-router-dom";
 import EditFriend from './EditFriend';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
-import { Component } from 'react';
 import Grid from '@material-ui/core/Grid'
-import { __esModule } from 'react-router-dom/cjs/react-router-dom.min';
 import {BrowserRouter} from 'react-router-dom'
 import InviteButton from '../trivia/InviteButton'
 const url = 'http://localhost:3001/';
 const cols = 2;
-
-
 
 const useStyles = theme => ({
 root: {
@@ -53,12 +38,6 @@ function splitarr(arr){
     }
     return bites;
 }
-
-function printarr(arr){
-    console.log("printing array");
-    arr.map(result => {console.log(result);})
-}
-
 
 export class FriendsList extends React.Component {
     constructor(props){
@@ -82,8 +61,7 @@ export class FriendsList extends React.Component {
                     friends: splitarr(data),
                     error: false
 
-            }, () => {;
-                }
+            }, () => {}
             )})
             .catch(function(error){
                 console.log(error);
@@ -128,7 +106,6 @@ export class FriendsList extends React.Component {
     render(){
         const {classes} = this.props;
         const {user} = this.props;
-        const {profile} = this.props;
         if(this.state.error){
             return (
                 <div className={classes.root}>
@@ -151,7 +128,6 @@ export class FriendsList extends React.Component {
                 {this.renderRedirect()}
                 <Grid container>
                     {this.state.friends.map(friends =>{
-                        var loop = 1;
                         console.log(friends)
                         return(
                             <Grid item xs={6}>

@@ -1,8 +1,6 @@
 import React from "react";
 import UserProfile from "./OtherProfile";
-import { uid } from "react-uid";
 import { withStyles } from "@material-ui/core/styles";
-import Alert from '@material-ui/lab/Alert';
 
 const userStyles = theme => ({
   root: {
@@ -11,7 +9,6 @@ const userStyles = theme => ({
 });
 
 export class StrangerProfile extends React.Component {
-  /* TODO:the posts in the state should fetch from the db, here are some dummy data */
 
   constructor(props) {
     super(props);

@@ -4,7 +4,6 @@ import { useHistory, Route } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import { getUser } from "../../service/ApiCalls";
 
-// TODO: make better
 function PrivateRoute(props) {
   const { component: Component, routeProps } = props;
   const history = useHistory();

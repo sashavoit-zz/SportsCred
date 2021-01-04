@@ -5,7 +5,6 @@ import FacebookEmbeds from './FacebookEmbeds';
 import RedditEmbeds from './RedditEmbeds';
 import InstagramEmbeds from './InstagramEmbeds';
 
-import ReactDOM from 'react-dom'
 import { withStyles } from "@material-ui/core/styles";
 import CommentIcon from '@material-ui/icons/Comment';
 import Rate from "./Like";
@@ -17,7 +16,6 @@ import PostComment from '../post/PostComment';
 
 import {Box, Divider } from "@material-ui/core";
 
-import FaceIcon from '@material-ui/icons/Face';
 import LaunchIcon from '@material-ui/icons/Launch';
 
 import { Button, Form } from 'semantic-ui-react'
@@ -256,8 +254,7 @@ export class Post extends React.Component{
                 "email": author,
                 "likes":0,
                 "dislikes":0,
-                "commentTime":commentTime,
-                "email": localStorage.getItem("User")
+                "commentTime":commentTime
             }),
             headers: {
                 "Content-Type": "application/json",

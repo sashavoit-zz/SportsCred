@@ -6,14 +6,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { doesEmailExist, createUserAccount } from "../../service/ApiCalls";
 import CloseIcon from '@material-ui/icons/Close';
 
-// TODO: make better
 function SignUp() {
-/*
-  let signInHandler = () => {
-    localStorage.setItem("auth", "letempass");
-    history.push("/");
-  };
-*/
   var result
 
   const signInHandler = async () => {

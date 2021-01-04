@@ -160,7 +160,7 @@ export class Debate extends React.Component {
                 <CardActions>
                   <Button variant="contained" color="primary"
                     disabled={this.state.value.length<=100}
-                    onClick={(event) => this.goToAnalysis(this.props.user.email, this.state.value)}
+                    onClick={() => this.goToAnalysis(this.props.user.email, this.state.value)}
                   > Debate</Button>
                 </CardActions>
               </Box>

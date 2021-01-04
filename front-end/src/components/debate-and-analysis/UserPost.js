@@ -56,7 +56,6 @@ export class UserPost extends React.Component {
     render() {
         const showUser = this.state ? this.state.shouldRevealIdentity : false;
         let identityBox;
-        let hotSlider;
 
         const handleChangeCommitted = (event, newValue) => {
             this.sendRating(newValue);
