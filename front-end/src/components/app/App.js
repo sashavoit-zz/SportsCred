@@ -17,7 +17,7 @@ import OpenCourtPost from '../post/OpenCourtPost';
 import VisitorOpenCourtPost from '../post/VisitorOpenCourtPost'; // should only contains GET methods
 import Predictions from '../picks-n-predictions/Predictions'
 import Analysis from "../debate-and-analysis/Analysis";
-import User from "../profile/otherProfile";
+import User from "../profile/OtherProfile";
 import StrangerProfile from "../profile/ViewProfile";
 import Leaderboards from "../leaderboards/Leaderboards";
 import SearchResults from "../search/SearchResults"

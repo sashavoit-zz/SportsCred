@@ -1,5 +1,5 @@
 import React from "react";
-import Post from "../open-court/post";
+import Post from "../open-court/Post";
 import { uid } from "react-uid";
 import { withStyles } from "@material-ui/core/styles";
 

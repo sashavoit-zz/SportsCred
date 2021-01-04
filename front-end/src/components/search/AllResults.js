@@ -15,7 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import Pagination from '@material-ui/lab/Pagination';
 import Friend from "../profile/EditFriend";
-import Post from '../open-court/post'
+import Post from '../open-court/Post'
 import {uid} from "react-uid";
 import {useHistory} from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
