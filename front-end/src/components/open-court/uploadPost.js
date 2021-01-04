@@ -344,7 +344,7 @@ export class UploadPost extends React.Component{
                                             actionIcon={
                                                 <IconButton className={classes.icon} onClick = {e => handleDeleteImg(index, imageURL,e)}>
                                                     <CloseIcon />
-                                            <   /IconButton>
+                                            </IconButton>
                                             }
                                             actionPosition="right"
                                             className={classes.titleBar}
