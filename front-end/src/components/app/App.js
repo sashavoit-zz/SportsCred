@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { CssBaseline, createMuiTheme } from "@material-ui/core";
@@ -8,16 +8,12 @@ import SignUp from "../sign-up/SignUp";
 import Debate from "../debate-and-analysis/Debate"
 import openCourt from '../open-court/index'
 import LogIn from "../log-in/LogIn";
-import Account from "../profile/Account";
 import Trivia from '../trivia/Trivia'
 import Profile from "../profile/Profile";
 import PrivateRoute from "../routes/PrivateRoute";
-import SideBar from "../SideBar/SideBar";
 import OpenCourtPost from '../post/OpenCourtPost';
-import VisitorOpenCourtPost from '../post/VisitorOpenCourtPost'; // should only contains GET methods
 import Predictions from '../picks-n-predictions/Predictions'
 import Analysis from "../debate-and-analysis/Analysis";
-import User from "../profile/OtherProfile";
 import StrangerProfile from "../profile/ViewProfile";
 import Leaderboards from "../leaderboards/Leaderboards";
 import SearchResults from "../search/SearchResults"

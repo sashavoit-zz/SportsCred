@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import SideBar from "../SideBar/SideBar";
 
 
 import PropTypes from 'prop-types';
@@ -8,30 +7,14 @@ import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-//errmsg
-import {Collapse, IconButton} from "@material-ui/core";
-import Alert from '@material-ui/lab/Alert';
-import CloseIcon from '@material-ui/icons/Close';
 
-// import { useParams } from "react-router";
-
-import FaceIcon from '@material-ui/icons/Face';
 import { CardHeader } from '@material-ui/core';
 
 import {
-  EmailShareButton,
   FacebookShareButton,
   RedditShareButton,
   TwitterShareButton,
   TumblrShareButton,
-} from "react-share";
-
-import {
-  FacebookShareCount,
-  RedditShareCount,
 } from "react-share";
 
 import {
@@ -43,15 +26,10 @@ import {
 
 import MetaTags from 'react-meta-tags';
 
-const ACSSCORE = "560"
-const letters = /^[A-Za-z]*$/;
-const numbers = /^[+\d]?(?:[\d-.\s()]*)$/;
-
 const log = console.log
 const styles = theme => ({
   root: {
     backgroundColor: "#00000060"
-    //width: "300px",
   },
   content: {
     overflow: "hidden", /* will contain if #first is longer than #second */
@@ -59,7 +37,6 @@ const styles = theme => ({
   },
   menu: {
     float: "left",
-    //display: "inline-block",
     paddingTop: "20px",
     width: "30%",
     borderRight: "solid white",
@@ -71,29 +48,17 @@ const styles = theme => ({
 
   profile: {
     overflow: "hidden",
-    //height:"100%",
-    //display: "inline-block",
   },
   leftProfile: {
-    //marginLeft:"30px",
-    //paddingTop: "40px",
     float: "left",
     width: "30%",
     textAlign: "center",
-
-    //height:"100%",
-    //display: "inline-block",
   },
   rightProfile: {
     overflow: "hidden",
-    //height:"100%",
-    //display: "inline-block",
   },
   bottomProfile: {
-    //overflow: "hidden",
     position: "relative",
-    //height:"100%",
-    //display: "inline-block",
     textAlign: "center",
   },
   userIcon: {
@@ -106,18 +71,14 @@ const styles = theme => ({
   note: {
     color: "white",
     fontSize: "13px",
-    // width:"50%",
-    // textAlign: "center",
   },
   inputField: {
-    //color: "white",
     backgroundColor: "transparent",
     color: "white",
     width: "50%",
     marginTop: "20px",
   },
   inputFieldShort: {
-    //color: "white",
     backgroundColor: "transparent",
     color: "white",
     width: "24%",

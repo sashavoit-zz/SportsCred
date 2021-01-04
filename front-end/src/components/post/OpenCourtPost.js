@@ -3,8 +3,6 @@ import Post from "../open-court/Post";
 import { uid } from "react-uid";
 import { withStyles } from "@material-ui/core/styles";
 
-const LOADPOSTS = '/allPosts'
-
 const userStyles = theme => ({
   root: {
     marginTop: '100px'

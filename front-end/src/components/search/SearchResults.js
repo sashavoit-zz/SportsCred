@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useHistory } from "react-router-dom";
 import Tabs from "./SearchTabs";
 
 
@@ -10,10 +9,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
 
 
 const url = "/search/";
@@ -23,16 +19,10 @@ function useQuery() {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    //backgroundColor: theme.palette.background.paper,
     backgroundColor: "#333333",
     maxWidth: "700px",
     margin: "auto",
     position: 'relative',
-    //transform: 'translate(-50%, -50%)',
-    //marginTop: '100px',
-    //maxHeight: '100%',
-
-
   },
   indicator: {
     backgroundColor: 'white',

@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Button, Typography, Box, makeStyles, StylesProvider, Container, Grid, Paper, TextareaAutosize, CircularProgress } from "@material-ui/core";
-import { useHistory } from 'react-router-dom';
+import React from "react";
+import { Button, Paper } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,8 +7,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
 
 const useStyles = theme => ({
     root: {
@@ -93,7 +90,7 @@ class Leaderboards extends React.Component {
         })
         .catch(err => console.log(err))
 
-    const response = fetch("/getGlobalLeaderboard/hashsadasd", {
+    fetch("/getGlobalLeaderboard/hashsadasd", {
         mode: 'cors',
         headers: {
             'Token': localStorage.getItem("Token")

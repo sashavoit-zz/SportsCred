@@ -1,38 +1,23 @@
 import React, { Component } from 'react';
-import SideBar from "../SideBar/SideBar";
 import Friend from "../profile/EditFriend";
 import Tabs from "./ProfileTabs";
-import PassDialog from "./ChangePassword";
-import OptionButton from "./OptionButton";
 import {CardActions, CardHeader,Avatar, CardActionArea} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {Box, Divider } from "@material-ui/core";
+import { Divider } from "@material-ui/core";
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 
 import ShareMenu from '../post/ShareMenu';
-//errmsg
-import { Collapse, IconButton } from "@material-ui/core";
-import Alert from '@material-ui/lab/Alert';
-import CloseIcon from '@material-ui/icons/Close';
-
+import { IconButton } from "@material-ui/core";
 
 import {fetchUserProfilePic} from "../../service/ProfileService"
-import FaceIcon from '@material-ui/icons/Face';
-const ACSSCORE = "560"
-const letters = /^[A-Za-z]*$/;
-const numbers = /^[+\d]?(?:[\d-.\s()]*)$/;
 
-const log = console.log
 const styles = theme => ({
   root: {
     backgroundColor: "#00000060"
-    //width: "300px",
   },
   content: {
     overflow: "hidden", /* will contain if #first is longer than #second */
@@ -40,7 +25,6 @@ const styles = theme => ({
   },
   menu: {
     float: "left",
-    //display: "inline-block",
     paddingTop: "20px",
     width: "30%",
     borderRight: "solid white",
@@ -53,29 +37,17 @@ const styles = theme => ({
   profile: {
     overflow: "hidden",
     marginTop: "0px",
-    //height:"100%",
-    //display: "inline-block",
   },
   leftProfile: {
-    //marginLeft:"30px",
-    //paddingTop: "40px",
     float: "left",
     width: "30%",
     textAlign: "center",
-
-    //height:"100%",
-    //display: "inline-block",
   },
   rightProfile: {
     overflow: "hidden",
-    //height:"100%",
-    //display: "inline-block",
   },
   bottomProfile: {
-    //overflow: "hidden",
     position: "relative",
-    //height:"100%",
-    //display: "inline-block",
     textAlign: "center",
   },
   userIcon: {
@@ -88,8 +60,6 @@ const styles = theme => ({
   note: {
     color: "white",
     fontSize: "13px",
-    // width:"50%",
-    // textAlign: "center",
   },
   contentDivider: {
     marginTop: "15px"
@@ -103,9 +73,6 @@ const styles = theme => ({
     width:"100px"
   },
 });
-
-const url = 'localhost:3001/profile'; //http://localhost:3001
-
 
 class UserProfile extends Component {
   constructor(props) {

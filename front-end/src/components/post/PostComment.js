@@ -4,25 +4,15 @@ import './semantic.css'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
-const log = console.log
 const styles = theme => ({
-  // root: {
-  //   backgroundColor: "#00000060"
-  //   //width: "300px",
-  // },
   time: {
-    // overflow: "hidden", /* will contain if #first is longer than #second */
-    // paddingTop: "80px",
     color: "#737373",
-    //backgroundColor: "blue",
   },
   collapseButton: {
     float: "right",
-    //fontSize: "60px",
   },
   posterAcs: {
     float: "right",
-    //fontSize: "60px",
   },
   
 });

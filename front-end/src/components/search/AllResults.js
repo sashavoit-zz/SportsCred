@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Component } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
@@ -10,15 +9,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import Pagination from '@material-ui/lab/Pagination';
 import Friend from "../profile/EditFriend";
 import Post from '../open-court/Post'
 import {uid} from "react-uid";
-import {useHistory} from 'react-router-dom';
-import { withRouter } from 'react-router-dom';
 import { Redirect } from 'react-router';
 
 import { Alert, AlertTitle } from '@material-ui/lab';
@@ -26,21 +19,12 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import InviteButton from '../trivia/InviteButton'
 import Grid from '@material-ui/core/Grid'
 
-import {
-    AppBar,
-    Toolbar,
-  } from "@material-ui/core";
-  
-  
-import TextField from '@material-ui/core/TextField';
-  
 const drawerWidth = 200;
 const url = '';
 
 const useStyles = theme => ({
     root: {
       width: '100%',
-    //   maxWidth: '500px',
       backgroundColor: theme.palette.background.paper,
     },
     appBar: {

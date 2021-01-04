@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {withStyles} from "@material-ui/core/styles";
-import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import UploadPost from "./UploadPost"
 import Post from './Post'

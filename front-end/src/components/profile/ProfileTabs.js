@@ -12,6 +12,7 @@ import PostsTable from './PostsTable';
 import DebateTable from './DebateTable';
 
 const url = "localhost:3001/";
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
