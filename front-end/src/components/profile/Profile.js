@@ -20,7 +20,8 @@ const styles = theme => ({
   },
   content: {
     overflow: "hidden", /* will contain if #first is longer than #second */
-    paddingTop: "80px",
+    paddingTop: "50px",
+    marginBottom: "30px"
   },
   menu: {
     float: "left",
@@ -33,7 +34,7 @@ const styles = theme => ({
     marginBottom: "30px"
   },
   profile: {
-    overflow: "hidden",
+    overflow: "hidden"
   },
   leftProfile: {
     float: "left",
