@@ -143,13 +143,11 @@ const useStyles = makeStyles((theme) => ({
 function DualTrivia(props) {
   const classes = useStyles();
   const [progress, setProgress] = React.useState(0);
-  const [totalAcs, setTotalAcs] = React.useState(0);
   const [userEmail, setUserEmail] = React.useState(localStorage.getItem("User"));
   const [opponentEmail, setOpponentEmail] = React.useState(props.opponentName);
   const [userPoints, setUserPoints] = React.useState(0);
   const [opponentPoints, setOpponentPoints] = React.useState(0);
   const [welcomeMessage, setWelcomeMessage] = React.useState("Waiting for other player...");
-  const [warningMessage, setWarningMessage] = React.useState("");
 
   const [nextQuestionLabel, setNextQuestionLabel] = React.useState("Next question");
   const [totalPoints, setTotalPoints] = React.useState(0);
@@ -157,10 +155,8 @@ function DualTrivia(props) {
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [currentQuestion, setCurrentQuestion] = React.useState(1);
 
-  var question;
   var answer;
 
-  var answerChosen;
   var nextQuestion;
 
   let beginTrivia = () => {
@@ -267,7 +263,6 @@ function DualTrivia(props) {
     }
 
     setWelcomeMessage("Waiting for other player...");
-    setWarningMessage("");
   }
 
   function opponentJoined() {
@@ -278,8 +273,7 @@ function DualTrivia(props) {
     }
 
     setWelcomeMessage("Opponent is ready to play!");
-    setWarningMessage("WARNING: An early exit will result in a deduction of 10 points!");
-    
+
   }
 
   function opponentPressedAnswer(userAnswer, whichUser) {
@@ -669,7 +663,6 @@ function DualTrivia(props) {
             console.log("entered join function");
         }
         setWelcomeMessage("Opponent is ready to play!");
-        setWarningMessage("WARNING: An early exit will result in a deduction of 10 points!");
     }
 
     eventListener();
@@ -721,9 +714,6 @@ function DualTrivia(props) {
         <Container id="entry-modal" className={classes.introPage}>
             <Typography id="welcomeMessage" variant="h3" gutterBottom>
                 {welcomeMessage}
-            </Typography>
-            <Typography id="warningMessage" variant="h5" gutterBottom>
-                {warningMessage}
             </Typography>
             <Button className={classes.startButton} id="startButton" variant="contained" color="primary" onClick={beginTrivia}>
                 Begin trivia!

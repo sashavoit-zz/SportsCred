@@ -539,7 +539,7 @@ function Trivia(props) {
       clearInterval(timer);
       if (document.getElementById('currentQuestion') != null) {
         var currentQuestion = parseInt(document.getElementById('currentQuestion').innerHTML);
-        if (currentQuestion != 10) {
+        if (currentQuestion > 0 && currentQuestion < 10) {
           updateAcs(localStorage.getItem("User"), -10);
           sendNotification();
         }
@@ -552,9 +552,6 @@ function Trivia(props) {
         <Container id="entry-modal" className={classes.introPage}>
             <Typography variant="h3" gutterBottom>
                 Would you like to test your skills?
-            </Typography>
-            <Typography variant="h5" gutterBottom>
-                WARNING: An early exit will result in a deduction of 10 points!
             </Typography>
             <Button className={classes.startButton} id="startButton" variant="contained" color="primary" onClick={beginTrivia}>
                 Begin trivia!

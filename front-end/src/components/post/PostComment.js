@@ -17,6 +17,24 @@ const styles = theme => ({
   
 });
 
+function formatDate(timeFromDb) {
+
+  let months = [
+    "January", "February",  "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+  ]
+
+  if (!timeFromDb) {
+    return null
+  }else{
+    let dateArr = timeFromDb.split("/")
+    let year = dateArr[2]
+    let month = dateArr[1]
+    let day = dateArr[0]
+
+    return day + " " + months[month - 1] + " " + year
+  }
+}
+
 class PostComment extends Component {
   state = { 
     collapsed: true,
@@ -40,8 +58,6 @@ class PostComment extends Component {
     this.first_commts = null
     this.commts = null
     const data = this.props.data
-    // log("booiiiiiisjfidjsif")
-    // log(data)
     const f_comm = data[0]
     const r_comm = data.slice(1)
     if (f_comm) {
@@ -49,9 +65,9 @@ class PostComment extends Component {
         <Comment>
           <Comment.Avatar as='a' href={f_comm.email == localStorage.getItem("User") ? "/profile" : "user/" + f_comm.email} src={f_comm.profilePic} />
           <Comment.Content>
-          <Comment.Author as='a' href={f_comm.email == localStorage.getItem("User") ? "/profile" : "user/" + f_comm.email}>{f_comm.firstName+ " " + f_comm.lastName}</Comment.Author>
+          <Comment.Author as='a' href={f_comm.email == localStorage.getItem("User") ? "/profile" : "user/" + f_comm.email}>{f_comm.firstName+ " " + f_comm.lastName + " - ACS: " + f_comm.acs}</Comment.Author>
             <Comment.Metadata>
-            <span className={classes.time}>{"ACS: " + f_comm.acs + " - " + f_comm.email + " - " + f_comm.time}</span>
+            <span className={classes.time}>{formatDate(f_comm.time)}</span>
             </Comment.Metadata>
             {/* <span className={classes.posterAcs}>{}</span> */}
             <Comment.Text>{f_comm.content}</Comment.Text>
@@ -69,7 +85,7 @@ class PostComment extends Component {
           <Comment.Content>
             <Comment.Author as='a' href={item.email == localStorage.getItem("User") ? "/profile" : "user/" + item.email}>{item.firstName+ " " + item.lastName}</Comment.Author>
             <Comment.Metadata>
-              <span className={classes.time}>{"ACS: " + item.acs + " - " + item.email + " - " + item.time}</span>
+              <span className={formatDate(f_comm.time)}>{formatDate(f_comm.time)}</span>
             </Comment.Metadata>
             {/* <span className={classes.posterAcs}>{"ACS: "+item.acs}</span> */}
             <Comment.Text>{item.content}</Comment.Text>

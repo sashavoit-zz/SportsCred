@@ -41,7 +41,6 @@ export default function InviteButton(props){
     };
 
     function handleClick(email) {
-        //TODO: CREATE A POPUP WINDOW HERE
         openModal();
 
         const requestOptionsJoinRoom = {
