@@ -308,7 +308,7 @@ export class UploadPost extends React.Component{
                 <form  className = {classes.root} noValidate autoComplete = "off">
                 <div>
                     <Card className = {classes.card}>
-                        <CardContent>
+                        <CardContent style={{paddingBottom:"0px"}}>
                             <Grid className = {classes.grid} container spacing={2}>
                                 <Grid item spacing={2}>
                                     <a href="/profile">
