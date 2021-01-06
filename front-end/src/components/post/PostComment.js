@@ -13,8 +13,7 @@ const styles = theme => ({
   },
   posterAcs: {
     float: "right",
-  },
-  
+  }
 });
 
 function formatDate(timeFromDb) {
@@ -65,11 +64,17 @@ class PostComment extends Component {
         <Comment>
           <Comment.Avatar as='a' href={f_comm.email == localStorage.getItem("User") ? "/profile" : "user/" + f_comm.email} src={f_comm.profilePic} />
           <Comment.Content>
-          <Comment.Author as='a' href={f_comm.email == localStorage.getItem("User") ? "/profile" : "user/" + f_comm.email}>{f_comm.firstName+ " " + f_comm.lastName + " - ACS: " + f_comm.acs}</Comment.Author>
-            <Comment.Metadata>
-            <span className={classes.time}>{formatDate(f_comm.time)}</span>
+          <Comment.Author>
+              <a href={f_comm.email == localStorage.getItem("User") ? "/profile" : "user/" + f_comm.email}>
+                {f_comm.firstName+ " " + f_comm.lastName }
+              </a>
+              <span style = {{fontWeight: "normal", color: "#737373"}}>
+                {" ACS: " + f_comm.acs}
+              </span>
+          </Comment.Author>
+            <Comment.Metadata style={{marginLeft:"0px"}}>
+            <div className={classes.time}>{formatDate(f_comm.time)}</div>
             </Comment.Metadata>
-            {/* <span className={classes.posterAcs}>{}</span> */}
             <Comment.Text>{f_comm.content}</Comment.Text>
             <Comment.Actions>
               {/* <a>{f_comm.time}</a> */}

@@ -376,9 +376,7 @@ export class Post extends React.Component{
                                         {postInfo.firstName + " " + postInfo.lastName}
                                     </Box>
                                 </a>
-                                <Box style={{ fontSize:"20px" }} display='inline'>
-                                    {" - ACS: " + postInfo.acs}
-                                </Box>
+                                <span style={{ color: "#909090", fontSize:"20px" }}>{" ACS: " + postInfo.acs}</span>
                             </Link>
                         }
                         subheader={
