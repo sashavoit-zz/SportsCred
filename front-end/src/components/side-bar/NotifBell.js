@@ -234,7 +234,6 @@ export default function NotifBell() {
                 <div className={classes.notification}>
                     <Alert
                         severity = {props.type}
-                        variant = "outlined"
                         action={
                             <IconButton
                                 aria-label="close"

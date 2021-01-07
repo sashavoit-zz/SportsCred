@@ -85,14 +85,13 @@ const useStyles = makeStyles((theme) => ({
     paper2: {
         padding: theme.spacing(2),
         textAlign: 'center',
-        //color: theme.palette.text.secondary,
         backgroundColor: '#0099ff',
         color: 'white',
-        fontSize: 30 + 'px',
+        fontSize: 18 + 'px',
         justifyContent: 'center',
         width: '100%'
     },
-    bottomBox: {
+    bottomHalf: {
         marginTop: 60 + 'px',
         borderStyle: 'solid',
         backgroundColor: '#808080',
@@ -155,7 +154,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
 function Trivia(props) {
   const { children: component } = props;
   const classes = useStyles();
@@ -182,7 +180,7 @@ function Trivia(props) {
     setProgress((prevProgress) => (prevProgress = 0));
     answer = "no";
     nextQuestion = 1;
-    
+
     // get new question and show on site (consumer REST api)
 
     //addQuestionsToDb();
@@ -196,7 +194,21 @@ function Trivia(props) {
 
     document.getElementById('currentTime').innerHTML = "0";
     document.getElementById('currentQuestion').innerHTML = "1";
-    setTotalPoints(0);
+
+    const requestOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Token": localStorage.getItem("Token"),
+            },
+        };
+
+    fetch("/profile/"+ localStorage.getItem("User"), requestOptions)
+        .then(response => response.json())
+        .then((data) => {
+            setTotalAcs(parseInt(data[0].acs, 10));
+        })
+        .catch(err => console.log(err))
   }
 
   function sendNotification() {
@@ -390,13 +402,13 @@ function Trivia(props) {
         }
 
             if (userAnswer == correct) {
-                document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "+1 points";
+                document.getElementById('questionAcsLabel').innerHTML = "ACS change:\n" + "+1 points";
                 setTotalAcs((prevTotal) => (prevTotal = prevTotal + 1));
                 updateAcs(localStorage.getItem("User"), 1);
                 setTotalPoints((prevTotalPoints) => (prevTotalPoints = prevTotalPoints + 1));
             }
             else {
-                document.getElementById('questionAcsLabel').innerHTML = "Question ACS:\n" + "-1 points";
+                document.getElementById('questionAcsLabel').innerHTML = "ACS change:\n" + "-1 points";
                 setTotalAcs((prevTotal) => (prevTotal = prevTotal - 1));
                 updateAcs(localStorage.getItem("User"), -1);
                 setTotalPoints((prevTotalPoints) => (prevTotalPoints = prevTotalPoints - 1));
@@ -478,7 +490,7 @@ function Trivia(props) {
     document.getElementById("option3Label").style.backgroundColor = "#0099ff";
     document.getElementById("option4Label").style.backgroundColor = "#0099ff";
 
-    document.getElementById('questionAcsLabel').innerHTML = "Question ACS:";
+    document.getElementById('questionAcsLabel').innerHTML = "ACS change:";
 
     document.getElementById('nextButton').style.display = "none";
 
@@ -519,7 +531,7 @@ function Trivia(props) {
       setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 5));
 
         if (document.getElementById('currentTime').innerHTML != "wait") {
-            var currentTime = parseInt(document.getElementById('currentTime').innerHTML);
+            let currentTime = parseInt(document.getElementById('currentTime').innerHTML);
 
             if (currentTime >= 100) {
                 changeAnswer("wrong");
@@ -547,133 +559,139 @@ function Trivia(props) {
     };
   }, []);
 
-  return (
-    <>
-        <Container id="entry-modal" className={classes.introPage}>
-            <Typography variant="h3" gutterBottom>
-                Would you like to test your skills?
-            </Typography>
-            <Button className={classes.startButton} id="startButton" variant="contained" color="primary" onClick={beginTrivia}>
-                Begin trivia!
-            </Button>
-        </Container>
-        <Container id="main-modal" className={classes.root}>
-            <Grid container spacing={5} className={classes.topHalf}>
-                <Grid item xs={8} className={classes.questionBox}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} className={classes.labelBox}>
-                            Question: {currentQuestion}
-                            <hr></hr>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <Typography id="questionLabel" variant="h5" id="questionLabel" gutterBottom>
-                                
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4} className={classes.timerBox}>
-                            <Box
-                                top="0%"
-                                left={1}
-                                bottom="10%"
-                                right={0}
-                                position="absolute"
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                            >
-                                <CircularProgress id="timerLabel1" variant="static" value={progress}/>
-                            </Box>
-                            <Box
-                                top="0%"
-                                left={1}
-                                bottom="8%"
-                                right={0}
-                                position="absolute"
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                            >
-                                <Typography id="timerLabel2" variant="caption" component="div" color="textSecondary">{20- (progress/5)}</Typography>
-                            </Box>
+    return (
+        <>
+            <Container id="entry-modal" className={classes.introPage}>
+                <Typography variant="h4" gutterBottom>
+                    Would you like to test your skills?
+                </Typography>
+                <Button className={classes.startButton} id="startButton" variant="contained" color="primary" onClick={beginTrivia}>
+                    Begin trivia!
+                </Button>
+            </Container>
+            <Container id="main-modal" className={classes.root}>
+                <Grid container spacing={3} className={classes.topHalf}>
+                    <Grid item xs={8} className={classes.questionBox}>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} className={classes.labelBox}>
+                                Question: {currentQuestion}
+                                <hr></hr>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Typography id="questionLabel" variant="h5" id="questionLabel" gutterBottom>
+
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4} className={classes.timerBox}>
+                                <Box
+                                    top="0%"
+                                    left={1}
+                                    bottom="10%"
+                                    right={0}
+                                    position="absolute"
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                >
+                                    <CircularProgress id="timerLabel1" size = {30} variant="static" value={progress}/>
+                                </Box>
+                                <Box
+                                    top="0%"
+                                    left={1}
+                                    bottom="8%"
+                                    right={0}
+                                    position="absolute"
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                >
+                                    <Typography id="timerLabel2" variant="caption" component="div" color="textSecondary">{20- (progress/5)}</Typography>
+                                </Box>
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-                <Grid item xs={4}>
-                    <Grid container spacing={3} className={classes.questionBox}>
-                        <Grid item xs={12} className={classes.labelBox}>
-                            ACS:
-                            <hr></hr>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Grid container spacing={3}>
-                                <Grid item xs={6} className={classes.rightBorder}>
-                                    <Typography id="questionAcsLabel" variant="h6" id="questionAcsLabel" gutterBottom>
-                                        Question ACS: <br></br> 
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography id="totalAcsLabel" variant="h6" id="totalAcsLabel" gutterBottom>
-                                        Total ACS: <br></br> {totalAcs} points
-                                    </Typography>
+                    <Grid item xs={1}/>
+                    <Grid item xs={3} className={classes.questionBox}>
+                        <Grid container spacing={3} >
+                            <Grid item xs={12} className={classes.labelBox}>
+                                ACS
+                                <hr></hr>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={6} className={classes.rightBorder}>
+                                        <Typography id="questionAcsLabel" variant="h6" id="questionAcsLabel" gutterBottom>
+                                            ACS change: <br></br>
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography id="totalAcsLabel" variant="h6" id="totalAcsLabel" gutterBottom>
+                                            Total: <br></br> {totalAcs} points
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-            <Grid container spacing={3} className={classes.bottomBox}>
-                <Grid item xs={12} className={classes.answerBox}>
-                    Your answer:
-                    <hr></hr>
-                </Grid>
-                <Grid item xs>
-                    <Grid container spacing={3}>
-                        <Grid item xs={6} className={classes.optionBox}>
-                            <Button variant="contained" color="secondary" size="small" id="option1Label" className={classes.paper2}></Button>
-                        </Grid>
-                        <Grid item xs={6} className={classes.optionBox}>
-                            <Button variant="contained" color="secondary" size="small" id="option2Label" className={classes.paper2}></Button>
-                        </Grid>
-                        <Grid item xs={6} className={classes.optionBox}>
-                            <Button variant="contained" color="secondary" size="small" id="option3Label" className={classes.paper2}></Button>
-                        </Grid>
-                        <Grid item xs={6} className={classes.optionBox}>
-                            <Button variant="contained" color="secondary" size="small" id="option4Label" className={classes.paper2}></Button>
+                <Grid container spacing={3} className={classes.bottomHalf}>
+                    <Grid item xs={12} className={classes.answerBox}>
+                        Your answer:
+                        <hr></hr>
+                    </Grid>
+                    <Grid item xs>
+                        <Grid container spacing={3} alignItems="stretch">
+                            <Grid item xs={6} className={classes.optionBox}>
+                                <Button variant="contained" color="secondary" size="small" id="option1Label" className={classes.paper2}></Button>
+                            </Grid>
+                            <Grid item xs={6} className={classes.optionBox}>
+                                <Button variant="contained" color="secondary" size="small" id="option2Label" className={classes.paper2}></Button>
+                            </Grid>
+                            <Grid item xs={6} className={classes.optionBox}>
+                                <Button variant="contained" color="secondary" size="small" id="option3Label" className={classes.paper2}></Button>
+                            </Grid>
+                            <Grid item xs={6} className={classes.optionBox}>
+                                <Button variant="contained" color="secondary" size="small" id="option4Label" className={classes.paper2}></Button>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-            <Grid container spacing={3}>
-                <Grid id="nextButton" item xs={12} className={classes.nextButton}>
-                    <Button variant="contained" color="primary" size="large" onClick={nextQuestion}>
-                        {nextQuestionLabel}
-                    </Button>
+                <Grid container spacing={3}>
+                    <Grid id="nextButton" item xs={12} className={classes.nextButton}>
+                        <Button variant="contained" color="primary" size="large" onClick={nextQuestion}>
+                            {nextQuestionLabel}
+                        </Button>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Grid id="lastGrid" container spacing={3} className={classes.lastGrid}>
+                <Grid id="lastGrid" container spacing={3} className={classes.lastGrid}>
 
-            </Grid>
-            <Grid id="currentTime" container spacing={3} className={classes.lastGrid}>
+                </Grid>
+                <Grid id="currentTime" container spacing={3} className={classes.lastGrid}>
 
-            </Grid>
-            <Grid id="currentQuestion" container spacing={3} className={classes.lastGrid}>
+                </Grid>
+                <Grid id="currentQuestion" container spacing={3} className={classes.lastGrid}>
 
-            </Grid>
-        </Container>
-        <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles} contentLabel="Example modal" overlayClassName="Overlay">
+                </Grid>
+            </Container>
+            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles} contentLabel="Example modal" overlayClassName="Overlay">
                 <Typography variant="h3" gutterBottom>
                     Game over!
                 </Typography>
-                <Typography variant="h5" gutterBottom>
-                    Net point gain/loss: {totalPoints}
-                </Typography>
+                {totalPoints >= 0 ?
+                    (<Typography variant="h5" gutterBottom>
+                        Your ACS increased by {totalPoints} points
+                    </Typography>)
+                    :
+                    (<Typography variant="h5" gutterBottom>
+                        Your ACS decreased by {-totalPoints} points
+                    </Typography>)}
                 <Button variant="contained" color="primary" onClick={closeModal}>
                     Close
                 </Button>
-        </Modal>
-    </>
-    
-  );
+            </Modal>
+        </>
+
+    );
 }
 
 export default Trivia;

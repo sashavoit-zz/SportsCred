@@ -10,6 +10,7 @@ const styles = theme => ({
   },
   collapseButton: {
     float: "right",
+    fontColor: "#ffffff"
   },
   posterAcs: {
     float: "right",
@@ -79,7 +80,6 @@ class PostComment extends Component {
             <Comment.Actions>
               {/* <a>{f_comm.time}</a> */}
             {r_comm.length > 0 ? <a onClick={this.handleCheckbox} className={classes.collapseButton}>Expand</a> : null}
-
             </Comment.Actions>
           </Comment.Content>
         </Comment>
@@ -88,9 +88,16 @@ class PostComment extends Component {
         <Comment>
           <Comment.Avatar as='a' href={item.email == localStorage.getItem("User") ? "/profile" : "user/" + item.email} src={item.profilePic} />
           <Comment.Content>
-            <Comment.Author as='a' href={item.email == localStorage.getItem("User") ? "/profile" : "user/" + item.email}>{item.firstName+ " " + item.lastName}</Comment.Author>
-            <Comment.Metadata>
-              <span className={formatDate(f_comm.time)}>{formatDate(f_comm.time)}</span>
+            <Comment.Author>
+              <a href={item.email == localStorage.getItem("User") ? "/profile" : "user/" + item.email}>
+                {item.firstName+ " " + item.lastName }
+              </a>
+              <span style = {{fontWeight: "normal", color: "#737373"}}>
+                {" ACS: " + item.acs}
+              </span>
+            </Comment.Author>
+            <Comment.Metadata style={{marginLeft:"0px"}}>
+              <div className={classes.time}>{formatDate(item.time)}</div>
             </Comment.Metadata>
             {/* <span className={classes.posterAcs}>{"ACS: "+item.acs}</span> */}
             <Comment.Text>{item.content}</Comment.Text>

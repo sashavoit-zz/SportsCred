@@ -41,7 +41,9 @@ const styles = theme => ({
     option: {
         marginBottom: "30px"
     },
-
+    comments:{
+        width: "100%"
+    },
     profile: {
         overflow: "hidden",
         //height:"100%",
@@ -446,7 +448,7 @@ export class Post extends React.Component{
                         </CardActions>
                         <Divider className={classes.commentDivider}></Divider>
                         <div id={"comm"+postInfo.postId}></div>
-                        <PostComment data={this.state.commtData} />
+                        <PostComment data={this.state.commtData} className={classes.comments}/>
                         {this.state.inputMode ?
                             <Form id="fm" onSubmit={this.handleSubmit} reply style={{ color: "#ff9800", marginTop: "15px" }}>
                                 <Form.TextArea

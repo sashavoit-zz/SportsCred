@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
         //color: theme.palette.text.secondary,
         backgroundColor: '#0099ff',
         color: 'white',
-        fontSize: 20 + 'px',
+        fontSize: 18 + 'px',
         justifyContent: 'center',
         width: '100%'
     },
@@ -151,7 +151,7 @@ function DualTrivia(props) {
 
   const [nextQuestionLabel, setNextQuestionLabel] = React.useState("Next question");
   const [totalPoints, setTotalPoints] = React.useState(0);
-  const [OpponentTotalPoints, setOpponentTotalPoints] = React.useState(0);
+  const [opponentTotalPoints, setOpponentTotalPoints] = React.useState(0);
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [currentQuestion, setCurrentQuestion] = React.useState(1);
 
@@ -712,7 +712,7 @@ function DualTrivia(props) {
   return (
     <>
         <Container id="entry-modal" className={classes.introPage}>
-            <Typography id="welcomeMessage" variant="h3" gutterBottom>
+            <Typography id="welcomeMessage" variant="h4" gutterBottom>
                 {welcomeMessage}
             </Typography>
             <Button className={classes.startButton} id="startButton" variant="contained" color="primary" onClick={beginTrivia}>
@@ -720,7 +720,7 @@ function DualTrivia(props) {
             </Button>
         </Container>
         <Container id="main-modal" className={classes.root}>
-            <Grid container spacing={5} className={classes.topHalf}>
+            <Grid container spacing={3} className={classes.topHalf}>
                 <Grid item xs={8} className={classes.questionBox}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} className={classes.labelBox}>
@@ -760,8 +760,9 @@ function DualTrivia(props) {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={4}>
-                    <Grid container spacing={3} className={classes.questionBox}>
+                <Grid item xs={1}/>
+                <Grid item xs={3} className={classes.questionBox}>
+                    <Grid container spacing={3}>
                         <Grid item xs={12} className={classes.labelBox}>
                             Players:
                             <hr></hr>
@@ -826,12 +827,22 @@ function DualTrivia(props) {
                 <Typography variant="h3" gutterBottom>
                     Game over!
                 </Typography>
-                <Typography variant="h5" gutterBottom>
-                    Your net point gain/loss: {totalPoints}
-                </Typography>
-                <Typography variant="h5" gutterBottom>
-                    Opponent net point gain/loss: {OpponentTotalPoints}
-                </Typography>
+                {totalPoints >= 0 ?
+                    (<Typography variant="h5" gutterBottom>
+                        Your ACS increased by {totalPoints} points
+                    </Typography>)
+                    :
+                    (<Typography variant="h5" gutterBottom>
+                        Your ACS decreased by {-totalPoints} points
+                    </Typography>)}
+                {opponentTotalPoints > 0 ?
+                    (<Typography variant="h5" gutterBottom>
+                        Your opponent's ACS increased by {opponentTotalPoints} points
+                    </Typography>)
+                    :
+                    (<Typography variant="h5" gutterBottom>
+                        Your opponent's ACS decreased by {-opponentTotalPoints} points
+                    </Typography>)}
                 <Button variant="contained" color="primary" onClick={closeModal}>
                     Close
                 </Button>
