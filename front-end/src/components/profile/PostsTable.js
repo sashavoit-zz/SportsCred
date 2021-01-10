@@ -47,7 +47,7 @@ function timeConverter(UNIX_timestamp) {
         return null
     }
     const a = new Date(UNIX_timestamp)//.toLocaleDateString("en-US");
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const year = a.getFullYear();
     const month = months[a.getMonth()];
     const date = a.getDate();
@@ -205,11 +205,11 @@ class PostsTable extends Component {
                             <TableRow>
                                 <TableCell className={classes.tableCell} component="th" scope="row">
                                     <Box className={classes.post} display='inline'>
-                                        {timeConverter(post.time)+timeSince(post.time)}
+                                        {post.content}
                                     </Box>
                                     <br/>
                                     <Typography variant="body1" color="textSecondary" style={{ wordWrap: "break-word" }}>
-                                        {post.content}
+                                        {timeConverter(post.time)+timeSince(post.time)}
                                     </Typography>
                                 </TableCell>
                                 <TableCell className={classes.tableTime} align="right">{

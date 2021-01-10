@@ -139,7 +139,7 @@ function LogIn(props) {
                     className={classes.margin}
                     style={{ textTransform: "none" }}
                   >
-                    Forgot Something?
+                    Forgot email or password?
                   </Button>
                 </Grid>
               </FormControl>

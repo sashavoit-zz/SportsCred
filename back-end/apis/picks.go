@@ -141,32 +141,32 @@ func demoScript(driver neo4j.Driver) {
 
 	queries.ClearGamesInDB(driver)
 
-	queries.AddGame(driver, "UTA", "Utah Jazz", "NOP", "New Orleans Pelicans", "2020-12-30", "UTA",
+	queries.AddGame(driver, "UTA", "Utah Jazz", "NOP", "New Orleans Pelicans", "2021-1-12", "UTA",
 		"https://ssl.gstatic.com/onebox/media/sports/logos/SP_dsmXEKFVZH5N1DQpZ4A_96x96.png",
 		"https://ssl.gstatic.com/onebox/media/sports/logos/JCQO978-AWbg00TQUNPUVg_96x96.png",
 		"https://i.pinimg.com/originals/94/ca/a5/94caa568233f04d0aa104d1be739c650.jpg",
 		"https://i.pinimg.com/originals/37/bd/ff/37bdff0cb56f8b2f34e395121c7019ff.jpg",
 		"western",
 	)
-	queries.AddGame(driver, "LAC", "Los Angeles Clippers", "LAL", "Los Angeles Lakers", "2020-12-30", "LAL",
+	queries.AddGame(driver, "LAC", "Los Angeles Clippers", "LAL", "Los Angeles Lakers", "2021-1-12", "LAL",
 		"https://ssl.gstatic.com/onebox/media/sports/logos/F36nQLCQ2FND3za-Eteeqg_96x96.png",
 		"https://ssl.gstatic.com/onebox/media/sports/logos/4ndR-n-gall7_h3f7NYcpQ_96x96.png",
 		"https://cdn.wallpapersafari.com/8/37/AIVuoY.jpg",
 		"https://cdn.wallpapersafari.com/8/37/AIVuoY.jpg",
 		"western")
-	queries.AddGame(driver, "ORL", "Orlando Magic", "BKN", "Brooklyn Nets", "2020-12-30", "ORL",
+	queries.AddGame(driver, "ORL", "Orlando Magic", "BKN", "Brooklyn Nets", "2021-1-12", "ORL",
 		"https://ssl.gstatic.com/onebox/media/sports/logos/p69oiJ4LDsvCJUDQ3wR9PQ_96x96.png",
 		"https://ssl.gstatic.com/onebox/media/sports/logos/iishUmO7vbJBE7iK2CZCdw_96x96.png",
 		"https://wallpapercave.com/wp/wp4117350.jpg",
 		"https://wallpapercave.com/wp/wp4663832.jpg",
 		"eastern")
-	queries.AddGame(driver, "MEM", "Memphis Grizzlies", "POR", "Portland Trailblazers", "2020-12-30", "POR",
+	queries.AddGame(driver, "MEM", "Memphis Grizzlies", "POR", "Portland Trailblazers", "2021-1-12", "POR",
 		"https://ssl.gstatic.com/onebox/media/sports/logos/3ho45P8yNw-WmQ2m4A4TIA_96x96.png",
 		"https://ssl.gstatic.com/onebox/media/sports/logos/_bgagBCd6ieOIt3INWRN_w_96x96.png",
 		"https://static.wixstatic.com/media/fa3a6a_174653be72ad4c22923fc7e6adced1e5.jpg",
 		"https://traveloregon.com/wp-content/uploads/2012/07/2200025-Edit.jpg",
 		"western")
-	queries.AddGame(driver, "PHX", "Phoenix Suns", "WAS", "Washington Wizards", "2020-12-30", "PHX",
+	queries.AddGame(driver, "PHX", "Phoenix Suns", "WAS", "Washington Wizards", "2021-1-12", "PHX",
 		"https://ssl.gstatic.com/onebox/media/sports/logos/pRr87i24KHWH0UuAc5EamQ_96x96.png",
 		"https://ssl.gstatic.com/onebox/media/sports/logos/NBkMJapxft4V5kvufec4Jg_96x96.png",
 		"https://i.pinimg.com/originals/64/c4/c4/64c4c4b5065f252f44aa04aacbcd8629.jpg",

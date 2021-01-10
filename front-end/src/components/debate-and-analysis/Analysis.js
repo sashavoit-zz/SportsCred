@@ -163,37 +163,18 @@ export class Analysis extends React.Component{
                     <CircularProgressbar
                       value={this.state.percentTime}
                       strokeWidth={50}
-                      text={this.state.time}
+                      text={`${this.state.time}`}
                       styles={buildStyles({
-                        strokeLinecap: "butt", pathColor: "red", textColor: 'white',
+                        strokeLinecap: "butt",
+                        pathColor: "red",
+                        textColor: 'white'
                       })}
                     />
                   </Grid>
                 </Grid>
             <br></br>
-            <div hidden={!this.state.answer0 || this.state.answer0==="" || this.state.email0===this.props.user.email}>
-              <UserPost rating={this.state.rating0} name={this.state.name0} answer={this.state.answer0}
-                marks={this.state.marks1} posterEmail={this.state.email0} dpLink={this.state.dpLink1}
-                raterEmail={this.props.user.email} acs={this.state.userACS1}
-              />
-            </div>
-            <br></br>
-            <div hidden={!this.state.answer1 || this.state.answer1==="" || this.state.email1===this.props.user.email}>
-              <UserPost rating={this.state.rating1} name={this.state.name1} answer={this.state.answer1}
-                marks={this.state.marks2} posterEmail={this.state.email1} dpLink={this.state.dpLink2}
-                raterEmail={this.props.user.email} acs={this.state.userACS2}
-              />
-            </div>
-            <br></br>
-            <div hidden={!this.state.answer2 || this.state.answer2==="" || this.state.email2===this.props.user.email}>
-              <UserPost rating={this.state.rating2} name={this.state.name2} answer={this.state.answer2}
-                marks={this.state.marks3} posterEmail={this.state.email2} dpLink={this.state.dpLink3}
-                raterEmail={this.props.user.email} acs={this.state.userACS2}
-              />
-            </div>
-            <br></br>
             <Typography color="textSecondary" gutterBottom hidden={this.state.userAnswer==""}>
-              Your Post
+              Your answer
             </Typography>
             <br></br>
             <Card hidden={this.state.userAnswer==""}>
@@ -232,6 +213,32 @@ export class Analysis extends React.Component{
                 </Box>
               </CardContent>
             </Card>
+            <br/>
+            <Typography color="textSecondary" gutterBottom hidden={this.state.userAnswer==""}>
+              Other answers
+            </Typography>
+            <br/>
+            <div hidden={!this.state.answer0 || this.state.answer0==="" || this.state.email0===this.props.user.email}>
+              <UserPost rating={this.state.rating0} name={this.state.name0} answer={this.state.answer0}
+                marks={this.state.marks1} posterEmail={this.state.email0} dpLink={this.state.dpLink1}
+                raterEmail={this.props.user.email} acs={this.state.userACS1}
+              />
+            </div>
+            <br></br>
+            <div hidden={!this.state.answer1 || this.state.answer1==="" || this.state.email1===this.props.user.email}>
+              <UserPost rating={this.state.rating1} name={this.state.name1} answer={this.state.answer1}
+                marks={this.state.marks2} posterEmail={this.state.email1} dpLink={this.state.dpLink2}
+                raterEmail={this.props.user.email} acs={this.state.userACS2}
+              />
+            </div>
+            <br></br>
+            <div hidden={!this.state.answer2 || this.state.answer2==="" || this.state.email2===this.props.user.email}>
+              <UserPost rating={this.state.rating2} name={this.state.name2} answer={this.state.answer2}
+                marks={this.state.marks3} posterEmail={this.state.email2} dpLink={this.state.dpLink3}
+                raterEmail={this.props.user.email} acs={this.state.userACS2}
+              />
+            </div>
+            <br></br>
           </div>
       );
   }

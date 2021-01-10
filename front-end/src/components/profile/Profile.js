@@ -20,7 +20,8 @@ const styles = theme => ({
   },
   content: {
     overflow: "hidden", /* will contain if #first is longer than #second */
-    paddingTop: "80px",
+    paddingTop: "50px",
+    marginBottom: "30px"
   },
   menu: {
     float: "left",
@@ -32,9 +33,8 @@ const styles = theme => ({
   option: {
     marginBottom: "30px"
   },
-
   profile: {
-    overflow: "hidden",
+    overflow: "hidden"
   },
   leftProfile: {
     float: "left",
@@ -240,21 +240,38 @@ class Profile extends Component {
  
   render() {
     const { classes } = this.props;
-    
+
+    const editProfileButton = this.state.edit ?
+        (<Button
+            onClick={() => this.setState({ edit: true })}
+            color="primary"
+            component="label"
+        >
+          Close edit profile
+        </Button>)
+        :
+        (<Button
+            onClick={() => this.setState({ edit: true })}
+            color="primary"
+            component="label"
+        >
+          Edit profile
+        </Button>)
+
+
     const profileContent = this.state.edit ? (
       <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
         <TextField className={classes.inputField} id="email" label={localStorage.getItem("User")} variant="filled" onChange={this.handleInputChange} disabled /><br />
         <TextField error={this.state.lastName === "" || !this.state.lastName.match(letters) ? true : false} className={classes.inputFieldShort} id="lastName" label="Last Name" value={this.state.lastName} variant="filled" onChange={this.handleInputChange} />
         <TextField error={this.state.firstName === "" || !this.state.firstName.match(letters) ? true : false} className={classes.inputFieldShort} id="firstName" label="First Name" value={this.state.firstName} variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
-          Help people discover your account by using the name you re <br />
+          Help people discover your account by using the name you are <br />
           known by: either your full name, nickname, or business name
         </div>
         <TextField error={this.state.about === "" ? true : false} className={classes.inputField} id="about" label="About" value={this.state.about} variant="filled" onChange={this.handleInputChange} /><br />
         <TextField error={this.state.phone === "" || !this.state.phone.match(numbers) ? true : false} className={classes.inputField} id="phone" label="Phone Number" value={this.state.phone} variant="filled" onChange={this.handleInputChange} /><br />
         <div className={classes.note}>
-          Personal Information (Email & Phone Number): <br />
-          This wont be a part of your public profile.
+          Phone number won't be a part of your public profile.
         </div>
         <Button className={classes.submitButton} type="submit">Submit</Button> <Button className={classes.cancleButton} onClick={this.handleBackProfile} >Cancel</Button>
         <Collapse in={this.state.errmsg}>
@@ -283,23 +300,6 @@ class Profile extends Component {
     return (
         <Card className={classes.root}>
         <CardContent className={classes.content}>
-          <div className={classes.menu}>
-
-            
-            <Typography onClick={() => this.setState({ edit: false })} className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
-              Profile
-            </Typography>
-
-            <Typography onClick={() => this.setState({ edit: true })} className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
-              Edit Profile
-            </Typography>
-
-            
-            {/* <Typography className={classes.option} variant="h5" component="h2" style={{ cursor: 'pointer' }}>
-              <PassDialog></PassDialog>
-            </Typography> */}
-
-          </div>
           <div className={classes.profile}>
             <div className={classes.profile}>
               <div className={classes.leftProfile}>
@@ -314,17 +314,18 @@ class Profile extends Component {
                 </Typography>
               </div>
               <div className={classes.rightProfile}>
-                <Typography variant="h5" component="h2">
+                <Typography variant="h5" component="h2" style={{marginLeft: "10px", marginBottom: "5px"}}>
                   ACS Score: {this.state.acs}
                 </Typography>
-                  <Button 
+                  <Button
                     color="primary"
                     component="label"
                     onClick={() => this.setState({ openPopup: true })}
                   >
                     Upload Profile Picture
-                    
                   </Button>
+                <br/>
+                {editProfileButton}
               </div>
             </div>
           </div>
