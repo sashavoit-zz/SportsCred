@@ -250,7 +250,7 @@ export class Post extends React.Component{
                 "email": author,
                 "likes":0,
                 "dislikes":0,
-                "commentTime":commentTime
+                "commentTime":commentTime,
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -311,10 +311,10 @@ export class Post extends React.Component{
         else {
             const today = new Date();
             const date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
-            this.addComment(replyText, this.props, date)
+            this.addComment(replyText, this.props.userId, date)
             this.setState({
                 uploadInput: "",
-                errorText: "comment send."
+                errorText: "comment sent."
             }, () => { this.refresh(); })
             replyFiel.value = ""
             this.setState({commtData: this.state.commtData})

@@ -451,7 +451,7 @@ class Leaderboards extends React.Component {
         <TableHead>
           <TableRow>
             <StyledTableCell>Your rank: {this.state.rank}</StyledTableCell>
-            <StyledTableCell align="right">ACS Score: {this.state.acs}</StyledTableCell>
+            <StyledTableCell align="right">Your ACS Score: {this.state.acs}</StyledTableCell>
           </TableRow>
         </TableHead>
       </Table>

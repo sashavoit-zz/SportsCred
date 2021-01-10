@@ -1,6 +1,6 @@
 import React from "react";
 import {withStyles} from "@material-ui/core/styles";
-import {TextField, Button, Avatar, Grid, Card, CardContent, IconButton,GridList,GridListTile,GridListTileBar} from '@material-ui/core'
+import {TextField, Button, Avatar, Grid, Card, CardContent, IconButton, GridList, GridListTile, GridListTileBar} from '@material-ui/core'
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 async function addPost(content, author, postTime) {
@@ -324,7 +324,7 @@ export class UploadPost extends React.Component{
                                         name = "uploadInput"
                                         value={this.state.uploadInput}
                                         onChange={e => handleInput(e.target)}
-                                        placeholder="What's in your mind?"
+                                        placeholder="What's on your mind?"
                                         InputProps={
                                             {className: classes.input}
                                         }

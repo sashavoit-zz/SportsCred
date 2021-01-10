@@ -155,8 +155,6 @@ function SignUp() {
                 <Grid item xs>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker style={{minWidth: 300}}
-                      //error={!isSet}
-                      //helperText={isSet ? ' ' : ' ' }
                       inputVariant="outlined"
                       margin="normal"
                       id="date-picker-dialog"
