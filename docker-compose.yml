@@ -1,0 +1,38 @@
+version: "3.2"
+
+services:
+  neo4j:
+    image: neo4j:4.2
+    container_name: 'neo4j'
+    restart: on-failure
+    ports:
+      - '7474:7474'
+      - '7687:7687'
+    volumes:
+      - '$HOME/neo4j/data:/data'
+      - '$HOME/neo4j/logs:/logs'
+      - '$HOME/neo4j/conf:/conf/'
+    environment: 
+      - NEO4J_AUTH=neo4j/1234
+    command: neo4j
+  back-end:
+    container_name: 'api-go'
+    build: './back-end'
+    ports:
+      - '3001:3001'
+    depends_on:
+      - 'neo4j'
+    network_mode: "host"
+  front-end:
+    container_name: 'react-api'
+    restart: on-failure
+    build: './front-end'
+    stdin_open: true
+    environment: 
+      - PORT=3000
+    ports: 
+      - "3000:3000"
+    network_mode: "host"
+
+volumes:
+  dgraph:
