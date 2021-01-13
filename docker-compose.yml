@@ -8,6 +8,10 @@ services:
     ports:
       - '7474:7474'
       - '7687:7687'
+    volumes:
+      - $HOME/neo4j/data:/data
+      - $HOME/neo4j/plugins:/plugins  
+      - $HOME/neo4j/conf:/conf  
     environment: 
       - NEO4J_AUTH=neo4j/1234
     command: neo4j
