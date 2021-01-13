@@ -8,10 +8,6 @@ services:
     ports:
       - '7474:7474'
       - '7687:7687'
-    volumes:
-      - '$HOME/neo4j/data:/data'
-      - '$HOME/neo4j/logs:/logs'
-      - '$HOME/neo4j/conf:/conf/'
     environment: 
       - NEO4J_AUTH=neo4j/1234
     command: neo4j
@@ -21,8 +17,8 @@ services:
     ports:
       - '3001:3001'
     depends_on:
-      - 'neo4j'
-    network_mode: "host"
+      - neo4j
+    network_mode: host
   front-end:
     container_name: 'react'
     restart: on-failure
@@ -32,7 +28,7 @@ services:
       - PORT=3000
     ports: 
       - "3000:3000"
-    network_mode: "host"
-
-volumes:
-  dgraph:
+    depends_on:
+      - back-end
+    network_mode: host
+      
