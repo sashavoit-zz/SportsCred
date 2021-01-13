@@ -16,7 +16,7 @@ services:
       - NEO4J_AUTH=neo4j/1234
     command: neo4j
   back-end:
-    container_name: 'api-go'
+    container_name: 'go'
     build: './back-end'
     ports:
       - '3001:3001'
@@ -24,7 +24,7 @@ services:
       - 'neo4j'
     network_mode: "host"
   front-end:
-    container_name: 'react-api'
+    container_name: 'react'
     restart: on-failure
     build: './front-end'
     stdin_open: true
