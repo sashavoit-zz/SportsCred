@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import {
-  Typography,
   CircularProgress,
   makeStyles,
   Select,
   MenuItem,
   InputLabel,
   FormControl,
-  Grid, 
+  Grid
 } from "@material-ui/core";
 import { ArrowLeft, ArrowRight } from "@material-ui/icons";
 import {
@@ -38,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
       padding: "14.5px 13px",
     }
   },
-  
   buttonBack: {
     position: "absolute",
     top: "50%",
@@ -68,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
     outline: "none",
-  },
+  }
 }));
 
 function Predictions(props) {
@@ -100,53 +98,47 @@ function Predictions(props) {
 
   return (
     <>
-      <Grid 
-        justify="space-between"
-        container
-      >
-        <Grid item>
-          <Typography variant="h3">Picks and Predictions</Typography>
-        </Grid >
+      <Grid container justify="flex-end">
         <Grid item>
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel id="conference-picker">Conferences</InputLabel>
-            <Select
-              label="Conferences"
-              labelid="conference-picker"
-              id="conference-picker"
-              value={conference}
-              onChange={(event) => setConference(event.target.value)}
-            >
-              <MenuItem value={"both"}>Both</MenuItem>
-              <MenuItem value={"eastern"}>Eastern</MenuItem>
-              <MenuItem value={"western"}>Western</MenuItem>
-            </Select>
+              <Select
+                  label="Conferences"
+                  labelid="conference-picker"
+                  id="conference-picker"
+                  value={conference}
+                  onChange={(event) => setConference(event.target.value)}
+              >
+                <MenuItem value={"both"}>Both</MenuItem>
+                <MenuItem value={"eastern"}>Eastern</MenuItem>
+                <MenuItem value={"western"}>Western</MenuItem>
+              </Select>
           </FormControl>
         </Grid>
       </Grid>
 
       {data ? (
-        <CarouselProvider
-          naturalSlideWidth={345}
-          naturalSlideHeight={480}
-          totalSlides={data.length}
-          visibleSlides={2.8}
-          style={{ position: "relative" }}
-        >
-          <Slider>
-            {data.map((game, i) => (
-              <Slide index={i} key={i}>
-                <PredictionsCard data={game} />
-              </Slide>
-            ))}
-          </Slider>
-          <ButtonBack className={classes.buttonBack}>
-            <ArrowLeft fontSize="large" />
-          </ButtonBack>
-          <ButtonNext className={classes.buttonNext}>
-            <ArrowRight fontSize="large" />
-          </ButtonNext>
-        </CarouselProvider>
+          <CarouselProvider
+            naturalSlideWidth={345}
+            naturalSlideHeight={400}
+            totalSlides={data.length}
+            visibleSlides={2.8}
+            style={{ position: "relative" }}
+          >
+            <Slider>
+              {data.map((game, i) => (
+                <Slide index={i} key={i}>
+                  <PredictionsCard data={game} />
+                </Slide>
+              ))}
+            </Slider>
+            <ButtonBack className={classes.buttonBack}>
+              <ArrowLeft fontSize="large" />
+            </ButtonBack>
+            <ButtonNext className={classes.buttonNext}>
+              <ArrowRight fontSize="large" />
+            </ButtonNext>
+          </CarouselProvider>
       ) : (
         <CircularProgress
           size="4rem"

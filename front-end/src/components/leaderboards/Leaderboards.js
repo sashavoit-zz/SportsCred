@@ -429,28 +429,29 @@ class Leaderboards extends React.Component {
       return (
         <>
         <div className={classes.table}>
-        <Button id="gl" variant="contained" color="primary" size="large" className={classes.button1} onClick={this.handleViewgl}>
-            Global leaderboards
-          </Button>
-          <Button id="fl" variant="contained" color="primary" size="large" className={classes.button2} onClick={this.handleViewfl}>
-            Fanalyst Leaderboards
-          </Button>
-          <Button id="al" variant="contained" color="primary" size="large" className={classes.button3} onClick={this.handleViewal}>
-            Analyst leaderboards
-          </Button>
-          <Button id="pal" variant="contained" color="primary" size="large" className={classes.button4} onClick={this.handleViewpal}>
-            Pro Analyst leaderboards
-          </Button>
-          <Button id="eal" variant="contained" color="primary" size="large" className={classes.button5} onClick={this.handleVieweal}>
-            Expert Analyst leaderboards
-          </Button>
+            <Button id="fl" variant="contained" color="primary" size="large" className={classes.button2} onClick={this.handleViewfl}>
+                Fan Analyst Leaderboards
+            </Button>
+            <Button id="al" variant="contained" color="primary" size="large" className={classes.button3} onClick={this.handleViewal}>
+                Analyst Leaderboards
+            </Button>
+            <Button id="pal" variant="contained" color="primary" size="large" className={classes.button4} onClick={this.handleViewpal}>
+                Pro Analyst Leaderboards
+            </Button>
+            <Button id="eal" variant="contained" color="primary" size="large" className={classes.button5} onClick={this.handleVieweal}>
+                Expert Analyst Leaderboards
+            </Button>
+            <br/>
+            <Button id="gl" variant="contained" color="primary" size="large" className={classes.button1} onClick={this.handleViewgl}>
+                Global Leaderboards
+            </Button>
         </div>
         <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table" >
         <TableHead>
           <TableRow>
             <StyledTableCell>Your rank: {this.state.rank}</StyledTableCell>
-            <StyledTableCell align="right">ACS Score: {this.state.acs}</StyledTableCell>
+            <StyledTableCell align="right">Your ACS Score: {this.state.acs}</StyledTableCell>
           </TableRow>
         </TableHead>
       </Table>

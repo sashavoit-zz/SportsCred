@@ -205,11 +205,11 @@ class DebateTable extends Component {
                                 <TableCell className={classes.tableCell} component="th" scope="row">
                                     <Box className={classes.post} display='inline'>
                                         {/* {timeConverter(post.time) + timeSince(post.time)} */}
-                                        {post.answer}
+                                        {post.question}
                                     </Box>
                                     <br />
                                     <Typography variant="body1" color="textSecondary" style={{ wordWrap: "break-word" }}>
-                                        {post.question}
+                                        {post.answer}
                                     </Typography>
                                 </TableCell>
                                 {/* <TableCell className={classes.tableTime} align="right">{

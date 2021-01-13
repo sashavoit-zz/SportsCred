@@ -27,15 +27,11 @@ export class Comment extends React.Component{
         const {userId} = this.props;
         console.log(userId);
         const {postInfo} = this.props;
-        // const classes = userStyles();
         const {classes} = this.props;
         return (
             <div>
                 <Card className={classes.root}>
                     <CardHeader
-                        //avatar={
-                        //    <Avatar src ={postInfo.AuthorProfile}/>
-                        //}
                         title={postInfo.firstName + " " + postInfo.lastName}
                         subheader = {postInfo.time}
                     >
@@ -48,7 +44,6 @@ export class Comment extends React.Component{
                     <CardActions disableSpacing>
                         <Rate type={"comments"} likes={postInfo.likes} dislikes={postInfo.dislikes} id={postInfo.postId} user={userId}></Rate>
                         <IconButton>
-                            {/**TODO: onlick to reply the post */}
                             <TextField
                                 placeholder="Leave a reply"
                                 multiline
@@ -58,7 +53,6 @@ export class Comment extends React.Component{
                             <CommentIcon/>
                         </IconButton>
                         <IconButton>
-                            {/**TODO: onlick to reply the post */}
                             <ShareIcon/>
                         </IconButton>
                     </CardActions>

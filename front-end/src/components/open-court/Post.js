@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {CardActions,Card, Grid,CardContent, Typography, IconButton,Avatar, CardActionArea,GridList,GridListTile, ButtonBase} from '@material-ui/core';
+import {CardActions,Card, CardHeader,CardContent, Typography, IconButton,Avatar, CardActionArea,GridList,GridListTile, ButtonBase} from '@material-ui/core';
 import FacebookEmbeds from './FacebookEmbeds';
 import RedditEmbeds from './RedditEmbeds';
 import InstagramEmbeds from './InstagramEmbeds';
@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom'
 
 const styles = theme => ({
     root: {
-        backgroundColor: "#424242"
+        backgroundColor: "#393939"
         //width: "300px",
     },
     content: {
@@ -41,7 +41,9 @@ const styles = theme => ({
     option: {
         marginBottom: "30px"
     },
-
+    comments:{
+        width: "100%"
+    },
     profile: {
         overflow: "hidden",
         //height:"100%",
@@ -147,11 +149,12 @@ const styles = theme => ({
         //fontSize: "60px",
     },
     cardContent: {
+        marginTop: "0px",
+        paddingTop: "0px",
         overflow: "hidden",
-        paddingLeft: "0",
         "&:last-child": {
             paddingBottom: 0
-        }
+        },
     },
     cardAction: {
         paddingLeft: "0",
@@ -161,11 +164,12 @@ const styles = theme => ({
     },
     postInfo: {
         color: "#909090",
+        fontSize: "15px"
     },
     cardBody: {
         fontSize: "15px",
-        marginTop: "15px",
-        marginBottom: "15px",
+        marginTop: "0px",
+        paddingTop: "0px"
     },
     iconButton: {
         padding: "0",
@@ -204,32 +208,24 @@ function timeConverter(UNIX_timestamp) {
     return date + ' ' + month + ' ' + year
 }
 
-function timeSince(UNIX_timestamp) {
+function formatDate(UNIX_timestamp) {
+
+    let months = [
+        "January", "February",  "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+    ]
+
     if (!UNIX_timestamp) {
         return null
-    }
-    //const a = //.toLocaleDateString("en-US")
-    const timeStamp = new Date(UNIX_timestamp)
-    const now = new Date(),
-        secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
-    if (secondsPast < 60) {
-        return parseInt(secondsPast) + 's ago';
-    }
-    if (secondsPast < 3600) {
-        return parseInt(secondsPast / 60) + 'm ago';
-    }
-    if (secondsPast <= 86400) {
-        return parseInt(secondsPast / 3600) + 'h ago';
-    }
-    if (secondsPast > 86400) {
-        const day = timeStamp.getDate();
-        const month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ", "");
-        const year = timeStamp.getFullYear() == now.getFullYear() ? "" : " " + timeStamp.getFullYear();
-        return day + " " + month + year;
+    }else{
+        const timeStamp = new Date(UNIX_timestamp)
+
+        let day = timeStamp.getDate()
+        let month = timeStamp.getMonth()
+        let year = timeStamp.getFullYear()
+
+        return day + " " + months[month] + " " + year
     }
 }
-
-
 
 export class Post extends React.Component{
     constructor(props) {
@@ -254,7 +250,7 @@ export class Post extends React.Component{
                 "email": author,
                 "likes":0,
                 "dislikes":0,
-                "commentTime":commentTime
+                "commentTime":commentTime,
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -315,10 +311,10 @@ export class Post extends React.Component{
         else {
             const today = new Date();
             const date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
-            this.addComment(replyText, this.props, date)
+            this.addComment(replyText, this.props.userId, date)
             this.setState({
                 uploadInput: "",
-                errorText: "comment send."
+                errorText: "comment sent."
             }, () => { this.refresh(); })
             replyFiel.value = ""
             this.setState({commtData: this.state.commtData})
@@ -361,50 +357,56 @@ export class Post extends React.Component{
         return (
             <div className={classes.cardArea}>
                 <Card className={classes.cardRoot} variant="outlined">
-                    <Link to={postInfo.email == localStorage.getItem("User") ? "/profile" : "/user/" + postInfo.email }>
-                    <a>
-                        <Avatar className={classes.userIcon} src={postInfo.profilePic}/>
-                    </a>
-                    </Link>
-                    <CardContent className={classes.cardContent}>
-                        <div className={classes.cardName}>
-                            <Link to={postInfo.email == localStorage.getItem("User") ? "/profile" : "/user/" + postInfo.email}>
+                    <CardHeader
+                        avatar={<Link to={postInfo.email == localStorage.getItem("User") ? "/profile" : "/user/" + postInfo.email }>
                             <a>
-                                <Box style={{ fontWeight: "bold" }} display='inline'>
-                                    {postInfo.firstName + " " + postInfo.lastName + "   "}
-                                </Box>
+                                <Avatar className={classes.userIcon} src={postInfo.profilePic}/>
                             </a>
-                            </Link>
-                            <Box className={classes.postInfo} display='inline'>
-                                {"ACS: " + postInfo.acs + " - " + postInfo.email + " - " + timeSince(postInfo.time)}
-                            </Box>
-                            {!this.props.isSingle ?
+                        </Link>}
+                        action ={
+                            !this.props.isSingle ?
                                 <Link to={"/the-zone/" + postInfo.postId}>
                                     <LaunchIcon className={classes.launchIcon}></LaunchIcon>
-                                </Link>:
+                                </Link>
+                                :
                                 null
-                            }
-                            
-                        </div>
+                        }
+                        title = {
+                            <Link to={postInfo.email == localStorage.getItem("User") ? "/profile" : "/user/" + postInfo.email}>
+                                <a>
+                                    <Box style={{ fontWeight: "bold", fontSize:"20px" }} display='inline'>
+                                        {postInfo.firstName + " " + postInfo.lastName}
+                                    </Box>
+                                </a>
+                                <span style={{ color: "#909090", fontSize:"20px" }}>{" ACS: " + postInfo.acs}</span>
+                            </Link>
+                        }
+                        subheader={
+                            <Box className={classes.postInfo} display='inline'>
+                                {formatDate(postInfo.time)}
+                            </Box>
+                        }
+                    />
+                    <CardContent className={classes.cardContent}>
                         <div className={classes.cardBody}>
-                        {url == null
-                        ?<div>
-                        <Typography variant ="h5" color="white" style={{ wordWrap: "break-word" }}>
-                            {this.highlightPattern(postInfo.content, hash)}
-                        </Typography>
-                        {postInfo.pics == null
-                        ?<div></div>
-                        :
-                        <div>
-                        <div style={{ marginTop:"10px"}}></div>
-                        <GridList cellHeight="auto" spacing={3} className={classes.gridList} cols={2}>
-                            {
-                            postInfo.pics.map(imageURL => (
-                            <GridListTile cols={1} >
+                            {url == null
+                            ?<div>
+                            <Typography variant ="h5" color="white" style={{ wordWrap: "break-word" }}>
+                                {this.highlightPattern(postInfo.content, hash)}
+                            </Typography>
+                            {postInfo.pics == null
+                            ?<div></div>
+                            :
+                            <div>
+                            <div style={{ marginTop:"10px"}}></div>
+                            <GridList cellHeight="auto" spacing={3} className={classes.gridList} cols={2}>
+                                {
+                                postInfo.pics.map(imageURL => (
+                                <GridListTile cols={1} >
                                     <img  src={imageURL} className={classes.imageGrid}/>
-                            </GridListTile>
-                            ))}
-                        </GridList>
+                                </GridListTile>
+                                ))}
+                            </GridList>
                         </div>
 
                         }
@@ -436,11 +438,9 @@ export class Post extends React.Component{
                         <CardActions className={classes.cardAction} disableSpacing>
                             <Rate type={"posts"} likes={postInfo.likes} dislikes={postInfo.dislikes} id={postInfo.postId} user={userId}></Rate>
                             <IconButton className={classes.iconButton} onClick={() => { this.setState({ inputMode: !this.state.inputMode }) }} >
-                                {/**TODO: onlick to reply the post */}
                                 <CommentIcon />
                             </IconButton>
                             <IconButton className={classes.iconButton} onClick={() => {console.log("this is thhe url"+this.state.url)}}>
-                                {/**TODO: onlick to reply the post */}
                                 <ShareMenu
                                     data={[this.state.url, postInfo.content, "#SportCred"]} //url, content, and hashtag
                                 />
@@ -448,7 +448,7 @@ export class Post extends React.Component{
                         </CardActions>
                         <Divider className={classes.commentDivider}></Divider>
                         <div id={"comm"+postInfo.postId}></div>
-                        <PostComment data={this.state.commtData} />
+                        <PostComment data={this.state.commtData} className={classes.comments}/>
                         {this.state.inputMode ?
                             <Form id="fm" onSubmit={this.handleSubmit} reply style={{ color: "#ff9800", marginTop: "15px" }}>
                                 <Form.TextArea

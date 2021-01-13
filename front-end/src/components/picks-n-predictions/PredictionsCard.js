@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Grid, makeStyles, Typography, Chip, Fade } from "@material-ui/core";
+import {Grid, makeStyles, Typography, Chip, Fade} from "@material-ui/core";
 import LazyLoad from "react-lazyload";
 
-// TODO: clean up css - have another json and then spread the contents here, just update nessecary bits
 const useStyles = makeStyles({
   root: {
     marginTop: 30,
@@ -86,13 +85,12 @@ function PredictionsCard(props) {
   const [pick, setPick] = useState(null);
   const pickVal = useRef({ gameId: data.game_id, pick: null }); // need b/c we want useEffect to work w []
 
-  const addNewPerdictions = async (gameId, prediction) => {
+  const addNewPredictions = async (gameId, prediction) => {
     if (!prediction) {
       // picks not been made
       return;
     }
 
-    // TODO: move to services
     const requestOptions = {
       method: "POST",
       headers: {
@@ -105,13 +103,7 @@ function PredictionsCard(props) {
       }),
     };
 
-    let res = await fetch("/picks/newPrediction", requestOptions);
-
-    if (res.status !== 200) {
-      // nothing for now
-    } else {
-      console.log("oops");
-    }
+    await fetch("/picks/newPrediction", requestOptions);
   };
 
   useEffect(() => {
@@ -120,7 +112,7 @@ function PredictionsCard(props) {
 
   useEffect(() => {
     return () =>
-      addNewPerdictions(pickVal.current.gameId, pickVal.current.pick);
+        addNewPredictions(pickVal.current.gameId, pickVal.current.pick);
   }, []);
 
   const handleClick = (side) => {
@@ -159,7 +151,6 @@ function PredictionsCard(props) {
                       label={`${pick} predicted`}
                     />
                   </Fade>
-                  {/* TODO: Update Label here + conditional rendering for only when side is defined */}
                 </Typography>
               </div>
               <img src={data.team1_logo} className={classes.teamImageLeft}></img>
