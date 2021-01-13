@@ -4,9 +4,20 @@ Beta version of sports related social media platform written in Golang, ReactJS 
 
 # Contents
 
+- [Installation](#installation)
 - [Project development](#project-development)
 - [Features](#features)
 - [Credits](#credits)
+
+# Installation
+
+To install and run a project inside a docker container write in the terminal:
+
+```console
+foo@bar:~$ git clone https://github.com/sashavoit/SportsCred
+foo@bar:~$ cd SportsCred
+foo@bar:~$ sudo docker-compose up
+```
 
 # Project development
 
