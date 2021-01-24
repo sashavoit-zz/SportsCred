@@ -16,8 +16,11 @@ To install and run a project inside a docker container write in the terminal:
 ```console
 foo@bar:~$ git clone https://github.com/sashavoit/SportsCred
 foo@bar:~$ cd SportsCred
-foo@bar:~$ sudo docker-compose up
+foo@bar:~$ sudo docker-compose up -d
 ```
+
+Wait for application to boot and then navigate to https://localhost:3000/login. It is recommended to use Google Chrome for best experience with the application.
+
 
 # Project development
 
