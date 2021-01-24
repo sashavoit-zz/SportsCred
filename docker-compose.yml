@@ -2,12 +2,12 @@ version: "3.2"
 
 services:
   neo4j:
-    image: neo4j:4.2
+    image: neo4j:4.1
     container_name: 'neo4j'
-    restart: on-failure
+    restart: unless-stopped
     ports:
-      - '7474:7474'
-      - '7687:7687'
+      - 7474:7474
+      - 7687:7687
     volumes:
       - $HOME/neo4j/data:/data
       - $HOME/neo4j/plugins:/plugins  
@@ -17,6 +17,7 @@ services:
     command: neo4j
   back-end:
     container_name: 'go'
+    restart: unless-stopped
     build: './back-end'
     ports:
       - '3001:3001'
@@ -25,13 +26,11 @@ services:
     network_mode: host
   front-end:
     container_name: 'react'
-    restart: on-failure
+    restart: unless-stopped
     build: './front-end'
     stdin_open: true
-    environment: 
-      - PORT=3000
     ports: 
-      - "3000:3000"
+      - 3000:3000
     depends_on:
       - back-end
     network_mode: host
