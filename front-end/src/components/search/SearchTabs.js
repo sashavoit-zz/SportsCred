@@ -11,7 +11,7 @@ import SearchAll from "./AllResults";
 
 import { useHistory } from "react-router-dom";
 
-const url = "localhost:3001/";
+const url = "go:3001/";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 

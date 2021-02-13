@@ -28,7 +28,7 @@ async function addPost(content, author, postTime) {
       return newPost
       }
 async function addAcs(email){
-    const url = '/acs'; //http://localhost:3001
+    const url = '/acs'; //http://go:3001
     const data = {
         email: email,
         offset: 1

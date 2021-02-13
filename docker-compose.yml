@@ -14,24 +14,31 @@ services:
       - $HOME/neo4j/conf:/conf  
     environment: 
       - NEO4J_AUTH=neo4j/1234
+    networks:
+      - sportscred-net
     command: neo4j
   back-end:
     container_name: 'go'
     restart: unless-stopped
     build: './back-end'
     ports:
-      - '3001:3001'
+      - 3001:3001
     depends_on:
       - neo4j
-    network_mode: host
+    networks:
+      - sportscred-net
   front-end:
     container_name: 'react'
     restart: unless-stopped
     build: './front-end'
     stdin_open: true
     ports: 
-      - 3000:3000
+      - 80:3000
     depends_on:
       - back-end
-    network_mode: host
+    networks:
+      - sportscred-net
       
+networks:
+  sportscred-net:
+    driver: bridge

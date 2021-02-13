@@ -15,7 +15,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import {BrowserRouter} from 'react-router-dom'
 import InviteButton from '../trivia/InviteButton'
-const url = 'http://localhost:3001/';
+const url = 'http://go:3001/';
 const cols = 2;
 
 const useStyles = theme => ({

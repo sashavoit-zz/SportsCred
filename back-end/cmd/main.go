@@ -13,7 +13,7 @@ import (
 )
 
 //Assuming db is running on port 7687
-const DBURI = "bolt://localhost:7687"
+const DBURI = "bolt://neo4j:7687"
 const DBNAME = "neo4j"
 const DBPASS = "1234"
 const ENCRYPTED = false
