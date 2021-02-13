@@ -3,7 +3,7 @@ import {Typography, IconButton,Avatar} from '@material-ui/core';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 
-const url = 'http://go:3001';
+const url = '';
 
 class EditFriend extends React.Component {
     constructor(props) {

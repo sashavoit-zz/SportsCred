@@ -11,7 +11,7 @@ import AcsTable from './AcsTable';
 import PostsTable from './PostsTable';
 import DebateTable from './DebateTable';
 
-const url = "go:3001/";
+const url = "";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

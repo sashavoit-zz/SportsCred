@@ -3,7 +3,7 @@ import { Typography, IconButton,Avatar} from '@material-ui/core';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 
-const url = 'go:3001/';
+const url = '';
 
 class Rate extends React.Component {
     constructor(props) {
