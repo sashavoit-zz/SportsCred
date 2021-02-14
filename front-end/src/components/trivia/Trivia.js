@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button, Typography, Box, makeStyles, Container, Grid, CircularProgress } from "@material-ui/core";
-import { addQuestionsToUser } from "../../service/SignUpScript";
+import { addQuestionsToDb, addQuestionsToUser } from "../../service/SignUpScript";
 import Modal from 'react-modal';
 
 const drawerWidth = 200;
@@ -183,8 +183,8 @@ function Trivia(props) {
 
     // get new question and show on site (consumer REST api)
 
-    //addQuestionsToDb();
-    //addQuestionsToUser(localStorage.getItem("User"));
+    addQuestionsToDb();
+    addQuestionsToUser(localStorage.getItem("User"));
 
     checkForQuestions();
     getQuestion();

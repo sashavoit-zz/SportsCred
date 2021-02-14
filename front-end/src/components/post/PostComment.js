@@ -58,8 +58,8 @@ class PostComment extends Component {
     this.first_commts = null
     this.commts = null
     const data = this.props.data
-    const f_comm = data[0]
-    const r_comm = data.slice(1)
+    const f_comm = (data == null) ? null : data[0]
+    const r_comm = (data == null) ? null : data.slice(1)
     if (f_comm) {
       this.first_commts =
         <Comment>

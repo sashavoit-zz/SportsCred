@@ -2,16 +2,12 @@ version: "3.2"
 
 services:
   neo4j:
-    image: neo4j:4.0
+    image: neo4j:4.1
     container_name: 'neo4j'
     restart: unless-stopped
     ports:
       - 7474:7474
-      - 7687:7687
-    volumes:
-      - $HOME/neo4j/data:/data
-      - $HOME/neo4j/plugins:/plugins  
-      - $HOME/neo4j/conf:/conf  
+      - 7687:7687 
     environment: 
       - NEO4J_AUTH=neo4j/1234
     networks:

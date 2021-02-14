@@ -65,7 +65,7 @@ export class FriendsList extends React.Component {
             )})
             .catch(function(error){
                 console.log(error);
-                this.setState({error: true});
+                //this.setState({error: true});
             })
     }
     
