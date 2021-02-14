@@ -183,8 +183,8 @@ function Trivia(props) {
 
     // get new question and show on site (consumer REST api)
 
-    addQuestionsToDb();
-    addQuestionsToUser(localStorage.getItem("User"));
+    //addQuestionsToDb();
+    //addQuestionsToUser(localStorage.getItem("User"));
 
     checkForQuestions();
     getQuestion();

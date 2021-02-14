@@ -301,7 +301,7 @@ export class Post extends React.Component{
     handleSubmit = (event) => {
         event.preventDefault()
         const replyFiel = event.target.firstChild.firstChild
-        const replyText = replyFiel.value
+        const replyText = replyFiel == null ? "" : replyFiel.value
         if (replyText.length === 0) {
             /*handling if user uploading post with empty content, will occur error message*/
             this.setState({
