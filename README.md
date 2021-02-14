@@ -4,10 +4,15 @@ Beta version of sports related social media platform written in Golang, ReactJS 
 
 # Contents
 
+- [Live version](#live-version)
 - [Installation](#installation)
 - [Project development](#project-development)
 - [Features](#features)
 - [Credits](#credits)
+
+# Live version
+
+You can try SportsCred yourself at http://35.203.50.75/login. It is deployed using Google Cloud Compute Engine.
 
 # Installation
 
